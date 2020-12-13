@@ -1,15 +1,21 @@
 {
   "name": "crawlab-frontend",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/vue-fontawesome": "^3.0.0-2",
     "core-js": "^3.6.5",
+    "element-plus": "^1.0.1-beta.7",
+    "node-sass": "^5.0.0",
     "vue": "^3.0.0",
+    "vue-i18n": "^9.0.0-beta.11",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
@@ -26,6 +32,8 @@
     "@vue/eslint-config-typescript": "^5.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
+    "sass-loader": "^10.1.0",
+    "scss-loader": "^0.0.1",
     "typescript": "~3.9.3"
   }
 }
