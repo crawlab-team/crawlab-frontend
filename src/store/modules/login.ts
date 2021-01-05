@@ -7,4 +7,4 @@ export default {
   },
   mutations: {},
   actions: {}
-} as Module<LoginState, RootState>;
+} as Module<LoginStoreState, RootStoreState>;

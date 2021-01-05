@@ -8,9 +8,9 @@ Adding a node is quite simple. The only thing you have to do is to run a Crawlab
 For details, please refer to the [Multi-Node Deployment Documentation](https://docs.crawlab.cn/Installation/MultiNode.html).
 `,
   auth: {
-    login_expired_message: 'You have been logged out, you can cancel to stay on this page, or log in again',
-    login_expired_title: 'Confirm logout',
-    login_expired_confirm: 'Confirm',
-    login_expired_cancel: 'Cancel'
+    loginExpiredMessage: 'You have been logged out, you can cancel to stay on this page, or log in again',
+    loginExpiredTitle: 'Confirm logout',
+    loginExpiredConfirm: 'Confirm',
+    loginExpiredCancel: 'Cancel'
   }
 };

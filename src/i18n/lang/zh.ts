@@ -603,9 +603,9 @@ export default {
   },
   schedules: {
     cron: 'Cron',
-    add_cron: '生成Cron',
+    addCron: '生成Cron',
     // Cron Format: [second] [minute] [hour] [day of month] [month] [day of week]
-    cron_format: 'Cron 格式: [秒] [分] [小时] [日] [月] [周]'
+    cronFormat: 'Cron 格式: [秒] [分] [小时] [日] [月] [周]'
   },
 
   // 监控

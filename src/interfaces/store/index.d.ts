@@ -1,4 +1,4 @@
-declare global {
-  interface RootState {
-  }
+interface RootStoreState {
+  login: LoginStoreState;
+  layout: LayoutStoreState;
 }
