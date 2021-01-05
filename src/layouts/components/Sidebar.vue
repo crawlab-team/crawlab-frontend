@@ -1,19 +1,24 @@
 <template>
+  <span class="sidebar-toggle" @click="toggleSidebar">
+    <font-awesome-icon v-if="!sidebarCollapsed" :icon="['fas', 'outdent']"/>
+    <font-awesome-icon v-else :icon="['fas', 'indent']"/>
+  </span>
   <el-aside class="sidebar" width="240px">
-    <div className="logo">
+    <div :class="sidebarCollapsed ? 'collapsed' : ''" class="logo">
       <img :src="logo" alt="logo" className="logo-img"/>
-      <span className="logo-title">Crawlab</span>
-      <span className="logo-sub-title">
-        <div className="logo-sub-title-block">
+      <span class="logo-title">Crawlab</span>
+      <span class="logo-sub-title">
+        <div class="logo-sub-title-block">
           Community
         </div>
-        <div className="logo-sub-title-block">
+        <div class="logo-sub-title-block">
           v0.6.0
         </div>
       </span>
     </div>
-    <div class="sidebar-menu">
+    <div :class="sidebarCollapsed ? 'collapsed' : ''" class="sidebar-menu">
       <el-menu
+          :collapse="sidebarCollapsed"
           :active-text-color="menuActiveText"
           :background-color="menuBg"
           :default-active="activePath"
@@ -25,16 +30,16 @@
             :index="item.path"
             @click="onMenuItemClick(item)"
         >
+          <template v-if="!item.icon">
+            <i class="menu-item-icon fa fa-circle-o"></i>
+          </template>
+          <template v-else-if="Array.isArray(item.icon)">
+            <font-awesome-icon :icon="item.icon" class="menu-item-icon"/>
+          </template>
+          <template v-else>
+            <i :class="item.icon" class="menu-item-icon"></i>
+          </template>
           <template #title>
-            <template v-if="!item.icon">
-              <i class="menu-item-icon fa fa-circle-o"></i>
-            </template>
-            <template v-else-if="Array.isArray(item.icon)">
-              <font-awesome-icon :icon="item.icon" class="menu-item-icon"/>
-            </template>
-            <template v-else>
-              <i :class="item.icon" class="menu-item-icon"></i>
-            </template>
             <span class="menu-item-title">{{ item.title }}</span>
           </template>
         </el-menu-item>
@@ -58,10 +63,7 @@ export default defineComponent({
     const store = useStore();
     const {layout} = store.state as RootStoreState;
     const {menuItems} = layout;
-
-    const onMenuItemClick = (item: MenuItem) => {
-      router.push(item.path);
-    };
+    const storeNamespace = 'layout';
 
     const activePath = computed<string>(() => {
       const arr = route.path.split('/');
@@ -72,11 +74,32 @@ export default defineComponent({
       }
     });
 
+    const sidebarCollapsed = computed<boolean>(() => layout.sidebarCollapsed);
+
+    const toggleIcon = computed<string[]>(() => {
+      if (sidebarCollapsed.value) {
+        return ['fas', 'indent'];
+      } else {
+        return ['fas', 'outdent'];
+      }
+    });
+
+    const onMenuItemClick = (item: MenuItem) => {
+      router.push(item.path);
+    };
+
+    const toggleSidebar = () => {
+      store.commit(`${storeNamespace}/setSideBarCollapsed`, !sidebarCollapsed.value);
+    };
+
     return {
+      sidebarCollapsed,
+      toggleIcon,
       menuItems,
       logo,
       activePath,
       onMenuItemClick,
+      toggleSidebar,
       ...variables,
     };
   },
@@ -90,11 +113,23 @@ export default defineComponent({
   .logo {
     display: inline-flex;
     align-items: center;
-    height: 64px;
-    padding-left: 10px;
+    height: $headerHeight;
+    padding-left: 12px;
     padding-right: 20px;
     border-right: none;
     background-color: $menuBg;
+    width: $sidebarWidth;
+    transition: width $sidebarCollapseTransitionDuration;
+
+    &.collapsed {
+      width: $sidebarWidthCollapsed;
+      transition: width $sidebarCollapseTransitionDuration;
+
+      .sidebar-toggle {
+        left: $sidebarWidthCollapsed;
+        transition: left $sidebarCollapseTransitionDuration;
+      }
+    }
 
     .logo-img {
       height: 40px;
@@ -105,7 +140,7 @@ export default defineComponent({
       font-family: BlinkMacSystemFont, -apple-system, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, helvetica, arial, sans-serif;
       font-size: 28px;
       font-weight: 600;
-      margin-left: 10px;
+      margin-left: 12px;
       color: #409eff;
     }
 
@@ -128,14 +163,22 @@ export default defineComponent({
   }
 
   .sidebar-menu {
-    width: 240px;
-    min-height: calc(100vh - 64px);
+    width: $sidebarWidth;
+    height: calc(100vh - #{$headerHeight});
     margin: 0;
     padding: 0;
+    transition: width $sidebarCollapseTransitionDuration;
+
+    &.collapsed {
+      width: $sidebarWidthCollapsed;
+      transition: width $sidebarCollapseTransitionDuration;
+    }
 
     .el-menu {
       border-right: none;
-      min-height: calc(100vh - 64px);
+      width: inherit !important;
+      height: calc(100vh - #{$headerHeight});
+      transition: none !important;
 
       .el-menu-item {
         &.is-active {
@@ -153,5 +196,21 @@ export default defineComponent({
       }
     }
   }
+}
+
+.sidebar-toggle {
+  position: fixed;
+  top: 0;
+  left: $sidebarWidth;
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
+  height: 64px;
+  z-index: 5;
+  color: $menuBg;
+  font-size: 24px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: left $sidebarCollapseTransitionDuration;
 }
 </style>

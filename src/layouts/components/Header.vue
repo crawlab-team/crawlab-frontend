@@ -20,17 +20,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    height: 64px;
-    width: 100%;
+@import "../../styles/variables.scss";
+
+.header {
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-left: none;
+  border-bottom: 1px solid #eaecef;
+  background-color: $headerBg;
+
+  .left {
     display: flex;
     align-items: center;
-    border-left: none;
-    border-bottom: 1px solid #eaecef;
-
-    .left {
-      display: flex;
-      align-items: center;
-    }
   }
+}
 </style>

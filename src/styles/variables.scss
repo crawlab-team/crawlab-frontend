@@ -1,3 +1,7 @@
+// header
+$headerHeight: 64px;
+$headerBg: #ffffff;
+
 //sidebar
 $menuText: #bfcbd9;
 $menuActiveText: #409EFF;
@@ -9,10 +13,15 @@ $menuHover: #263445;
 $subMenuBg: #1f2d3d;
 $subMenuHover: #001528;
 
-$sideBarWidth: 180px;
+$sidebarWidth: 240px;
+$sidebarWidthCollapsed: 64px;
+
+$sidebarCollapseTransitionDuration: 200ms;
 
 // the :export directive is the magic sauce for webpack
 :export {
+  headerHeight: $headerHeight;
+  headerBg: $headerBg;
   menuText: $menuText;
   menuActiveText: $menuActiveText;
   subMenuActiveText: $subMenuActiveText;
@@ -20,5 +29,7 @@ $sideBarWidth: 180px;
   menuHover: $menuHover;
   subMenuBg: $subMenuBg;
   subMenuHover: $subMenuHover;
-  sideBarWidth: $sideBarWidth;
+  sidebarWidth: $sidebarWidth;
+  sidebarWidthCollapsed: $sidebarWidthCollapsed;
+  sidebarCollapseTransitionDuration: $sidebarCollapseTransitionDuration;
 }

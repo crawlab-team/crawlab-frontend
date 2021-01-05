@@ -1,7 +1,7 @@
 <template>
   <el-container class="basic-layout">
     <Sidebar></Sidebar>
-    <el-container class="container">
+    <el-container :class="sidebarCollapsed ? 'collapsed' : ''" class="container">
       <Header></Header>
       <slot></slot>
     </el-container>
@@ -9,9 +9,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {computed, defineComponent} from 'vue';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'BasicLayout',
@@ -20,17 +21,38 @@ export default defineComponent({
     Sidebar,
   },
   setup() {
-    return {};
+    const store = useStore();
+    const {layout} = store.state as RootStoreState;
+
+    const sidebarCollapsed = computed<boolean>(() => layout.sidebarCollapsed);
+
+    return {
+      sidebarCollapsed,
+    };
   }
 });
 </script>
 
 <style lang="scss" scoped>
-  .basic-layout {
-    min-height: 100vh;
+@import "../styles/variables.scss";
 
-    .container {
-      display: block;
+.basic-layout {
+  min-height: 100vh;
+
+  .container {
+    position: fixed;
+    top: 0;
+    left: $sidebarWidth;
+    display: block;
+    width: calc(100vw - #{$sidebarWidth});
+    transition: width $sidebarCollapseTransitionDuration;
+    z-index: 2;
+
+    &.collapsed {
+      left: $sidebarWidthCollapsed;
+      width: calc(100vw - #{$sidebarWidthCollapsed});
+      transition: width $sidebarCollapseTransitionDuration;
     }
   }
+}
 </style>

@@ -1,13 +1,16 @@
-import {Module} from 'vuex';
-
 export default {
   namespaced: true,
   state: {
+    sidebarCollapsed: false,
     menuItems: [
       {path: '/', title: 'Home', icon: ['fa', 'home']},
       {path: '/spiders', title: 'Spider', icon: ['fas', 'spider']},
     ],
   },
-  mutations: {},
+  mutations: {
+    setSideBarCollapsed(state, value: boolean) {
+      state.sidebarCollapsed = value;
+    }
+  },
   actions: {}
-} as Module<LayoutStoreState, RootStoreState>;
+} as LayoutStoreModule;
