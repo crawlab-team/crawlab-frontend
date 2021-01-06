@@ -52,7 +52,7 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
     border-left: none;
-    border-bottom: 1px solid #eaecef;
+    border-bottom: 1px solid $headerBorderColor;
 
     .left {
       display: flex;

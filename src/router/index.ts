@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
-import Home from '../views/home/Home.vue';
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +20,11 @@ export const routes: Array<RouteRecordRaw> = [
         path: '',
         name: 'Home',
         component: () => import('../views/home/Home.vue')
+      },
+      {
+        path: 'nodes',
+        name: 'NodeList',
+        component: () => import('../views/node/NodeList.vue')
       },
       {
         path: 'spiders',

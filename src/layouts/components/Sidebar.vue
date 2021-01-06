@@ -32,15 +32,7 @@
             :index="item.path"
             @click="onMenuItemClick(item)"
         >
-          <template v-if="!item.icon">
-            <i class="menu-item-icon fa fa-circle-o"></i>
-          </template>
-          <template v-else-if="Array.isArray(item.icon)">
-            <font-awesome-icon :icon="item.icon" class="menu-item-icon"/>
-          </template>
-          <template v-else>
-            <i :class="item.icon" class="menu-item-icon"></i>
-          </template>
+          <MenuItemIcon :item="item" size="normal"/>
           <template #title>
             <span class="menu-item-title">{{ item.title }}</span>
           </template>
@@ -54,11 +46,16 @@
 import {computed, defineComponent} from 'vue';
 import {useStore} from 'vuex';
 import {useRoute, useRouter} from 'vue-router';
-import variables from '../../styles/variables.scss';
-import logo from '../../assets/logo.svg';
+import variables from '@/styles/variables.scss';
+import logo from '@/assets/logo.svg';
+import MenuItemIcon from '@/layouts/components/MenuItemIcon.vue';
+import {getPrimaryPath} from '@/utils/path';
 
 export default defineComponent({
   name: 'Sidebar',
+  components: {
+    MenuItemIcon,
+  },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -68,12 +65,7 @@ export default defineComponent({
     const storeNamespace = 'layout';
 
     const activePath = computed<string>(() => {
-      const arr = route.path.split('/');
-      if (arr.length <= 1) {
-        return route.path;
-      } else {
-        return `/${arr[1]}`;
-      }
+      return getPrimaryPath(route.path);
     });
 
     const sidebarCollapsed = computed<boolean>(() => layout.sidebarCollapsed);
@@ -185,11 +177,6 @@ export default defineComponent({
       .el-menu-item {
         &.is-active {
           background-color: $menuHover !important;
-        }
-
-        .menu-item-icon {
-          width: 20px;
-          font-size: 16px;
         }
 
         .menu-item-title {

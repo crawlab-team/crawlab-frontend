@@ -1,9 +1,12 @@
 <template>
   <el-container class="basic-layout">
-    <Sidebar></Sidebar>
+    <Sidebar/>
     <el-container :class="sidebarCollapsed ? 'collapsed' : ''" class="container">
-      <Header></Header>
-      <slot></slot>
+      <Header/>
+      <TabsView/>
+      <div class="container-body">
+        <slot></slot>
+      </div>
     </el-container>
   </el-container>
 </template>
@@ -13,10 +16,12 @@ import {computed, defineComponent} from 'vue';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
 import {useStore} from 'vuex';
+import TabsView from '@/layouts/components/TabsView.vue';
 
 export default defineComponent({
   name: 'BasicLayout',
   components: {
+    TabsView,
     Header,
     Sidebar,
   },
@@ -52,6 +57,11 @@ export default defineComponent({
     &.collapsed {
       left: $sidebarWidthCollapsed;
       width: calc(100vw - #{$sidebarWidthCollapsed});
+    }
+
+    .container-body {
+      background-color: $containerBg;
+      min-height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
     }
   }
 }

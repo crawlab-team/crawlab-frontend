@@ -1,27 +1,52 @@
+// basic
+$primaryColor: #409EFF;
+$primaryPlainColor: rgb(217, 236, 255);
+$infoPlainColor: rgb(244, 244, 245);
+
 // header
 $headerHeight: 64px;
 $headerBg: #ffffff;
+$headerBorderColor: #eaecef;
+
+// tabs view
+$tabsViewHeight: 48px;
+$tabsViewTabMaxWidth: 180px;
+$tabsViewTabHeight: 20px;
+$tabsViewTabBorderColor: #bfcbd9;
+$tabsViewBorderColor: $headerBorderColor;
+$tabsViewActiveTabColor: $primaryColor;
+$tabsViewActiveTabPlainColor: $primaryPlainColor;
+$tabsViewBg: $infoPlainColor;
+$tabsViewTabBg: #ffffff;
 
 //sidebar
 $menuText: #bfcbd9;
-$menuActiveText: #409EFF;
+$menuActiveText: $primaryColor;
 $subMenuActiveText: #f4f4f5; //https://github.com/ElemeFE/element/issues/12951
-
 $menuBg: #304156;
 $menuHover: #263445;
-
 $subMenuBg: #1f2d3d;
 $subMenuHover: #001528;
-
 $sidebarWidth: 240px;
 $sidebarWidthCollapsed: 64px;
-
 $sidebarCollapseTransitionDuration: 300ms;
+
+// container
+$containerBg: $infoPlainColor;
 
 // the :export directive is the magic sauce for webpack
 :export {
+  primaryColor: $primaryColor;
   headerHeight: $headerHeight;
   headerBg: $headerBg;
+  headerBorderColor: $headerBorderColor;
+  tabsViewHeight: $tabsViewHeight;
+  tabsViewTabMaxWidth: $tabsViewTabMaxWidth;
+  tabsViewTabBorderColor: $tabsViewTabBorderColor;
+  tabsViewBorderColor: $tabsViewBorderColor;
+  tabsViewTabHeight: $tabsViewTabHeight;
+  tabsViewActiveTabColor: $tabsViewActiveTabColor;
+  tabsViewBg: $tabsViewBg;
   menuText: $menuText;
   menuActiveText: $menuActiveText;
   subMenuActiveText: $subMenuActiveText;
@@ -32,4 +57,5 @@ $sidebarCollapseTransitionDuration: 300ms;
   sidebarWidth: $sidebarWidth;
   sidebarWidthCollapsed: $sidebarWidthCollapsed;
   sidebarCollapseTransitionDuration: $sidebarCollapseTransitionDuration;
+  containerBg: $containerBg;
 }
