@@ -1,22 +1,24 @@
 <template>
-  <span class="sidebar-toggle" @click="toggleSidebar">
+  <span :class="sidebarCollapsed ? 'collapsed' : ''" class="sidebar-toggle" @click="toggleSidebar">
     <font-awesome-icon v-if="!sidebarCollapsed" :icon="['fas', 'outdent']"/>
     <font-awesome-icon v-else :icon="['fas', 'indent']"/>
   </span>
-  <el-aside class="sidebar" width="240px">
-    <div :class="sidebarCollapsed ? 'collapsed' : ''" class="logo">
-      <img :src="logo" alt="logo" className="logo-img"/>
-      <span class="logo-title">Crawlab</span>
-      <span class="logo-sub-title">
-        <div class="logo-sub-title-block">
-          Community
-        </div>
-        <div class="logo-sub-title-block">
-          v0.6.0
-        </div>
-      </span>
+  <el-aside :class="sidebarCollapsed ? 'collapsed' : ''" class="sidebar" width="inherit">
+    <div class="logo-container">
+      <div class="logo">
+        <img :src="logo" alt="logo" className="logo-img"/>
+        <span class="logo-title">Crawlab</span>
+        <span class="logo-sub-title">
+          <div class="logo-sub-title-block">
+            Community
+          </div>
+          <div class="logo-sub-title-block">
+            v0.6.0
+          </div>
+        </span>
+      </div>
     </div>
-    <div :class="sidebarCollapsed ? 'collapsed' : ''" class="sidebar-menu">
+    <div class="sidebar-menu">
       <el-menu
           :collapse="sidebarCollapsed"
           :active-text-color="menuActiveText"
@@ -110,54 +112,59 @@ export default defineComponent({
 @import "../../styles/variables";
 
 .sidebar {
-  .logo {
-    display: inline-flex;
-    align-items: center;
+  overflow-x: hidden;
+  user-select: none;
+
+  &.collapsed {
+    .logo-container,
+    .sidebar-menu {
+      width: $sidebarWidthCollapsed;
+    }
+  }
+
+  .logo-container {
+    display: inline-block;
     height: $headerHeight;
+    width: $sidebarWidth;
     padding-left: 12px;
     padding-right: 20px;
     border-right: none;
     background-color: $menuBg;
-    width: $sidebarWidth;
     transition: width $sidebarCollapseTransitionDuration;
 
-    &.collapsed {
-      width: $sidebarWidthCollapsed;
-      transition: width $sidebarCollapseTransitionDuration;
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 100%;
 
-      .sidebar-toggle {
-        left: $sidebarWidthCollapsed;
-        transition: left $sidebarCollapseTransitionDuration;
+      .logo-img {
+        height: 40px;
+        width: 40px;
       }
-    }
 
-    .logo-img {
-      height: 40px;
-      width: 40px;
-    }
+      .logo-title {
+        font-family: BlinkMacSystemFont, -apple-system, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, helvetica, arial, sans-serif;
+        font-size: 28px;
+        font-weight: 600;
+        margin-left: 12px;
+        color: #409eff;
+      }
 
-    .logo-title {
-      font-family: BlinkMacSystemFont, -apple-system, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, helvetica, arial, sans-serif;
-      font-size: 28px;
-      font-weight: 600;
-      margin-left: 12px;
-      color: #409eff;
-    }
+      .logo-sub-title {
+        font-family: BlinkMacSystemFont, -apple-system, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, helvetica, arial, sans-serif;
+        font-size: 10px;
+        height: 24px;
+        line-height: 24px;
+        margin-left: 10px;
+        font-weight: 500;
+        color: $menuText;
 
-    .logo-sub-title {
-      font-family: BlinkMacSystemFont, -apple-system, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, helvetica, arial, sans-serif;
-      font-size: 10px;
-      height: 24px;
-      line-height: 24px;
-      margin-left: 10px;
-      font-weight: 500;
-      color: $menuText;
-
-      .logo-sub-title-block {
-        display: flex;
-        align-items: center;
-        height: 12px;
-        line-height: 12px;
+        .logo-sub-title-block {
+          display: flex;
+          align-items: center;
+          height: 12px;
+          line-height: 12px;
+        }
       }
     }
   }
@@ -168,11 +175,6 @@ export default defineComponent({
     margin: 0;
     padding: 0;
     transition: width $sidebarCollapseTransitionDuration;
-
-    &.collapsed {
-      width: $sidebarWidthCollapsed;
-      transition: width $sidebarCollapseTransitionDuration;
-    }
 
     .el-menu {
       border-right: none;
@@ -212,5 +214,9 @@ export default defineComponent({
   margin-left: 10px;
   cursor: pointer;
   transition: left $sidebarCollapseTransitionDuration;
+
+  &.collapsed {
+    left: $sidebarWidthCollapsed;
+  }
 }
 </style>

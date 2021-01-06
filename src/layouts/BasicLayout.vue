@@ -45,13 +45,13 @@ export default defineComponent({
     left: $sidebarWidth;
     display: block;
     width: calc(100vw - #{$sidebarWidth});
-    transition: width $sidebarCollapseTransitionDuration;
+    min-height: 100vh;
+    transition: left $sidebarCollapseTransitionDuration;
     z-index: 2;
 
     &.collapsed {
       left: $sidebarWidthCollapsed;
       width: calc(100vw - #{$sidebarWidthCollapsed});
-      transition: width $sidebarCollapseTransitionDuration;
     }
   }
 }

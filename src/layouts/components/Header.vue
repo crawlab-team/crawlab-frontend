@@ -1,20 +1,33 @@
 <template>
-  <el-header class="header" height="64px">
-    <div class="left">
-      <font-awesome-icon icon="arrow-to-left"/>
-    </div>
-    <div class="right">
-    </div>
-  </el-header>
+  <div :class="sidebarCollapsed ? 'collapsed' : ''" class="header-container">
+    <el-header :height="headerHeight" class="header">
+      <div class="left">
+      </div>
+      <div class="right">
+      </div>
+    </el-header>
+  </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {computed, defineComponent} from 'vue';
+import {useStore} from 'vuex';
+import variables from '../../styles/variables.scss';
 
 export default defineComponent({
   name: 'Header',
   setup() {
-    return {};
+    const store = useStore();
+    const {layout} = store.state as RootStoreState;
+
+    const sidebarCollapsed = computed(() => {
+      return layout.sidebarCollapsed;
+    });
+
+    return {
+      sidebarCollapsed,
+      ...variables,
+    };
   },
 });
 </script>
@@ -22,18 +35,34 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
 
-.header {
-  height: 64px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  border-left: none;
-  border-bottom: 1px solid #eaecef;
+.header-container {
+  height: $headerHeight;
+  width: calc(100vw - #{$sidebarWidth});
   background-color: $headerBg;
+  transition: width $sidebarCollapseTransitionDuration;
 
-  .left {
+  &.collapsed {
+    width: calc(100vw - #{$sidebarWidthCollapsed});
+  }
+
+  .header {
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    border-left: none;
+    border-bottom: 1px solid #eaecef;
+
+    .left {
+      display: flex;
+      align-items: center;
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 </style>
