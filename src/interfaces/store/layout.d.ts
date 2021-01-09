@@ -1,7 +1,8 @@
-import {Module, Mutation, MutationTree} from 'vuex';
+import {GetterTree, Module, MutationTree} from 'vuex';
 
 declare global {
   interface LayoutStoreModule extends Module<LayoutStoreState, RootStoreState> {
+    getters: LayoutStoreGetters;
     mutations: LayoutStoreMutations;
   }
 
@@ -14,27 +15,24 @@ declare global {
     maxTabId: number;
     tabs: Tab[];
     draggingTab?: Tab;
+    targetTab?: Tab;
+    isTabsDragging: boolean;
+  }
+
+  interface LayoutStoreGetters extends GetterTree<LayoutStoreState, RootStoreState> {
+    tabs: StoreGetter<LayoutStoreState, RootStoreState, Tab[]>;
   }
 
   interface LayoutStoreMutations extends MutationTree<LayoutStoreState> {
-    setSideBarCollapsed: Mutation<LayoutStoreState>;
-    addTab: Mutation<LayoutStoreState>;
-    removeTab: Mutation<LayoutStoreState>;
-    removeAllTabs: Mutation<LayoutStoreState>;
-    orderTab: Mutation<LayoutStoreState>;
-    setDraggingTab: Mutation<LayoutStoreState>;
-    resetDraggingTab: Mutation<LayoutStoreState>;
-  }
-
-  interface MenuItem {
-    path: string;
-    title: string;
-    icon?: string | string[];
-    children?: MenuItem[];
-  }
-
-  interface Tab {
-    id?: number;
-    path: string;
+    setSideBarCollapsed: StoreMutation<LayoutStoreState, boolean>;
+    setTabs: StoreMutation<LayoutStoreState, Tab[]>;
+    addTab: StoreMutation<LayoutStoreState, Tab>;
+    removeTab: StoreMutation<LayoutStoreState, Tab>;
+    removeAllTabs: StoreMutation<LayoutStoreState>;
+    setDraggingTab: StoreMutation<LayoutStoreState, Tab>;
+    resetDraggingTab: StoreMutation<LayoutStoreState>;
+    setTargetTab: StoreMutation<LayoutStoreState, Tab>;
+    resetTargetTab: StoreMutation<LayoutStoreState>;
+    setIsTabsDragging: StoreMutation<LayoutStoreState, boolean>;
   }
 }

@@ -20,20 +20,20 @@ export default defineComponent({
   },
   setup() {
     const storeNameSpace = 'layout';
-    const store = useStore();
+    const store = useStore<RootStoreState>();
     const {layout} = store.state as RootStoreState;
     const route = useRoute();
-
-    const tabs = computed(() => layout.tabs);
-
     const currentPath = computed(() => route.path);
+
+    const tabs = computed<Tab[]>(() => store.getters[`${storeNameSpace}/tabs`]);
 
     const addTab = (tab: Tab) => {
       store.commit(`${storeNameSpace}/addTab`, tab);
     };
 
     watch(currentPath, (path) => {
-      if (tabs.value.map(t => t.path).includes(path)) return;
+      const {tabs} = layout;
+      if (tabs.map(t => t.path).includes(path)) return;
       addTab({path});
     });
 

@@ -1,4 +1,4 @@
-import {createStore} from 'vuex';
+import {createStore, Store} from 'vuex';
 import login from './modules/login';
 import layout from './modules/layout';
 
@@ -7,4 +7,4 @@ export default createStore<RootStoreState>({
     login,
     layout,
   },
-});
+}) as Store<RootStoreState>;

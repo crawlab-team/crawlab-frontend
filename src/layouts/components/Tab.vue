@@ -1,6 +1,6 @@
 <template>
   <div
-      :class="active ? 'active' : ''"
+      :class="classes"
       :draggable="true"
       class="tab"
       @click="onClick"
@@ -27,6 +27,7 @@ import {useStore} from 'vuex';
 import {getPrimaryPath} from '@/utils/path';
 import {useI18n} from 'vue-i18n';
 import {useRoute, useRouter} from 'vue-router';
+import {plainClone} from '@/utils/object';
 
 interface TabProps {
   tab: Tab;
@@ -40,7 +41,7 @@ export default defineComponent({
   props: {
     tab: Object,
   },
-  setup(props, {emit}) {
+  setup(props) {
     const {tm} = useI18n();
     const route = useRoute();
     const router = useRouter();
@@ -71,6 +72,21 @@ export default defineComponent({
       return route.path === tab.path;
     });
 
+    const dragging = computed(() => {
+      const {tab} = props as TabProps;
+      return !!tab.dragging;
+    });
+
+    const isTabsDragging = computed<boolean>(() => layout.isTabsDragging);
+
+    const classes = computed(() => {
+      const cls = [];
+      if (active.value) cls.push('active');
+      if (dragging.value) cls.push('dragging');
+      if (isTabsDragging.value) cls.push('is-tabs-dragging');
+      return cls;
+    });
+
     const onClick = () => {
       const {tab} = props as TabProps;
       router.push(tab.path);
@@ -94,33 +110,50 @@ export default defineComponent({
       }
     };
 
-    // TODO: implement drag-and-drop ordering tabs
-    const onTabDragStart = (ev: DragEvent) => {
+    const onTabDragStart = () => {
       const {tab} = props as TabProps;
-      console.log('dragstart', tab.path, ev);
+      const draggingTab = plainClone(tab) as Tab;
+      draggingTab.dragging = true;
+      // console.log('start', tab.id);
+      store.commit(`${storeNamespace}/setIsTabsDragging`, true);
+      store.commit(`${storeNamespace}/setDraggingTab`, draggingTab);
     };
 
-    const onTabDragEnd = (ev: DragEvent) => {
-      const {tab} = props as TabProps;
-      // emit('dragend', tab);
-      console.log('dragend', tab.path, ev);
+    const onTabDragEnd = () => {
+      // const {tab} = props as TabProps;
+      const tabs = store.getters[`${storeNamespace}/tabs`] as Tab[];
+      store.commit(`${storeNamespace}/setIsTabsDragging`, false);
+      store.commit(`${storeNamespace}/resetDraggingTab`);
+      store.commit(`${storeNamespace}/resetTargetTab`);
+      store.commit(`${storeNamespace}/setTabs`, tabs.map(t => {
+        t.dragging = false;
+        return t;
+      }));
     };
 
-    const onTabDragEnter = (ev: DragEvent) => {
+    const onTabDragEnter = () => {
       const {tab} = props as TabProps;
-      // emit('dragenter', [tab, ev.relatedTarget]);
-      console.log('dragenter', tab.path, ev);
+      const {draggingTab} = layout;
+      if (!draggingTab || draggingTab.id === tab.id) return;
+      const targetTab = plainClone(tab) as Tab;
+      targetTab.dragging = true;
+      store.commit(`${storeNamespace}/setTargetTab`, targetTab);
     };
 
-    const onTabDragLeave = (ev: DragEvent) => {
+    const onTabDragLeave = () => {
       const {tab} = props as TabProps;
-      console.log('dragleave', tab.path, ev);
+      const {draggingTab, targetTab} = layout;
+      if (!!targetTab || !draggingTab || draggingTab.id === tab.id) return;
+      store.commit(`${storeNamespace}/resetTargetTab`);
     };
 
     return {
       item,
       title,
       active,
+      dragging,
+      isTabsDragging,
+      classes,
       onClick,
       onClose,
       onTabDragStart,
@@ -139,12 +172,23 @@ export default defineComponent({
   align-items: center;
   padding: 3px 5px;
   max-width: $tabsViewTabMaxWidth;
-  border: 1px solid $tabsViewBorderColor;
+  border: 1px solid $tabsViewTabBorderColor;
   cursor: pointer;
   background-color: $tabsViewTabBg;
   user-select: none;
 
+  &:focus {
+    color: inherit;
+  }
+
   &:hover {
+    &.dragging {
+      .title,
+      .icon {
+        color: inherit;
+      }
+    }
+
     .title,
     .icon {
       color: $tabsViewActiveTabColor;
@@ -155,6 +199,15 @@ export default defineComponent({
     color: $tabsViewActiveTabColor;
     border-color: $tabsViewActiveTabColor;
     background-color: $tabsViewActiveTabPlainColor;
+  }
+
+  &.dragging {
+    border-style: dashed;
+    opacity: 0.5;
+  }
+
+  &.is-tabs-dragging * {
+    pointer-events: none;
   }
 
   .close-btn,
