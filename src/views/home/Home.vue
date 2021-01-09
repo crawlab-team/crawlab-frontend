@@ -1,18 +1,12 @@
 <template>
-  <BasicLayout>
-    Home
-  </BasicLayout>
+  Home
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import BasicLayout from '@/layouts/BasicLayout.vue';
 
 export default defineComponent({
   name: 'Home',
-  components: {
-    BasicLayout,
-  },
   setup() {
     return {};
   },

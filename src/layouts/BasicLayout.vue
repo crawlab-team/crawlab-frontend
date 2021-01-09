@@ -5,7 +5,7 @@
       <Header/>
       <TabsView/>
       <div class="container-body">
-        <slot></slot>
+        <router-view/>
       </div>
     </el-container>
   </el-container>
@@ -25,7 +25,8 @@ export default defineComponent({
     Header,
     Sidebar,
   },
-  setup() {
+  setup(props, {slots}) {
+    console.log(slots);
     const store = useStore();
     const {layout} = store.state as RootStoreState;
 

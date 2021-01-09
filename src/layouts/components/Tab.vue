@@ -176,6 +176,7 @@ export default defineComponent({
   cursor: pointer;
   background-color: $tabsViewTabBg;
   user-select: none;
+  color: $tabsViewTabColor;
 
   &:focus {
     color: inherit;
