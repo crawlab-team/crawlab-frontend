@@ -21,7 +21,7 @@ import 'codemirror/mode/java/java.js';
 import {useI18n} from 'vue-i18n';
 
 export default {
-  name: 'FileDetail',
+  name: 'FileEditor',
   props: {
     fileContent: String,
     fileName: String,
