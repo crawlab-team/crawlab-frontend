@@ -1,4 +1,4 @@
-import {Editor} from 'codemirror';
+import {Editor, EditorConfiguration} from 'codemirror';
 import {Computed} from 'vuex';
 
 declare global {
@@ -12,6 +12,6 @@ declare global {
   }
 
   interface FileDetailComputed {
-    options: Computed<CodeMirrorOptions>;
+    options: Computed<EditorConfiguration>;
   }
 }

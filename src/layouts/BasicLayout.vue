@@ -25,8 +25,7 @@ export default defineComponent({
     Header,
     Sidebar,
   },
-  setup(props, {slots}) {
-    console.log(slots);
+  setup() {
     const store = useStore();
     const {layout} = store.state as RootStoreState;
 

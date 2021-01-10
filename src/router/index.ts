@@ -4,7 +4,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/login/Login.vue')
+    component: () => import('@/views/login/Login.vue'),
   },
   {
     path: '/',
@@ -14,17 +14,28 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: '',
         name: 'Home',
-        component: () => import('@/views/home/Home.vue')
+        component: () => import('@/views/home/Home.vue'),
       },
       {
         path: 'nodes',
         name: 'NodeList',
-        component: () => import('@/views/node/NodeList.vue')
+        component: () => import('@/views/node/NodeList.vue'),
       },
       {
         path: 'spiders',
         name: 'SpiderList',
-        component: () => import('@/views/spider/SpiderList.vue')
+        component: () => import('@/views/spider/SpiderList.vue'),
+      },
+      {
+        path: 'spiders/:id',
+        name: 'SpiderDetail',
+        component: () => import('@/views/spider/SpiderDetail.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/spider/SpiderDetailContent.vue'),
+          }
+        ]
       }
     ],
   },
