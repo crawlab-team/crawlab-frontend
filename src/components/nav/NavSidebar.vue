@@ -8,13 +8,12 @@
           placeholder="Search..."
           :clearable="true"
       />
-      <div class="search-suffix" @click.stop="onToggle">
+      <div v-if="!collapsed" class="search-suffix" @click.stop="onToggle">
         <el-tooltip
             v-model="toggleTooltipValue"
-            :content="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            content="Collapse sidebar"
         >
-          <font-awesome-icon v-if="collapsed" class="icon" :icon="['fa', 'list']"/>
-          <font-awesome-icon v-else class="icon" :icon="['fa', 'outdent']"/>
+          <font-awesome-icon :icon="['fa', 'outdent']" class="icon"/>
         </el-tooltip>
       </div>
     </div>
@@ -49,10 +48,10 @@ export default defineComponent({
   props: {
     items: Array,
     activeKey: String,
+    collapsed: Boolean,
     showActions: Boolean,
   },
   setup(props, {emit}) {
-    const collapsed = ref(false);
     const toggling = ref(false);
     const searchString = ref('');
     const navMenu = ref<typeof ElMenu | null>(null);
@@ -61,12 +60,13 @@ export default defineComponent({
     const filteredItems = computed<NavItem[]>(() => {
       const items = props.items as NavItem[];
       if (!searchString.value) return items;
-      return items.filter(d => d.title.toLocaleLowerCase().includes(searchString.value.toLocaleLowerCase()));
+      return items.filter(d => d.title?.toLocaleLowerCase().includes(searchString.value.toLocaleLowerCase()));
     });
 
     const classes = computed(() => {
+      const {collapsed} = props as NavSidebarProps;
       const cls = [];
-      if (collapsed.value) cls.push('collapsed');
+      if (collapsed) cls.push('collapsed');
       // if (toggling.value) cls.push('toggling');
       return cls;
     });
@@ -88,7 +88,8 @@ export default defineComponent({
     };
 
     const onToggle = () => {
-      collapsed.value = !collapsed.value;
+      const {collapsed} = props as NavSidebarProps;
+      emit('toggle', !collapsed);
       toggleTooltipValue.value = false;
     };
 
@@ -105,7 +106,6 @@ export default defineComponent({
     };
 
     return {
-      collapsed,
       toggling,
       searchString,
       navMenu,
@@ -126,6 +126,7 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .nav-sidebar {
+  position: relative;
   margin: 10px;
   width: $navSidebarWidth;
   border: 1px solid $navSidebarBorderColor;
@@ -134,16 +135,12 @@ export default defineComponent({
   transition: width $navSidebarCollapseTransitionDuration;
 
   &.collapsed {
+    margin: 10px 0;
     width: 0;
     border: none;
 
     .search {
       position: relative;
-
-      .search-suffix {
-        top: 0;
-        left: 10px;
-      }
     }
   }
 
@@ -154,7 +151,7 @@ export default defineComponent({
     border-bottom: 1px solid $navSidebarBorderColor;
 
     .search-input {
-      width: calc(100% - 25px);
+      width: 100%;
       border: none;
       padding: 0;
       margin: 0;
@@ -226,6 +223,34 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+
+  .toggle-expand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    .wrapper {
+      height: 24px;
+      width: 24px;
+      background-color: $infoPlainColor;
+      border: 1px solid $infoColor;
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+      border-left: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

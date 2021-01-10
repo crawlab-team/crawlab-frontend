@@ -5,12 +5,6 @@ interface NavSidebar {
 interface NavSidebarProps {
   items: NavItem[];
   activeKey?: string;
+  collapsed?: boolean;
   showActions?: boolean;
-}
-
-interface NavItem<T = any> {
-  id: string;
-  title: string;
-  subtitle?: string;
-  data?: T;
 }

@@ -1,8 +1,13 @@
+// color
+$white: #ffffff;
+
 // basic
 $primaryColor: #409EFF;
 $primaryPlainColor: rgb(217, 236, 255);
 $infoColor: #303133;
+$infoLightColor: rgb(233, 233, 235);
 $infoPlainColor: rgb(244, 244, 245);
+$infoBorderColor: #e6e6e6;
 
 // header
 $headerHeight: 64px;
@@ -14,7 +19,7 @@ $tabsViewHeight: 48px;
 $tabsViewTabMaxWidth: 180px;
 $tabsViewTabHeight: 20px;
 $tabsViewTabColor: #263445;
-$tabsViewTabBorderColor: rgb(233, 233, 235);
+$tabsViewTabBorderColor: $infoLightColor;
 $tabsViewBorderColor: $headerBorderColor;
 $tabsViewActiveTabColor: $primaryColor;
 $tabsViewActiveTabPlainColor: $primaryPlainColor;
@@ -35,10 +40,12 @@ $sidebarCollapseTransitionDuration: 300ms;
 
 // container
 $containerBg: $infoPlainColor;
+$containerWhiteBg: $white;
+$containerBorderColor: $infoLightColor;
 
 // nav-sidebar
 $navSidebarColor: $infoColor;
-$navSidebarBorderColor: rgb(233, 233, 235);
+$navSidebarBorderColor: $infoLightColor;
 $navSidebarBg: #ffffff;
 $navSidebarWidth: 240px;
 $navSidebarItemHeight: 48px;
@@ -47,9 +54,18 @@ $navSidebarItemActionColor: $infoColor;
 $navSidebarSearchHeight: 40px;
 $navSidebarCollapseTransitionDuration: 300ms;
 
+// nav-tabs
+$navTabsHeight: 40px;
+
 // the :export directive is the magic sauce for webpack
 :export {
+  white: $white;
   primaryColor: $primaryColor;
+  primaryPlainColor: $primaryPlainColor;
+  infoColor: $infoColor;
+  infoLightColor: $infoLightColor;
+  infoPlainColor: $infoPlainColor;
+  infoBorderColor: $infoBorderColor;
   headerHeight: $headerHeight;
   headerBg: $headerBg;
   headerBorderColor: $headerBorderColor;
@@ -81,4 +97,5 @@ $navSidebarCollapseTransitionDuration: 300ms;
   navSidebarItemActionColor: $navSidebarItemActionColor;
   navSidebarSearchHeight: $navSidebarSearchHeight;
   navSidebarCollapseTransitionDuration: $navSidebarCollapseTransitionDuration;
+  navTabsHeight: $navTabsHeight;
 }

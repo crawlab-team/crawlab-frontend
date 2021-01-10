@@ -1,6 +1,7 @@
 interface RootStoreState {
   login: LoginStoreState;
   layout: LayoutStoreState;
+  spider: SpiderStoreState;
 }
 
 type StoreGetter<S, R, T> = (state: S, getters: StoreGetter<S, R, T>, rootState: R, rootGetters: any) => T;

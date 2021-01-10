@@ -1,18 +1,24 @@
-import {GetterTree, Module, MutationTree} from 'vuex';
+import {Module, MutationTree} from 'vuex';
 
 declare global {
   interface SpiderStoreModule extends Module<SpiderStoreState, RootStoreState> {
-    getters: SpiderStoreGetters;
+    // getters: SpiderStoreGetters;
     mutations: SpiderStoreMutations;
   }
 
-  //
-  // interface SpiderStoreState {
-  // }
-  //
+
+  interface SpiderStoreState {
+    sidebarCollapsed: boolean;
+    tabName: SpiderTabName;
+    tabs: NavItem[];
+  }
+
   // interface SpiderStoreGetters extends GetterTree<SpiderStoreState, RootStoreState> {
   // }
-  //
-  // interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {
-  // }
+
+  interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {
+    setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
+    setTabName: StoreMutation<SpiderStoreState, SpiderTabName>;
+    resetTabName: StoreMutation<SpiderStoreState>;
+  }
 }

@@ -24,19 +24,33 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: 'spiders',
         name: 'SpiderList',
-        component: () => import('@/views/spider/SpiderList.vue'),
+        component: () => import('@/views/spider/list/SpiderList.vue'),
       },
       {
         path: 'spiders/:id',
-        name: 'SpiderDetail',
-        component: () => import('@/views/spider/SpiderDetail.vue'),
+        redirect: to => {
+          return {path: to.path + '/overview'};
+        },
+        component: () => import('@/views/spider/detail/SpiderDetail.vue'),
         children: [
           {
-            path: '',
-            component: () => import('@/views/spider/SpiderDetailContent.vue'),
-          }
+            path: 'overview',
+            component: () => import('@/views/spider/detail/tabs/SpiderDetailTabOverview.vue'),
+          },
+          {
+            path: 'files',
+            component: () => import('@/views/spider/detail/tabs/SpiderDetailTabFiles.vue'),
+          },
+          {
+            path: 'tasks',
+            component: () => import('@/views/spider/detail/tabs/SpiderDetailTabTasks.vue'),
+          },
+          {
+            path: 'settings',
+            component: () => import('@/views/spider/detail/tabs/SpiderDetailTabSettings.vue'),
+          },
         ]
-      }
+      },
     ],
   },
 ];
