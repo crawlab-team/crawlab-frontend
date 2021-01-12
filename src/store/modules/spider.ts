@@ -2,6 +2,7 @@ export default {
   namespaced: true,
   state: {
     sidebarCollapsed: false,
+    actionsCollapsed: false,
     tabName: 'overview',
     tabs: [
       {id: 'overview', title: 'Overview'},
@@ -13,6 +14,9 @@ export default {
   getters: {},
   mutations: {
     setSidebarCollapsed: (state: SpiderStoreState, value: boolean) => {
+      state.sidebarCollapsed = value;
+    },
+    setActionsCollapsed: (state: SpiderStoreState, value: boolean) => {
       state.sidebarCollapsed = value;
     },
     setTabName: (state: SpiderStoreState, tabName: SpiderTabName) => {

@@ -12,6 +12,14 @@
     </div>
     <div class="content">
       <NavTabs :active-key="activeTabName" :items="tabs" @select="onNavTabsSelect"/>
+      <NavActions :collapsed="actionsCollapsed">
+        <NavActionItem>
+          <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
+          <el-button icon="fa fa-edit" size="small" type="warning">Edit</el-button>
+          <el-button icon="fa fa-clone" size="small" type="info">Clone</el-button>
+          <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
+        </NavActionItem>
+      </NavActions>
       <router-view/>
     </div>
   </div>
@@ -24,10 +32,14 @@ import {useRoute, useRouter} from 'vue-router';
 import {useStore} from 'vuex';
 import {plainClone} from '@/utils/object';
 import variables from '@/styles/variables.scss';
+import NavActions from '@/components/nav/NavActions.vue';
+import NavActionItem from '@/components/nav/NavActionItem.vue';
 
 export default defineComponent({
   name: 'SpiderDetail',
   components: {
+    NavActionItem,
+    NavActions,
     NavSidebar: NavSidebarComp,
     NavTabs: NavTabsComp,
   },
@@ -67,6 +79,8 @@ export default defineComponent({
     const activeTabName = computed<SpiderTabName>(() => spider.tabName);
 
     const sidebarCollapsed = computed<boolean>(() => spider.sidebarCollapsed);
+
+    const actionsCollapsed = computed<boolean>(() => spider.actionsCollapsed);
 
     const tabs = computed(() => {
       const {infoBorderColor} = variables;
@@ -114,6 +128,7 @@ export default defineComponent({
       tabs,
       activeTabName,
       sidebarCollapsed,
+      actionsCollapsed,
       onNavSidebarSelect,
       onNavSidebarToggle,
       onNavTabsSelect,

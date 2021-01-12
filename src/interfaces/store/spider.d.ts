@@ -9,6 +9,7 @@ declare global {
 
   interface SpiderStoreState {
     sidebarCollapsed: boolean;
+    actionsCollapsed: boolean;
     tabName: SpiderTabName;
     tabs: NavItem[];
   }
@@ -18,6 +19,7 @@ declare global {
 
   interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {
     setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
+    setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
     setTabName: StoreMutation<SpiderStoreState, SpiderTabName>;
     resetTabName: StoreMutation<SpiderStoreState>;
   }
