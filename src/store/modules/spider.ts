@@ -1,9 +1,10 @@
+import router from '@/router';
+
 export default {
   namespaced: true,
   state: {
     sidebarCollapsed: false,
     actionsCollapsed: false,
-    tabName: 'overview',
     tabs: [
       {id: 'overview', title: 'Overview'},
       {id: 'files', title: 'Files'},
@@ -11,19 +12,19 @@ export default {
       {id: 'settings', title: 'Settings'},
     ],
   },
-  getters: {},
+  getters: {
+    tabName: () => {
+      const arr = router.currentRoute.value.path.split('/');
+      if (arr.length < 3) return null;
+      return arr[3];
+    }
+  },
   mutations: {
     setSidebarCollapsed: (state: SpiderStoreState, value: boolean) => {
       state.sidebarCollapsed = value;
     },
     setActionsCollapsed: (state: SpiderStoreState, value: boolean) => {
       state.actionsCollapsed = value;
-    },
-    setTabName: (state: SpiderStoreState, tabName: SpiderTabName) => {
-      state.tabName = tabName;
-    },
-    resetTabName: (state: SpiderStoreState) => {
-      state.tabName = 'overview';
     },
   },
   actions: {}

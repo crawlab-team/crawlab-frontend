@@ -95,7 +95,7 @@ export default defineComponent({
       return activeItem?.id || '';
     });
 
-    const activeTabName = computed<SpiderTabName>(() => spider.tabName);
+    const activeTabName = computed<SpiderTabName>(() => store.getters[`${storeNamespace}/tabName`]);
 
     const sidebarCollapsed = computed<boolean>(() => spider.sidebarCollapsed);
 
