@@ -11,12 +11,29 @@
       />
     </div>
     <div class="content">
-      <NavTabs :active-key="activeTabName" :items="tabs" @select="onNavTabsSelect"/>
+      <NavTabs :active-key="activeTabName" :items="tabs" @select="onNavTabsSelect">
+        <template v-slot:extra>
+          <el-tooltip
+              v-model="showActionsToggleTooltip"
+              :content="actionsCollapsed ? 'Expand actions bar' : 'Collapse actions bar'"
+          >
+            <div :class="actionsCollapsed ? 'collapsed' : ''" class="actions-toggle" @click="onActionsToggle">
+              <font-awesome-icon :icon="['fa', 'angle-up']" class="icon"/>
+            </div>
+          </el-tooltip>
+        </template>
+      </NavTabs>
       <NavActions :collapsed="actionsCollapsed">
         <NavActionItem>
           <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
+        </NavActionItem>
+        <NavActionItem>
           <el-button icon="fa fa-edit" size="small" type="warning">Edit</el-button>
+        </NavActionItem>
+        <NavActionItem>
           <el-button icon="fa fa-clone" size="small" type="info">Clone</el-button>
+        </NavActionItem>
+        <NavActionItem>
           <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
         </NavActionItem>
       </NavActions>
@@ -53,6 +70,8 @@ export default defineComponent({
 
     const navSidebar = ref<NavSidebar | null>(null);
 
+    const showActionsToggleTooltip = ref<boolean>(false);
+
     const spiderNavItems = computed<NavItem[]>(() => {
       const list = [] as NavItem[];
       for (let i = 0; i < 50; i++) {
@@ -85,18 +104,17 @@ export default defineComponent({
     const tabs = computed(() => {
       const {infoBorderColor} = variables;
       const tabs = plainClone(spider.tabs) as NavItem[];
-      if (!sidebarCollapsed.value) {
-        return tabs;
+      if (sidebarCollapsed.value) {
+        tabs.splice(0, 0, {
+          id: 'toggle',
+          icon: ['fa', 'indent'],
+          tooltip: 'Expand sidebar',
+          emphasis: true,
+          style: {
+            'border-right': `1px solid ${infoBorderColor}`,
+          }
+        });
       }
-      tabs.splice(0, 0, {
-        id: 'toggle',
-        icon: ['fa', 'indent'],
-        tooltip: 'Expand sidebar',
-        emphasis: true,
-        style: {
-          'border-right': `1px solid ${infoBorderColor}`,
-        }
-      });
       return tabs;
     });
 
@@ -106,6 +124,11 @@ export default defineComponent({
 
     const onNavSidebarToggle = (value: boolean) => {
       store.commit(`${storeNamespace}/setSidebarCollapsed`, value);
+    };
+
+    const onActionsToggle = () => {
+      showActionsToggleTooltip.value = false;
+      store.commit(`${storeNamespace}/setActionsCollapsed`, !actionsCollapsed.value);
     };
 
     const onNavTabsSelect = (tabName: string) => {
@@ -125,12 +148,14 @@ export default defineComponent({
       spiderNavItems,
       activeSpiderId,
       navSidebar,
+      showActionsToggleTooltip,
       tabs,
       activeTabName,
       sidebarCollapsed,
       actionsCollapsed,
       onNavSidebarSelect,
       onNavSidebarToggle,
+      onActionsToggle,
       onNavTabsSelect,
     };
   },
@@ -162,6 +187,24 @@ export default defineComponent({
     flex-basis: calc(100% - #{$navSidebarWidth} - 20px);
     background-color: $containerWhiteBg;
     border: 1px solid $containerBorderColor;
+  }
+
+  .actions-toggle {
+    height: $navTabsHeight;
+    color: $infoColor;
+    cursor: pointer;
+    padding: 0 20px;
+    border-left: 1px solid $containerBorderColor;
+
+    .icon {
+      transition: all $defaultTransitionDuration;
+    }
+
+    &.collapsed {
+      .icon {
+        transform: rotateZ(180deg);
+      }
+    }
   }
 }
 </style>

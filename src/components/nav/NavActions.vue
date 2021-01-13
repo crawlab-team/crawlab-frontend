@@ -1,5 +1,6 @@
 <template>
   <div
+      ref="navActions"
       :class="collapsed ? 'collapsed' : ''"
       :style="style"
       class="nav-actions"
@@ -9,8 +10,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent} from 'vue';
-import variables from '@/styles/variables.scss';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 
 export default defineComponent({
   name: 'NavActions',
@@ -19,16 +19,40 @@ export default defineComponent({
     minHeight: String,
   },
   setup(props) {
+    const originalHeight = ref<string | null>(null);
+    const height = ref<string | null>(null);
+
+    const navActions = ref<HTMLDivElement | null>(null);
+
+    const collapsed = computed<boolean>(() => {
+      const {collapsed} = props as NavActionsProps;
+      return collapsed || false;
+    });
+
     const style = computed(() => {
-      const {height, minHeight} = props as NavActionsProps;
-      const {navActionsDefaultHeight} = variables;
       return {
-        'height': height,
-        'min-height': minHeight || navActionsDefaultHeight,
+        height: height.value,
       };
     });
 
+    const updateHeight = () => {
+      if (!collapsed.value) {
+        if (originalHeight.value === null) {
+          if (!navActions.value) return;
+          originalHeight.value = `calc(${window.getComputedStyle(navActions.value).height} - 1px)`;
+        }
+        height.value = originalHeight.value;
+      } else {
+        height.value = '0';
+      }
+    };
+
+    watch(collapsed, () => updateHeight());
+
+    onMounted(() => updateHeight());
+
     return {
+      navActions,
       style,
     };
   },
@@ -40,13 +64,16 @@ export default defineComponent({
 
 .nav-actions {
   margin: 0;
-  padding: 10px;
+  padding: 0 10px;
   display: flex;
   flex-wrap: wrap;
+  height: auto;
   border-bottom: 1px solid $infoBorderColor;
+  transition: all $navActionsCollapseTransitionDuration;
+  overflow-y: hidden;
 
   &.collapsed {
-    height: 0;
+    border-bottom: none;
   }
 }
 </style>

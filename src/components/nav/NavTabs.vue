@@ -21,6 +21,10 @@
           </template>
         </el-tooltip>
       </el-menu-item>
+      <div class="extra">
+        <slot name="extra">
+        </slot>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -59,6 +63,12 @@ export default defineComponent({
         color: $infoColor;
         border-bottom: none;
       }
+    }
+
+    .extra {
+      float: right;
+      height: $navTabsHeight;
+      line-height: $navTabsHeight;
     }
   }
 }

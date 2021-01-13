@@ -17,7 +17,7 @@ export default {
       state.sidebarCollapsed = value;
     },
     setActionsCollapsed: (state: SpiderStoreState, value: boolean) => {
-      state.sidebarCollapsed = value;
+      state.actionsCollapsed = value;
     },
     setTabName: (state: SpiderStoreState, tabName: SpiderTabName) => {
       state.tabName = tabName;
