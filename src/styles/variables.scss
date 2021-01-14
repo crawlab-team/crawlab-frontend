@@ -64,6 +64,10 @@ $navTabsHeight: 40px;
 $navActionsDefaultHeight: 40px;
 $navActionsCollapseTransitionDuration: $defaultTransitionDuration;
 
+// file-editor
+$fileEditorNavMenuWidth: 240px;
+$fileEditorNavTabsHeight: 28px;
+
 // the :export directive is the magic sauce for webpack
 :export {
   white: $white;
@@ -108,4 +112,6 @@ $navActionsCollapseTransitionDuration: $defaultTransitionDuration;
   navTabsHeight: $navTabsHeight;
   navActionsDefaultHeight: $navActionsDefaultHeight;
   navActionsCollapseTransitionDuration: $navActionsCollapseTransitionDuration;
+  fileEditorNavMenuWidth: $fileEditorNavMenuWidth;
+  fileEditorNavTabsHeight: $fileEditorNavTabsHeight;
 }

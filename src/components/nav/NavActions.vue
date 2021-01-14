@@ -67,10 +67,11 @@ export default defineComponent({
   padding: 0 10px;
   display: flex;
   flex-wrap: wrap;
-  height: auto;
+  height: fit-content;
   border-bottom: 1px solid $infoBorderColor;
   transition: all $navActionsCollapseTransitionDuration;
   overflow-y: hidden;
+  box-sizing: border-box;
 
   &.collapsed {
     border-bottom: none;

@@ -1,15 +1,23 @@
 <template>
-  <div class="file-detail">
-    <div id="file-editor">
+  <div class="file-editor">
+    <FileEditorNavMenu :items="navItems"/>
+    <div class="file-editor-content">
+      <div class="file-editor-nav-tabs">
+      </div>
+      <div ref="codeMirrorEditor" class="code-mirror-editor"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {computed, onMounted} from 'vue';
-import CodeMirror, {EditorConfiguration} from 'codemirror';
+import {computed, onMounted, ref} from 'vue';
+import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
+import {useI18n} from 'vue-i18n';
 
-// language
+// codemirror
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/darcula.css';
+import 'codemirror/theme/material.css';
 import 'codemirror/mode/go/go.js';
 import 'codemirror/mode/python/python.js';
 import 'codemirror/mode/javascript/javascript.js';
@@ -17,24 +25,24 @@ import 'codemirror/mode/shell/shell.js';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/yaml/yaml.js';
-import 'codemirror/mode/java/java.js';
-import {useI18n} from 'vue-i18n';
+import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 
 export default {
   name: 'FileEditor',
+  components: {FileEditorNavMenu},
   props: {
     fileContent: String,
     fileName: String,
+    navItems: Array,
   },
   setup(props: FileDetailProps) {
     const {tm} = useI18n();
 
-    const localState: FileDetailState = {
-      ...props,
-      editor: undefined,
-    };
+    const editor = ref<Editor>();
 
-    const language = computed(() => {
+    const codeMirrorEditor = ref<HTMLDivElement>();
+
+    const language = computed<string>(() => {
       const fileName = props.fileName;
       if (!fileName) return '';
       if (fileName.match(/\.js$/)) {
@@ -58,7 +66,7 @@ export default {
 
     const options = computed<EditorConfiguration>(() => {
       return {
-        mode: language,
+        mode: language.value,
         theme: 'darcula',
         smartIndent: true,
         indentUnit: 4,
@@ -67,29 +75,47 @@ export default {
       };
     });
 
-    const computedState: FileDetailComputed = {
-      options,
-    };
-
     onMounted(() => {
-      localState.editor = CodeMirror(document.querySelector('#file-editor') as HTMLDivElement, options);
+      if (codeMirrorEditor.value) {
+        editor.value = CodeMirror(codeMirrorEditor.value, options.value);
+      }
     });
 
     return {
-      ...localState,
-      ...computedState,
+      editor,
+      codeMirrorEditor,
+      language,
+      options,
     };
   },
 };
 </script>
 
-<style scoped>
-.file-content {
-  border: 1px solid #eaecef;
-  height: calc(100vh - 256px);
-}
+<style lang="scss" scoped>
+@import "../../styles/variables.scss";
 
-.file-content >>> .CodeMirror {
+.file-editor {
   min-height: 100%;
+  height: 100%;
+  display: flex;
+
+  .file-editor-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .file-editor-nav-tabs {
+      height: $fileEditorNavTabsHeight;
+    }
+
+    .code-mirror-editor {
+      flex: 1;
+    }
+  }
+}
+</style>
+<style scoped>
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror {
+  height: 100%;
 }
 </style>

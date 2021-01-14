@@ -37,7 +37,9 @@
           <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
         </NavActionItem>
       </NavActions>
-      <router-view/>
+      <div class="content-container">
+        <router-view/>
+      </div>
     </div>
   </div>
 </template>
@@ -173,7 +175,7 @@ export default defineComponent({
     }
 
     .content {
-      flex-basis: 100%;
+      flex: 1;
     }
   }
 
@@ -184,9 +186,16 @@ export default defineComponent({
 
   .content {
     margin: 10px;
-    flex-basis: calc(100% - #{$navSidebarWidth} - 20px);
+    flex: 1;
     background-color: $containerWhiteBg;
     border: 1px solid $containerBorderColor;
+    display: flex;
+    flex-direction: column;
+
+    .content-container {
+      height: 100%;
+      flex: 1;
+    }
   }
 
   .actions-toggle {
