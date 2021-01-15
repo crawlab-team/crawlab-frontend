@@ -1,17 +1,27 @@
 <template>
   <div class="file-editor">
-    <FileEditorNavMenu :items="navItems"/>
+    <FileEditorNavMenu
+        :active-item="activeFileItem"
+        :items="navItems"
+        @node-click="onNavItemClick"
+        @node-db-click="onNavItemDbClick"
+    />
     <div class="file-editor-content">
-      <FileEditorNavTabs/>
-      <div ref="codeMirrorEditor" class="code-mirror-editor"/>
+      <FileEditorNavTabs
+          :active-tab="activeFileItem"
+          :tabs="tabs"
+      />
+      <div v-if="showCodeMirrorEditor" ref="codeMirrorEditor" class="code-mirror-editor"/>
+      <div v-else class="empty-content">
+        You can edit or view a file by double-clicking one of the files on the left.
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {computed, onMounted, ref} from 'vue';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
-import {useI18n} from 'vue-i18n';
 
 // codemirror
 import 'codemirror/lib/codemirror.css';
@@ -29,23 +39,40 @@ import 'codemirror/mode/yaml/yaml.js';
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 
-export default {
+export default defineComponent({
   name: 'FileEditor',
   components: {FileEditorNavTabs, FileEditorNavMenu},
   props: {
-    fileContent: String,
-    fileName: String,
-    navItems: Array,
+    content: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    navItems: {
+      type: Array,
+      required: true,
+      default: () => {
+        return [];
+      },
+    },
   },
-  setup(props: FileDetailProps) {
-    const {tm} = useI18n();
+  setup(props, {emit}) {
+    // const {tm} = useI18n();
 
     const editor = ref<Editor>();
 
     const codeMirrorEditor = ref<HTMLDivElement>();
 
+    const tabs = ref<FileNavItem[]>([]);
+
+    const activeFileItem = ref<FileNavItem>();
+
+    const showCodeMirrorEditor = computed<boolean>(() => {
+      return !!activeFileItem.value;
+    });
+
     const language = computed<string>(() => {
-      const fileName = props.fileName;
+      const fileName = activeFileItem.value?.name;
       if (!fileName) return '';
       if (fileName.match(/\.js$/)) {
         return 'text/javascript';
@@ -77,6 +104,25 @@ export default {
       };
     });
 
+    const content = computed<string>(() => {
+      const {content} = props as FileEditorProps;
+      return content;
+    });
+
+    const onNavItemClick = (item: FileNavItem) => {
+      emit('node-click', item);
+    };
+
+    const onNavItemDbClick = (item: FileNavItem) => {
+      onNavItemClick(item);
+    };
+
+    watch(content, () => {
+      if (editor.value) {
+        editor.value?.setValue(content.value);
+      }
+    });
+
     onMounted(() => {
       if (codeMirrorEditor.value) {
         editor.value = CodeMirror(codeMirrorEditor.value, options.value);
@@ -86,11 +132,16 @@ export default {
     return {
       editor,
       codeMirrorEditor,
+      tabs,
+      activeFileItem,
+      showCodeMirrorEditor,
       language,
       options,
+      onNavItemClick,
+      onNavItemDbClick,
     };
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -112,6 +163,13 @@ export default {
 
     .code-mirror-editor {
       flex: 1;
+    }
+
+    .empty-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

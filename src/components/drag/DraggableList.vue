@@ -1,6 +1,6 @@
 <template>
   <div class="draggable-list">
-    <draggable-item
+    <DraggableItem
         v-for="(item, $index) in orderedItems"
         :key="item[itemKey] === undefined ? $index : item[itemKey]"
         :item="item"

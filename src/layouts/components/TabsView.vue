@@ -1,6 +1,6 @@
 <template>
   <div class="tabs-view">
-    <draggable-list
+    <DraggableList
         :items="tabs"
         item-key="id"
         @d-end="onDragDrop"
@@ -8,7 +8,7 @@
       <template v-slot="{item}">
         <Tab :tab="item"/>
       </template>
-    </draggable-list>
+    </DraggableList>
   </div>
 </template>
 <script lang="ts">
