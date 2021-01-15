@@ -2,8 +2,7 @@
   <div class="file-editor">
     <FileEditorNavMenu :items="navItems"/>
     <div class="file-editor-content">
-      <div class="file-editor-nav-tabs">
-      </div>
+      <FileEditorNavTabs/>
       <div ref="codeMirrorEditor" class="code-mirror-editor"/>
     </div>
   </div>
@@ -25,11 +24,14 @@ import 'codemirror/mode/shell/shell.js';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/yaml/yaml.js';
+
+// components
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
+import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 
 export default {
   name: 'FileEditor',
-  components: {FileEditorNavMenu},
+  components: {FileEditorNavTabs, FileEditorNavMenu},
   props: {
     fileContent: String,
     fileName: String,

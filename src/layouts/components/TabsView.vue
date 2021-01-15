@@ -1,10 +1,14 @@
 <template>
   <div class="tabs-view">
-    <ul class="tabs-list">
-      <li v-for="tab in tabs" :key="tab.id" class="tab-item">
-        <Tab :tab="tab"/>
-      </li>
-    </ul>
+    <draggable-list
+        :items="tabs"
+        item-key="id"
+        @d-end="onDragDrop"
+    >
+      <template v-slot="{item}">
+        <Tab :tab="item"/>
+      </template>
+    </draggable-list>
   </div>
 </template>
 <script lang="ts">
@@ -12,10 +16,12 @@ import {computed, defineComponent, onMounted, watch} from 'vue';
 import {useStore} from 'vuex';
 import TabComp from '@/layouts/components/Tab.vue';
 import {useRoute} from 'vue-router';
+import DraggableList from '@/components/drag/DraggableList.vue';
 
 export default defineComponent({
   name: 'TabsView',
   components: {
+    DraggableList,
     Tab: TabComp,
   },
   setup() {
@@ -29,6 +35,10 @@ export default defineComponent({
 
     const addTab = (tab: Tab) => {
       store.commit(`${storeNameSpace}/addTab`, tab);
+    };
+
+    const onDragDrop = (tabs: Tab[]) => {
+      store.commit(`${storeNameSpace}/setTabs`, tabs);
     };
 
     watch(currentPath, (path) => {
@@ -51,6 +61,7 @@ export default defineComponent({
     return {
       tabs,
       currentPath,
+      onDragDrop,
     };
   }
 });
@@ -62,21 +73,14 @@ export default defineComponent({
   padding: 10px 0;
   border-bottom: 1px solid $tabsViewBorderColor;
   background-color: $tabsViewBg;
+}
+</style>
+<style scoped>
+.tabs-view >>> .draggable-item {
+  margin: 0 5px;
+}
 
-  .tabs-list {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-
-    .tab-item {
-      margin: 0 5px;
-
-      &:first-child {
-        margin-left: 10px;
-      }
-    }
-  }
+.tabs-view >>> .draggable-item:first-child {
+  margin-left: 10px;
 }
 </style>
