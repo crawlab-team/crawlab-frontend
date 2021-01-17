@@ -43,7 +43,6 @@ import {getCodemirrorEditor} from '@/utils/codemirror';
 export default defineComponent({
   name: 'FileEditor',
   components: {
-    // VueCodemirror,
     FileEditorNavTabs,
     FileEditorNavMenu,
   },
