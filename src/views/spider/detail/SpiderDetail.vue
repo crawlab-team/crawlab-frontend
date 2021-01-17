@@ -24,18 +24,28 @@
         </template>
       </NavTabs>
       <NavActions :collapsed="actionsCollapsed">
-        <NavActionItem>
-          <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
-        </NavActionItem>
-        <NavActionItem>
-          <el-button icon="fa fa-edit" size="small" type="warning">Edit</el-button>
-        </NavActionItem>
-        <NavActionItem>
-          <el-button icon="fa fa-clone" size="small" type="info">Clone</el-button>
-        </NavActionItem>
-        <NavActionItem>
-          <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
-        </NavActionItem>
+        <NavActionGroup>
+          <NavActionItem>
+            <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
+          </NavActionItem>
+          <NavActionItem>
+            <el-button icon="fa fa-edit" size="small" type="warning">Edit</el-button>
+          </NavActionItem>
+          <NavActionItem>
+            <el-button icon="fa fa-clone" size="small" type="info">Clone</el-button>
+          </NavActionItem>
+          <NavActionItem>
+            <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
+          </NavActionItem>
+        </NavActionGroup>
+        <NavActionGroup v-if="activeTabName === 'files'">
+          <NavActionItem>
+            <span class="label">Theme:</span>
+            <el-select :model-value="editorTheme" size="small" style="width: 120px" @change="onEditorThemeChange">
+              <el-option v-for="theme in themes" :key="theme" :label="theme" :value="theme"/>
+            </el-select>
+          </NavActionItem>
+        </NavActionGroup>
       </NavActions>
       <div class="content-container">
         <router-view/>
@@ -53,10 +63,13 @@ import {plainClone} from '@/utils/object';
 import variables from '@/styles/variables.scss';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
+import NavActionGroup from '@/components/nav/NavActionGroup.vue';
+import {getThemes} from '@/utils/codemirror';
 
 export default defineComponent({
   name: 'SpiderDetail',
   components: {
+    NavActionGroup,
     NavActionItem,
     NavActions,
     NavSidebar: NavSidebarComp,
@@ -68,7 +81,7 @@ export default defineComponent({
 
     const storeNamespace = 'spider';
     const store = useStore();
-    const {spider} = store.state as RootStoreState;
+    const {spider, file} = store.state as RootStoreState;
 
     const navSidebar = ref<NavSidebar | null>(null);
 
@@ -120,6 +133,15 @@ export default defineComponent({
       return tabs;
     });
 
+    const themes = computed<string[]>(() => {
+      return getThemes();
+    });
+
+    const editorTheme = computed<string>(() => {
+      const {editorTheme} = file;
+      return editorTheme;
+    });
+
     const onNavSidebarSelect = (id: string) => {
       router.push(`/spiders/${id}`);
     };
@@ -141,6 +163,11 @@ export default defineComponent({
       router.push(`/spiders/${activeSpiderId.value}/${tabName}`);
     };
 
+    const onEditorThemeChange = (value: string) => {
+      console.log(value);
+      store.commit('file/setEditorTheme', value);
+    };
+
     onMounted(() => {
       if (!navSidebar.value) return;
       navSidebar.value.scroll(activeSpiderId.value);
@@ -155,10 +182,13 @@ export default defineComponent({
       activeTabName,
       sidebarCollapsed,
       actionsCollapsed,
+      themes,
+      editorTheme,
       onNavSidebarSelect,
       onNavSidebarToggle,
       onActionsToggle,
       onNavTabsSelect,
+      onEditorThemeChange,
     };
   },
 });

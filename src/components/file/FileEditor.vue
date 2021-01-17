@@ -22,6 +22,12 @@
           />
         </div>
         <div class="right">
+          <el-tooltip content="Settings">
+            <span class="action-icon" @click="showSettings = true">
+              <div class="background"/>
+              <font-awesome-icon :icon="['fa', 'cog']"/>
+            </span>
+          </el-tooltip>
           <el-tooltip content="Hide files">
             <span class="action-icon" @click="onToggleNavMenu">
               <div class="background"/>
@@ -66,7 +72,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, ref, watch} from 'vue';
-import {EditorConfiguration} from 'codemirror';
+import {Editor, EditorConfiguration} from 'codemirror';
 
 // codemirror
 import 'codemirror/lib/codemirror.css';
@@ -82,6 +88,8 @@ import 'codemirror/mode/yaml/yaml.js';
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 import {getCodemirrorEditor, getThemes, initTheme} from '@/utils/codemirror';
+import {useStore} from 'vuex';
+import {useRoute} from 'vue-router';
 
 export default defineComponent({
   name: 'FileEditor',
@@ -112,6 +120,12 @@ export default defineComponent({
   setup(props, {emit}) {
     // const {tm} = useI18n();
 
+    const route = useRoute();
+
+    // const storeNamespace = 'file';
+    const store = useStore();
+    const {file} = store.state as RootStoreState;
+
     const codeMirrorEditor = ref<HTMLDivElement>();
 
     const tabs = ref<FileNavItem[]>([]);
@@ -120,11 +134,13 @@ export default defineComponent({
 
     const style = ref<FileEditorStyle>({});
 
-    const theme = ref<string>('darcula');
-
     const fileSearchString = ref<string>('');
 
     const navMenuCollapsed = ref<boolean>(false);
+
+    const showSettings = ref<boolean>(false);
+
+    let editor: Editor | null = null;
 
     const showCodeMirrorEditor = computed<boolean>(() => {
       return !!activeFileItem.value;
@@ -153,11 +169,11 @@ export default defineComponent({
     });
 
     const options = computed<EditorConfiguration>(() => {
+      const {editorTheme} = file as FileStoreState;
       return {
         mode: language.value,
-        theme: theme.value,
+        theme: editorTheme,
         smartIndent: true,
-        // indentUnit: 4,
         lineNumbers: true,
         readOnly: false,
       };
@@ -197,6 +213,10 @@ export default defineComponent({
       const {navItems} = props as FileEditorProps;
       if (!fileSearchString.value) return navItems;
       return getFilteredFiles(navItems);
+    });
+
+    const activePath = computed<string>(() => {
+      return route.path;
     });
 
     const updateTabs = (item: FileNavItem) => {
@@ -243,19 +263,15 @@ export default defineComponent({
     };
 
     const updateEditorOptions = () => {
-      const el = codeMirrorEditor.value as HTMLElement;
-      const editor = getCodemirrorEditor(el, options.value);
       for (const k in options.value) {
         const key = k as keyof EditorConfiguration;
         const value = options.value[key];
-        editor.setOption(key, value);
+        editor?.setOption(key, value);
       }
     };
 
     const updateEditorContent = () => {
-      const el = codeMirrorEditor.value as HTMLElement;
-      const editor = getCodemirrorEditor(el, options.value);
-      editor.setValue(content.value);
+      editor?.setValue(content.value);
     };
 
     const updateStyle = () => {
@@ -274,7 +290,7 @@ export default defineComponent({
     };
 
     const updateTheme = () => {
-      initTheme(options.value?.theme);
+      initTheme(options.value.theme);
     };
 
     const onToggleNavMenu = () => {
@@ -287,11 +303,15 @@ export default defineComponent({
 
     watch(options, () => {
       updateEditorOptions();
-      updateStyle();
       updateTheme();
+      setTimeout(() => {
+        updateStyle();
+      }, 100);
     });
 
     onMounted(async () => {
+      const el = codeMirrorEditor.value as HTMLElement;
+      editor = getCodemirrorEditor(el, options.value);
       updateEditorOptions();
       updateEditorContent();
       updateTheme();
@@ -306,6 +326,7 @@ export default defineComponent({
       activeFileItem,
       fileSearchString,
       navMenuCollapsed,
+      showSettings,
       showCodeMirrorEditor,
       language,
       options,
@@ -350,6 +371,11 @@ export default defineComponent({
       justify-content: space-between;
       font-size: 12px;
       padding: 0 10px 0 0;
+
+      .left,
+      .right {
+        display: flex;
+      }
     }
 
     .file-editor-nav-menu {
@@ -393,7 +419,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
 
     &:hover {
       .background {

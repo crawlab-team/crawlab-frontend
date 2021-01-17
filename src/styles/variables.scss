@@ -63,6 +63,8 @@ $navTabsHeight: 40px;
 // nav-actions
 $navActionsDefaultHeight: 40px;
 $navActionsCollapseTransitionDuration: $defaultTransitionDuration;
+$navActionsGroupBorderColor: $infoBorderColor;
+$navActionsItemColor: $infoColor;
 
 // file-editor
 $fileEditorMaskBg: rgba(255, 255, 255, 0.05);
@@ -122,6 +124,8 @@ $fileEditorNavTabsItemActiveColor: $primaryColor;
   navTabsHeight: $navTabsHeight;
   navActionsDefaultHeight: $navActionsDefaultHeight;
   navActionsCollapseTransitionDuration: $navActionsCollapseTransitionDuration;
+  navActionsGroupBorderColor: $navActionsGroupBorderColor;
+  navActionsItemColor: $navActionsItemColor;
   fileEditorMaskBg: $fileEditorMaskBg;
   fileEditorNavMenuWidth: $fileEditorNavMenuWidth;
   fileEditorNavMenuBorderColor: $fileEditorNavMenuBorderColor;

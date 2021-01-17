@@ -1,7 +1,5 @@
 import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
 
-let editor: Editor | null = null;
-
 const themes = [
   '3024-day',
   '3024-night',
@@ -69,10 +67,7 @@ const themes = [
 ];
 
 export const getCodemirrorEditor = (el: HTMLElement, options: EditorConfiguration): Editor => {
-  if (!editor) {
-    editor = CodeMirror(el, options);
-  }
-  return editor;
+  return CodeMirror(el, options);
 };
 
 export const initTheme = (name?: string) => {

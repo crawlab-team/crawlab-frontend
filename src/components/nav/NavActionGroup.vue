@@ -1,5 +1,6 @@
 <template>
-  <div class="nav-action-item">
+  <div class="nav-action-group">
+    <div class="border"/>
     <slot></slot>
   </div>
 </template>
@@ -8,7 +9,7 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'NavActionItem',
+  name: 'NavActionGroup',
   setup() {
     return {};
   },
@@ -17,23 +18,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
-.nav-action-item {
-  margin: 10px 0;
+
+.nav-action-group {
   height: auto;
   display: flex;
   align-items: center;
-  color: $navActionsItemColor;
+  box-sizing: border-box;
 
-  & + .nav-action-item {
+  & + .nav-action-group {
+    padding-left: 10px;
     margin-left: 10px;
+
+    .border {
+      margin-left: -10px;
+      margin-right: 10px;
+      border-left: 1px solid $navActionsGroupBorderColor;
+      height: calc(100% - 20px);
+    }
   }
-}
-</style>
-<style scoped>
-.nav-action-item >>> .label {
-  color: inherit;
-  font-size: 14px;
-  margin-right: 5px;
-  margin-left: 5px;
 }
 </style>
