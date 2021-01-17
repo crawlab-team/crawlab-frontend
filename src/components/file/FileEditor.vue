@@ -11,8 +11,8 @@
           :active-tab="activeFileItem"
           :tabs="tabs"
       />
-      <div v-if="showCodeMirrorEditor" ref="codeMirrorEditor" class="code-mirror-editor"/>
-      <div v-else class="empty-content">
+      <div ref="codeMirrorEditor" :class="showCodeMirrorEditor ? '' : 'hidden'" class="code-mirror-editor"/>
+      <div v-show="!showCodeMirrorEditor" class="empty-content">
         You can edit or view a file by double-clicking one of the files on the left.
       </div>
     </div>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, ref, watch} from 'vue';
-import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
+import {EditorConfiguration} from 'codemirror';
 
 // codemirror
 import 'codemirror/lib/codemirror.css';
@@ -38,10 +38,15 @@ import 'codemirror/mode/yaml/yaml.js';
 // components
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
+import {getCodemirrorEditor} from '@/utils/codemirror';
 
 export default defineComponent({
   name: 'FileEditor',
-  components: {FileEditorNavTabs, FileEditorNavMenu},
+  components: {
+    // VueCodemirror,
+    FileEditorNavTabs,
+    FileEditorNavMenu,
+  },
   props: {
     content: {
       type: String,
@@ -56,10 +61,13 @@ export default defineComponent({
       },
     },
   },
+  emits: [
+    'content-change',
+    'node-click',
+    'node-db-click',
+  ],
   setup(props, {emit}) {
     // const {tm} = useI18n();
-
-    const editor = ref<Editor>();
 
     const codeMirrorEditor = ref<HTMLDivElement>();
 
@@ -98,7 +106,7 @@ export default defineComponent({
         mode: language.value,
         theme: 'darcula',
         smartIndent: true,
-        indentUnit: 4,
+        // indentUnit: 4,
         lineNumbers: true,
         readOnly: false,
       };
@@ -114,23 +122,30 @@ export default defineComponent({
     };
 
     const onNavItemDbClick = (item: FileNavItem) => {
-      onNavItemClick(item);
+      activeFileItem.value = item;
+      emit('node-db-click', item);
+    };
+
+    const onContentChange = (value: string) => {
+      emit('content-change', value);
+    };
+
+    const updateEditor = () => {
+      const el = codeMirrorEditor.value as HTMLElement;
+      const editor = getCodemirrorEditor(el, options.value);
+      editor.setOption('mode', language.value);
+      editor.setValue(content.value);
     };
 
     watch(content, () => {
-      if (editor.value) {
-        editor.value?.setValue(content.value);
-      }
+      updateEditor();
     });
 
     onMounted(() => {
-      if (codeMirrorEditor.value) {
-        editor.value = CodeMirror(codeMirrorEditor.value, options.value);
-      }
+      updateEditor();
     });
 
     return {
-      editor,
       codeMirrorEditor,
       tabs,
       activeFileItem,
@@ -139,6 +154,7 @@ export default defineComponent({
       options,
       onNavItemClick,
       onNavItemDbClick,
+      onContentChange,
     };
   },
 });
@@ -163,6 +179,13 @@ export default defineComponent({
 
     .code-mirror-editor {
       flex: 1;
+
+      &.hidden {
+        position: fixed;
+        top: -100vh;
+        left: 0;
+        height: 100vh;
+      }
     }
 
     .empty-content {

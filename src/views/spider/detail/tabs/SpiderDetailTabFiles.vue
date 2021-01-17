@@ -3,6 +3,8 @@
       ref="fileEditor"
       :nav-items="navItems"
       :content="content"
+      @content-change="onContentChange"
+      @node-db-click="onNavItemDbClick"
   />
 </template>
 
@@ -102,11 +104,36 @@ export default defineComponent({
       ];
     });
 
+    // const onNavItemClick = (item: FileNavItem) => {
+    // };
+
+    const onNavItemDbClick = (item: FileNavItem) => {
+      // console.log(item)
+      if (item.name === 'test.py') {
+        content.value = `import os
+for i in range(10):
+    print(i)
+`;
+      } else if (item.name === 'test.js') {
+        content.value = `const path = require('path')
+console.log('it works')
+`;
+      } else {
+        content.value = '# no content';
+      }
+    };
+
+    const onContentChange = (value: string) => {
+      content.value = value;
+    };
+
     return {
       id,
       navItems,
       content,
       fileEditor,
+      onNavItemDbClick,
+      onContentChange,
     };
   },
 });

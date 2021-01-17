@@ -79,7 +79,6 @@ export default defineComponent({
       // if Ctrl key is not pressed, clear other selection
       if (!isCtrlKeyPressed.value) {
         Object.keys(selectedCache).filter(k => k !== key).forEach(k => {
-          console.log(k);
           selectedCache[k] = false;
         });
       }
