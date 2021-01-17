@@ -1,18 +1,63 @@
 <template>
   <div class="file-editor">
-    <FileEditorNavMenu
-        :active-item="activeFileItem"
-        :items="navItems"
-        @node-click="onNavItemClick"
-        @node-db-click="onNavItemDbClick"
-    />
+    <div :class="navMenuCollapsed ? 'collapsed' : ''" class="nav-menu">
+      <div
+          :style="{
+            backgroundColor: style.backgroundColorGutters,
+            color: style.color,
+          }"
+          class="nav-menu-top-bar"
+      >
+        <div class="left">
+          <el-input
+              v-model="fileSearchString"
+              :style="{
+                color: style.color,
+              }"
+              class="search"
+              clearable
+              placeholder="Search files..."
+              prefix-icon="fa fa-search"
+              size="mini"
+          />
+        </div>
+        <div class="right">
+          <el-tooltip content="Hide files">
+            <span class="action-icon" @click="onToggleNavMenu">
+              <div class="background"/>
+              <font-awesome-icon :icon="['fa', 'minus']"/>
+            </span>
+          </el-tooltip>
+        </div>
+      </div>
+      <FileEditorNavMenu
+          :active-item="activeFileItem"
+          :default-expand-all="!!fileSearchString"
+          :items="files"
+          :style="style"
+          @node-click="onNavItemClick"
+          @node-db-click="onNavItemDbClick"
+      />
+    </div>
     <div class="file-editor-content">
       <FileEditorNavTabs
           :active-tab="activeFileItem"
           :tabs="tabs"
-      />
+          :style="style"
+          @tab-click="onTabClick"
+          @tab-close="onTabClose"
+      >
+        <template v-if="navMenuCollapsed" #prefix>
+          <el-tooltip content="Show files">
+            <span class="action-icon expand-files" @click="onToggleNavMenu">
+              <div class="background"/>
+              <font-awesome-icon :icon="['fa', 'bars']"/>
+            </span>
+          </el-tooltip>
+        </template>
+      </FileEditorNavTabs>
       <div ref="codeMirrorEditor" :class="showCodeMirrorEditor ? '' : 'hidden'" class="code-mirror-editor"/>
-      <div v-show="!showCodeMirrorEditor" class="empty-content">
+      <div v-show="!showCodeMirrorEditor" :style="style" class="empty-content">
         You can edit or view a file by double-clicking one of the files on the left.
       </div>
     </div>
@@ -25,8 +70,6 @@ import {EditorConfiguration} from 'codemirror';
 
 // codemirror
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/darcula.css';
-import 'codemirror/theme/material.css';
 import 'codemirror/mode/go/go.js';
 import 'codemirror/mode/python/python.js';
 import 'codemirror/mode/javascript/javascript.js';
@@ -38,7 +81,7 @@ import 'codemirror/mode/yaml/yaml.js';
 // components
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
-import {getCodemirrorEditor} from '@/utils/codemirror';
+import {getCodemirrorEditor, getThemes, initTheme} from '@/utils/codemirror';
 
 export default defineComponent({
   name: 'FileEditor',
@@ -62,6 +105,7 @@ export default defineComponent({
   },
   emits: [
     'content-change',
+    'tab-click',
     'node-click',
     'node-db-click',
   ],
@@ -73,6 +117,14 @@ export default defineComponent({
     const tabs = ref<FileNavItem[]>([]);
 
     const activeFileItem = ref<FileNavItem>();
+
+    const style = ref<FileEditorStyle>({});
+
+    const theme = ref<string>('darcula');
+
+    const fileSearchString = ref<string>('');
+
+    const navMenuCollapsed = ref<boolean>(false);
 
     const showCodeMirrorEditor = computed<boolean>(() => {
       return !!activeFileItem.value;
@@ -103,7 +155,7 @@ export default defineComponent({
     const options = computed<EditorConfiguration>(() => {
       return {
         mode: language.value,
-        theme: 'darcula',
+        theme: theme.value,
         smartIndent: true,
         // indentUnit: 4,
         lineNumbers: true,
@@ -116,6 +168,43 @@ export default defineComponent({
       return content;
     });
 
+    const themes = computed<string[]>(() => {
+      return getThemes();
+    });
+
+    const getFilteredFiles = (items: FileNavItem[]): FileNavItem[] => {
+      return items
+          .filter(d => {
+            if (!d.is_dir) {
+              return d.name?.toLowerCase().includes(fileSearchString.value.toLowerCase());
+            }
+            if (d.children) {
+              const children = getFilteredFiles(d.children);
+              if (children.length > 0) {
+                return true;
+              }
+            }
+            return false;
+          })
+          .map(d => {
+            if (!d.is_dir) return d;
+            d.children = getFilteredFiles(d.children || []);
+            return d;
+          });
+    };
+
+    const files = computed<FileNavItem[]>(() => {
+      const {navItems} = props as FileEditorProps;
+      if (!fileSearchString.value) return navItems;
+      return getFilteredFiles(navItems);
+    });
+
+    const updateTabs = (item: FileNavItem) => {
+      if (!tabs.value.find(t => t.path === item.path)) {
+        tabs.value.push(item);
+      }
+    };
+
     const onNavItemClick = (item: FileNavItem) => {
       emit('node-click', item);
     };
@@ -123,37 +212,112 @@ export default defineComponent({
     const onNavItemDbClick = (item: FileNavItem) => {
       activeFileItem.value = item;
       emit('node-db-click', item);
+
+      // update tabs
+      updateTabs(item);
     };
 
     const onContentChange = (value: string) => {
       emit('content-change', value);
     };
 
-    const updateEditor = () => {
+    const onTabClick = (tab: FileNavItem) => {
+      activeFileItem.value = tab;
+      emit('tab-click', tab);
+    };
+
+    const onTabClose = (tab: FileNavItem) => {
+      const idx = tabs.value.findIndex(t => t.path === tab.path);
+      if (idx !== -1) {
+        tabs.value.splice(idx, 1);
+      }
+      if (activeFileItem.value) {
+        if (activeFileItem.value.path === tab.path) {
+          if (idx === 0) {
+            activeFileItem.value = tabs.value[0];
+          } else {
+            activeFileItem.value = tabs.value[idx - 1];
+          }
+        }
+      }
+    };
+
+    const updateEditorOptions = () => {
       const el = codeMirrorEditor.value as HTMLElement;
       const editor = getCodemirrorEditor(el, options.value);
-      editor.setOption('mode', language.value);
+      for (const k in options.value) {
+        const key = k as keyof EditorConfiguration;
+        const value = options.value[key];
+        editor.setOption(key, value);
+      }
+    };
+
+    const updateEditorContent = () => {
+      const el = codeMirrorEditor.value as HTMLElement;
+      const editor = getCodemirrorEditor(el, options.value);
       editor.setValue(content.value);
     };
 
+    const updateStyle = () => {
+      const el = codeMirrorEditor.value as HTMLElement;
+      const cm = el.querySelector('.CodeMirror');
+      if (!cm) return;
+      const computedStyle = window.getComputedStyle(cm);
+      style.value = {
+        backgroundColor: computedStyle.backgroundColor,
+        color: computedStyle.color,
+      };
+      const cmGutters = el.querySelector('.CodeMirror-gutters');
+      if (!cmGutters) return;
+      const computedStyleGutters = window.getComputedStyle(cmGutters);
+      style.value.backgroundColorGutters = computedStyleGutters.backgroundColor;
+    };
+
+    const updateTheme = () => {
+      initTheme(options.value?.theme);
+    };
+
+    const onToggleNavMenu = () => {
+      navMenuCollapsed.value = !navMenuCollapsed.value;
+    };
+
     watch(content, () => {
-      updateEditor();
+      updateEditorContent();
     });
 
-    onMounted(() => {
-      updateEditor();
+    watch(options, () => {
+      updateEditorOptions();
+      updateStyle();
+      updateTheme();
+    });
+
+    onMounted(async () => {
+      updateEditorOptions();
+      updateEditorContent();
+      updateTheme();
+      setTimeout(() => {
+        updateStyle();
+      }, 100);
     });
 
     return {
       codeMirrorEditor,
       tabs,
       activeFileItem,
+      fileSearchString,
+      navMenuCollapsed,
       showCodeMirrorEditor,
       language,
       options,
+      style,
+      themes,
+      files,
       onNavItemClick,
       onNavItemDbClick,
       onContentChange,
+      onTabClick,
+      onTabClose,
+      onToggleNavMenu,
     };
   },
 });
@@ -166,6 +330,32 @@ export default defineComponent({
   min-height: 100%;
   height: 100%;
   display: flex;
+
+  .nav-menu {
+    flex-basis: $fileEditorNavMenuWidth;
+    display: flex;
+    flex-direction: column;
+    transition: all $fileEditorNavMenuCollapseTransitionDuration;
+
+    &.collapsed {
+      width: 0;
+      flex-basis: 0;
+      overflow: hidden;
+    }
+
+    .nav-menu-top-bar {
+      flex-basis: $fileEditorNavMenuTopBarHeight;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 0 10px 0 0;
+    }
+
+    .file-editor-nav-menu {
+      flex: 1;
+    }
+  }
 
   .file-editor-content {
     flex: 1;
@@ -194,9 +384,46 @@ export default defineComponent({
       justify-content: center;
     }
   }
+
+  .action-icon {
+    position: relative;
+    height: 16px;
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      .background {
+        background-color: $fileEditorMaskBg;
+        border-radius: 8px;
+      }
+    }
+
+    &.expand-files {
+      width: 29px;
+      text-align: center;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 </style>
 <style scoped>
+.file-editor .nav-menu .nav-menu-top-bar >>> .search.el-input .el-input__inner {
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
 .file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror {
   height: 100%;
 }

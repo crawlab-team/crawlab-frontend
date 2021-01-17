@@ -65,11 +65,18 @@ $navActionsDefaultHeight: 40px;
 $navActionsCollapseTransitionDuration: $defaultTransitionDuration;
 
 // file-editor
+$fileEditorMaskBg: rgba(255, 255, 255, 0.05);
+$fileEditorNavMenuTopBarHeight: 28px;
 $fileEditorNavMenuWidth: 240px;
 $fileEditorNavMenuBorderColor: $infoBorderColor;
 $fileEditorNavMenuItemSelectedBg: $primaryPlainColor;
 $fileEditorNavMenuItemSelectedColor: $primaryColor;
-$fileEditorNavTabsHeight: 28px;
+$fileEditorNavMenuCollapseTransitionDuration: $defaultTransitionDuration;
+$fileEditorNavTabsHeight: $fileEditorNavMenuTopBarHeight;
+$fileEditorNavTabsBg: $menuBg;
+$fileEditorNavTabsItemColor: $white;
+$fileEditorNavTabsItemActiveBg: $primaryPlainColor;
+$fileEditorNavTabsItemActiveColor: $primaryColor;
 
 // the :export directive is the magic sauce for webpack
 :export {
@@ -115,8 +122,14 @@ $fileEditorNavTabsHeight: 28px;
   navTabsHeight: $navTabsHeight;
   navActionsDefaultHeight: $navActionsDefaultHeight;
   navActionsCollapseTransitionDuration: $navActionsCollapseTransitionDuration;
+  fileEditorMaskBg: $fileEditorMaskBg;
   fileEditorNavMenuWidth: $fileEditorNavMenuWidth;
   fileEditorNavMenuBorderColor: $fileEditorNavMenuBorderColor;
   fileEditorNavMenuItemSelectedBg: $fileEditorNavMenuItemSelectedBg;
+  fileEditorNavMenuCollapseTransitionDuration: $fileEditorNavMenuCollapseTransitionDuration;
   fileEditorNavTabsHeight: $fileEditorNavTabsHeight;
+  fileEditorNavTabsBg: $fileEditorNavTabsBg;
+  fileEditorNavTabsItemColor: $fileEditorNavTabsItemColor;
+  fileEditorNavTabsItemActiveBg: $fileEditorNavTabsItemActiveBg;
+  fileEditorNavTabsItemActiveColor: $fileEditorNavTabsItemActiveColor;
 }

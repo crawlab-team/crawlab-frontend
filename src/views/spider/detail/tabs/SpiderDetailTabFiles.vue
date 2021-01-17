@@ -5,6 +5,7 @@
       :content="content"
       @content-change="onContentChange"
       @node-db-click="onNavItemDbClick"
+      @tab-click="onTabClick"
   />
 </template>
 
@@ -33,10 +34,35 @@ export default defineComponent({
           is_dir: true,
           children: [
             {
+              path: 'test/nested',
+              name: 'nested',
+              is_dir: true,
+              children: [
+                {
+                  path: 'test/nested/test_nested.js',
+                  name: 'test_nested.js',
+                  is_dir: false,
+                  extension: 'js',
+                },
+                {
+                  path: 'test/nested/test_nested.py',
+                  name: 'test_nested.py',
+                  is_dir: false,
+                  extension: 'py',
+                }
+              ],
+            },
+            {
               path: 'test/test_nested.js',
               name: 'test_nested.js',
               is_dir: false,
               extension: 'js',
+            },
+            {
+              path: 'test/test_nested.py',
+              name: 'test_nested.py',
+              is_dir: false,
+              extension: 'py',
             }
           ]
         },
@@ -107,7 +133,8 @@ export default defineComponent({
     // const onNavItemClick = (item: FileNavItem) => {
     // };
 
-    const onNavItemDbClick = (item: FileNavItem) => {
+    const _testUpdateContent = (item: FileNavItem) => {
+      // TODO: debug
       // console.log(item)
       if (item.name === 'test.py') {
         content.value = `import os
@@ -123,8 +150,18 @@ console.log('it works')
       }
     };
 
+    const onNavItemDbClick = (item: FileNavItem) => {
+      // TODO: implement
+      _testUpdateContent(item);
+    };
+
     const onContentChange = (value: string) => {
       content.value = value;
+    };
+
+    const onTabClick = (tab: FileNavItem) => {
+      // TODO: implement
+      _testUpdateContent(tab);
     };
 
     return {
@@ -134,6 +171,7 @@ console.log('it works')
       fileEditor,
       onNavItemDbClick,
       onContentChange,
+      onTabClick,
     };
   },
 });

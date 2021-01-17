@@ -1,11 +1,22 @@
 <template>
-  <div class="file-editor-nav-menu">
+  <div
+      :style="{
+        borderRight: `1px solid ${style.backgroundColor}`
+      }"
+      class="file-editor-nav-menu"
+  >
     <el-tree
+        :render-after-expand="defaultExpandAll"
         :data="items"
         :expand-on-click-node="false"
         :highlight-current="false"
         empty-text="No files available"
         icon-class="fa fa-angle-right"
+        :style="{
+          backgroundColor: style.backgroundColorGutters,
+          color: style.color,
+        }"
+        node-key="path"
         @node-click="onNodeClick"
     >
       <template #default="{ data }">
@@ -43,6 +54,18 @@ export default defineComponent({
       required: true,
       default: () => {
         return [];
+      },
+    },
+    defaultExpandAll: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    style: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {};
       },
     },
   },
@@ -142,19 +165,10 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .file-editor-nav-menu {
-  width: 200px;
-  border-right: 1px solid $fileEditorNavMenuBorderColor;
-
   .el-tree {
     height: 100%;
 
     .el-tree-node {
-      //&:hover {
-      //  & > .el-tree-node__content > .nav-item {
-      //    color: $fileEditorNavMenuItemSelectedColor;
-      //  }
-      //}
-
       .nav-item:hover,
       .background:hover + .nav-item {
         color: $fileEditorNavMenuItemSelectedColor;
@@ -169,7 +183,7 @@ export default defineComponent({
         z-index: -1;
 
         &.selected {
-          background-color: $fileEditorNavMenuItemSelectedBg;
+          background-color: $fileEditorMaskBg;
         }
       }
 
@@ -177,6 +191,7 @@ export default defineComponent({
         display: flex;
         align-items: center;
         font-size: 14px;
+        user-select: none;
 
         &.selected {
           color: $fileEditorNavMenuItemSelectedColor;

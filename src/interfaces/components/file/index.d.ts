@@ -6,3 +6,9 @@ interface FileNavItem {
   extension?: string;
   children?: FileNavItem[];
 }
+
+interface FileEditorStyle {
+  backgroundColor?: string;
+  color?: string;
+  backgroundColorGutters?: string;
+}
