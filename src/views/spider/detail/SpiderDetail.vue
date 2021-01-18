@@ -40,7 +40,9 @@
         </NavActionGroup>
         <NavActionGroup v-if="activeTabName === 'files'">
           <NavActionItem>
-            <span class="label">Theme:</span>
+            <el-tooltip content="Editor Theme">
+              <font-awesome-icon :icon="['fa', 'palette']" :style="{color: variables.primaryColor}" class="label icon"/>
+            </el-tooltip>
             <el-select :model-value="editorTheme" size="small" style="width: 120px" @change="onEditorThemeChange">
               <el-option v-for="theme in themes" :key="theme" :label="theme" :value="theme"/>
             </el-select>
@@ -164,7 +166,6 @@ export default defineComponent({
     };
 
     const onEditorThemeChange = (value: string) => {
-      console.log(value);
       store.commit('file/setEditorTheme', value);
     };
 
@@ -174,6 +175,7 @@ export default defineComponent({
     });
 
     return {
+      variables,
       spiderNavItems,
       activeSpiderId,
       navSidebar,

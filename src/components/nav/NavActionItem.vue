@@ -17,6 +17,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
+
 .nav-action-item {
   margin: 10px 0;
   height: auto;
