@@ -10,5 +10,6 @@ interface FileNavItem {
 interface FileEditorStyle {
   backgroundColor?: string;
   color?: string;
+  height?: string;
   backgroundColorGutters?: string;
 }

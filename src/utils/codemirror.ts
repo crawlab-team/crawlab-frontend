@@ -66,6 +66,13 @@ const themes = [
   'zenburn',
 ];
 
+const template = `import os
+def func(a):
+  pass
+class Class1:
+  pass
+`;
+
 export const getCodemirrorEditor = (el: HTMLElement, options: EditorConfiguration): Editor => {
   return CodeMirror(el, options);
 };
@@ -77,4 +84,8 @@ export const initTheme = (name?: string) => {
 
 export const getThemes = () => {
   return themes;
+};
+
+export const getCodeMirrorTemplate = () => {
+  return template;
 };

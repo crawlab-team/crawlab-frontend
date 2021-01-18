@@ -62,20 +62,41 @@
           </el-tooltip>
         </template>
       </FileEditorNavTabs>
-      <div ref="codeMirrorEditor" :class="showCodeMirrorEditor ? '' : 'hidden'" class="code-mirror-editor"/>
-      <div v-show="!showCodeMirrorEditor" :style="style" class="empty-content">
+      <div
+          ref="codeMirrorEditor"
+          :class="showCodeMirrorEditor ? '' : 'hidden'"
+          :style="{
+            scrollbar: style.backgroundColorGutters,
+          }"
+          class="code-mirror-editor"
+      />
+      <div
+          v-show="!showCodeMirrorEditor"
+          :style="{
+            backgroundColor: style.backgroundColor,
+            color: style.color,
+          }"
+          class="empty-content"
+      >
         You can edit or view a file by double-clicking one of the files on the left.
       </div>
     </div>
   </div>
+  <div ref="codeMirrorTemplate" class="code-mirror-template"/>
+  <div ref="styleRef" v-html="extraStyle"/>
 </template>
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 import {Editor, EditorConfiguration} from 'codemirror';
+import {useStore} from 'vuex';
+import {getCodemirrorEditor, getCodeMirrorTemplate, getThemes, initTheme} from '@/utils/codemirror';
+import variables from '@/styles/variables.scss';
 
-// codemirror
+// codemirror css
 import 'codemirror/lib/codemirror.css';
+
+// codemirror mode
 import 'codemirror/mode/go/go.js';
 import 'codemirror/mode/python/python.js';
 import 'codemirror/mode/javascript/javascript.js';
@@ -84,12 +105,22 @@ import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/yaml/yaml.js';
 
+// codemirror addon
+import 'codemirror/addon/search/search.js';
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/search/matchesonscrollbar.js';
+import 'codemirror/addon/search/matchesonscrollbar.css';
+import 'codemirror/addon/search/match-highlighter';
+import 'codemirror/addon/edit/matchtags';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/comment/comment';
+import 'codemirror/addon/hint/show-hint';
+
 // components
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
-import {getCodemirrorEditor, getThemes, initTheme} from '@/utils/codemirror';
-import {useStore} from 'vuex';
-import {useRoute} from 'vue-router';
 
 export default defineComponent({
   name: 'FileEditor',
@@ -118,11 +149,6 @@ export default defineComponent({
     'node-db-click',
   ],
   setup(props, {emit}) {
-    // const {tm} = useI18n();
-
-    const route = useRoute();
-
-    // const storeNamespace = 'file';
     const store = useStore();
     const {file} = store.state as RootStoreState;
 
@@ -140,7 +166,13 @@ export default defineComponent({
 
     const showSettings = ref<boolean>(false);
 
+    const styleRef = ref<HTMLDivElement>();
+
     let editor: Editor | null = null;
+
+    let codeMirrorTemplateEditor: Editor | null = null;
+
+    const codeMirrorTemplate = ref<HTMLDivElement>();
 
     const showCodeMirrorEditor = computed<boolean>(() => {
       return !!activeFileItem.value;
@@ -176,6 +208,15 @@ export default defineComponent({
         smartIndent: true,
         lineNumbers: true,
         readOnly: false,
+        highlightSelectionMatches: true,
+        matchBrackets: true,
+        matchTags: true,
+        autoCloseBrackets: true,
+        autoCloseTags: true,
+        showHint: true,
+        search: {
+          bottom: true,
+        },
       };
     });
 
@@ -186,6 +227,28 @@ export default defineComponent({
 
     const themes = computed<string[]>(() => {
       return getThemes();
+    });
+
+    const extraStyle = computed<string>(() => {
+      return `<style>
+.file-editor .file-editor-content .code-mirror-editor .CodeMirror-vscrollbar::-webkit-scrollbar {
+  background-color: ${style.value.backgroundColor};
+  width: 8px;
+}
+.file-editor .file-editor-content .code-mirror-editor .CodeMirror-hscrollbar::-webkit-scrollbar {
+  background-color: ${style.value.backgroundColor};
+  height: 8px;
+}
+.file-editor .file-editor-content .code-mirror-editor .CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
+.file-editor .file-editor-content .code-mirror-editor .CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
+  background-color: ${variables.primaryColor};
+  border-radius: 4px;
+}
+</style>`;
+    });
+
+    const codeMirrorTemplateContent = computed<string>(() => {
+      return getCodeMirrorTemplate();
     });
 
     const getFilteredFiles = (items: FileNavItem[]): FileNavItem[] => {
@@ -213,10 +276,6 @@ export default defineComponent({
       const {navItems} = props as FileEditorProps;
       if (!fileSearchString.value) return navItems;
       return getFilteredFiles(navItems);
-    });
-
-    const activePath = computed<string>(() => {
-      return route.path;
     });
 
     const updateTabs = (item: FileNavItem) => {
@@ -275,6 +334,7 @@ export default defineComponent({
     };
 
     const updateStyle = () => {
+      // codemirror style: background color / color / height
       const el = codeMirrorEditor.value as HTMLElement;
       const cm = el.querySelector('.CodeMirror');
       if (!cm) return;
@@ -282,7 +342,10 @@ export default defineComponent({
       style.value = {
         backgroundColor: computedStyle.backgroundColor,
         color: computedStyle.color,
+        height: computedStyle.height,
       };
+
+      // gutter
       const cmGutters = el.querySelector('.CodeMirror-gutters');
       if (!cmGutters) return;
       const computedStyleGutters = window.getComputedStyle(cmGutters);
@@ -310,14 +373,29 @@ export default defineComponent({
     });
 
     onMounted(async () => {
+      // init codemirror editor
       const el = codeMirrorEditor.value as HTMLElement;
       editor = getCodemirrorEditor(el, options.value);
+
+      // update editor options
       updateEditorOptions();
+
+      // update editor content
       updateEditorContent();
+
+      // update editor theme
       updateTheme();
+
+      // update styles
       setTimeout(() => {
         updateStyle();
       }, 100);
+
+      // init codemirror template
+      const elTemplate = codeMirrorTemplate.value as HTMLElement;
+      codeMirrorTemplateEditor = getCodemirrorEditor(elTemplate, options.value);
+      codeMirrorTemplateEditor.setValue(codeMirrorTemplateContent.value);
+      codeMirrorTemplateEditor.setOption('mode', 'text/x-python');
     });
 
     return {
@@ -326,6 +404,8 @@ export default defineComponent({
       activeFileItem,
       fileSearchString,
       navMenuCollapsed,
+      styleRef,
+      codeMirrorTemplate,
       showSettings,
       showCodeMirrorEditor,
       language,
@@ -333,6 +413,8 @@ export default defineComponent({
       style,
       themes,
       files,
+      extraStyle,
+      variables,
       onNavItemClick,
       onNavItemDbClick,
       onContentChange,
@@ -349,17 +431,17 @@ export default defineComponent({
 
 .file-editor {
   min-height: 100%;
-  height: 100%;
   display: flex;
 
   .nav-menu {
     flex-basis: $fileEditorNavMenuWidth;
+    min-width: $fileEditorNavMenuWidth;
     display: flex;
     flex-direction: column;
     transition: all $fileEditorNavMenuCollapseTransitionDuration;
 
     &.collapsed {
-      width: 0;
+      min-width: 0;
       flex-basis: 0;
       overflow: hidden;
     }
@@ -386,6 +468,7 @@ export default defineComponent({
   .file-editor-content {
     flex: 1;
     display: flex;
+    min-width: calc(100% - #{$fileEditorNavMenuWidth});
     flex-direction: column;
 
     .file-editor-nav-tabs {
@@ -442,6 +525,13 @@ export default defineComponent({
     }
   }
 }
+
+.code-mirror-template {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  height: 100vh;
+}
 </style>
 <style scoped>
 .file-editor .nav-menu .nav-menu-top-bar >>> .search.el-input .el-input__inner {
@@ -451,6 +541,36 @@ export default defineComponent({
 }
 
 .file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror {
-  height: 100%;
+  position: relative;
+  min-height: 100%;
+}
+
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror.dialog-opened {
+  position: relative;
+}
+
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror-dialog {
+  font-size: 14px;
+}
+
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror-dialog.CodeMirror-dialog-top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror-dialog.CodeMirror-dialog-bottom {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.file-editor .file-editor-content .code-mirror-editor >>> .CodeMirror-search-field {
+  background-color: transparent;
+  border: 1px solid;
+  color: inherit;
+  outline: none;
 }
 </style>

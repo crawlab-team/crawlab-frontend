@@ -202,15 +202,17 @@ export default defineComponent({
   &.collapsed {
     .sidebar {
       flex-basis: 0;
+      width: 0;
     }
 
     .content {
       flex: 1;
+      max-width: 100%;
     }
   }
 
   .sidebar {
-    flex-basis: calc(#{$navSidebarWidth} + 20px);
+    flex-basis: $navSidebarWidth;
     transition: all $navSidebarCollapseTransitionDuration;
   }
 
@@ -221,6 +223,7 @@ export default defineComponent({
     border: 1px solid $containerBorderColor;
     display: flex;
     flex-direction: column;
+    max-width: calc(100% - #{$navSidebarWidth} - 20px - 20px);
 
     .content-container {
       height: 100%;
