@@ -52,6 +52,7 @@
           :style="style"
           @tab-click="onTabClick"
           @tab-close="onTabClose"
+          @tab-dragend="onTabDragEnd"
       >
         <template v-if="navMenuCollapsed" #prefix>
           <el-tooltip content="Show files">
@@ -321,6 +322,10 @@ export default defineComponent({
       }
     };
 
+    const onTabDragEnd = (newTabs: FileNavItem[]) => {
+      tabs.value = newTabs;
+    };
+
     const updateEditorOptions = () => {
       for (const k in options.value) {
         const key = k as keyof EditorConfiguration;
@@ -420,6 +425,7 @@ export default defineComponent({
       onContentChange,
       onTabClick,
       onTabClose,
+      onTabDragEnd,
       onToggleNavMenu,
     };
   },
@@ -472,6 +478,7 @@ export default defineComponent({
     flex-direction: column;
 
     .file-editor-nav-tabs {
+      overflow: hidden;
       height: $fileEditorNavTabsHeight;
     }
 

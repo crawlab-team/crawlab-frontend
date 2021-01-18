@@ -8,7 +8,9 @@
   >
     <slot name="prefix"></slot>
     <DraggableList
+        item-key="path"
         :items="tabs"
+        @d-end="onDragEnd"
     >
       <template v-slot="{item}">
         <div
@@ -67,6 +69,7 @@ export default defineComponent({
   emits: [
     'tab-click',
     'tab-close',
+    'tab-dragend',
   ],
   setup(props, {emit}) {
     const getTitle = (item: FileNavItem) => {
@@ -81,10 +84,15 @@ export default defineComponent({
       emit('tab-close', item);
     };
 
+    const onDragEnd = (items: FileNavItem[]) => {
+      emit('tab-dragend', items);
+    };
+
     return {
       getTitle,
       onClick,
       onClose,
+      onDragEnd,
     };
   },
 });

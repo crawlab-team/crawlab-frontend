@@ -30,6 +30,9 @@ export default defineComponent({
       default: 'key',
     },
   },
+  emits: [
+    'd-end',
+  ],
   setup(props, ctx) {
     const {emit} = ctx;
     const internalItems = reactive<DraggableListInternalItems>({});
@@ -45,7 +48,6 @@ export default defineComponent({
       if (draggingIdx === -1 || targetIdx === -1) return items;
       orderedItems.splice(draggingIdx, 1);
       orderedItems.splice(targetIdx, 0, plainClone(draggingItem));
-      console.log(orderedItems.map(d => d.path));
       return orderedItems;
     });
 
