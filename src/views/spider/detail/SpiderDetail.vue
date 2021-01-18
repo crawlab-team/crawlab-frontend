@@ -49,7 +49,7 @@
               <font-awesome-icon :icon="['fa', 'laptop-code']" class="title"/>
             </el-tooltip>
           </NavActionItem>
-          <NavActionItem>
+          <NavActionItem @click="onOpenFilesSettings">
             <el-button size="small" type="primary">
               <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
               Settings
@@ -80,7 +80,6 @@ import variables from '@/styles/variables.scss';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
-import {getThemes} from '@/utils/codemirror';
 
 export default defineComponent({
   name: 'SpiderDetail',
@@ -96,8 +95,9 @@ export default defineComponent({
     const route = useRoute();
 
     const storeNamespace = 'spider';
+    const storeNamespaceFile = 'file';
     const store = useStore();
-    const {spider, file} = store.state as RootStoreState;
+    const {spider} = store.state as RootStoreState;
 
     const navSidebar = ref<NavSidebar | null>(null);
 
@@ -149,15 +149,6 @@ export default defineComponent({
       return tabs;
     });
 
-    const themes = computed<string[]>(() => {
-      return getThemes();
-    });
-
-    const editorTheme = computed<string>(() => {
-      const {editorTheme} = file;
-      return editorTheme;
-    });
-
     const onNavSidebarSelect = (id: string) => {
       router.push(`/spiders/${id}`);
     };
@@ -179,8 +170,8 @@ export default defineComponent({
       router.push(`/spiders/${activeSpiderId.value}/${tabName}`);
     };
 
-    const onEditorThemeChange = (value: string) => {
-      store.commit('file/setEditorTheme', value);
+    const onOpenFilesSettings = () => {
+      store.commit(`${storeNamespaceFile}/setEditorSettingsDialogVisible`, true);
     };
 
     onMounted(() => {
@@ -198,13 +189,11 @@ export default defineComponent({
       activeTabName,
       sidebarCollapsed,
       actionsCollapsed,
-      themes,
-      editorTheme,
       onNavSidebarSelect,
       onNavSidebarToggle,
       onActionsToggle,
       onNavTabsSelect,
-      onEditorThemeChange,
+      onOpenFilesSettings,
     };
   },
 });

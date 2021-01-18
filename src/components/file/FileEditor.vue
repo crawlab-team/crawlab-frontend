@@ -85,13 +85,14 @@
   </div>
   <div ref="codeMirrorTemplate" class="code-mirror-template"/>
   <div ref="styleRef" v-html="extraStyle"/>
+  <FileEditorSettingsDialog/>
 </template>
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 import {Editor, EditorConfiguration} from 'codemirror';
 import {useStore} from 'vuex';
-import {getCodemirrorEditor, getCodeMirrorTemplate, getThemes, initTheme} from '@/utils/codemirror';
+import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
 import variables from '@/styles/variables.scss';
 
 // codemirror css
@@ -106,26 +107,18 @@ import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/yaml/yaml.js';
 
-// codemirror addon
-import 'codemirror/addon/search/search.js';
-import 'codemirror/addon/search/searchcursor';
-import 'codemirror/addon/search/matchesonscrollbar.js';
-import 'codemirror/addon/search/matchesonscrollbar.css';
-import 'codemirror/addon/search/match-highlighter';
-import 'codemirror/addon/edit/matchtags';
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/edit/closetag';
-import 'codemirror/addon/comment/comment';
-import 'codemirror/addon/hint/show-hint';
+// codemirror utils
+import '@/utils/codemirror';
 
 // components
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
+import FileEditorSettingsDialog from '@/components/file/FileEditorSettingsDialog.vue';
 
 export default defineComponent({
   name: 'FileEditor',
   components: {
+    FileEditorSettingsDialog,
     FileEditorNavTabs,
     FileEditorNavMenu,
   },
@@ -201,33 +194,17 @@ export default defineComponent({
       }
     });
 
-    const options = computed<EditorConfiguration>(() => {
-      const {editorTheme} = file as FileStoreState;
+    const options = computed<FileEditorConfiguration>(() => {
+      const {editorOptions} = file as FileStoreState;
       return {
         mode: language.value,
-        theme: editorTheme,
-        smartIndent: true,
-        lineNumbers: true,
-        readOnly: false,
-        highlightSelectionMatches: true,
-        matchBrackets: true,
-        matchTags: true,
-        autoCloseBrackets: true,
-        autoCloseTags: true,
-        showHint: true,
-        search: {
-          bottom: true,
-        },
+        ...editorOptions,
       };
     });
 
     const content = computed<string>(() => {
       const {content} = props as FileEditorProps;
       return content;
-    });
-
-    const themes = computed<string[]>(() => {
-      return getThemes();
     });
 
     const extraStyle = computed<string>(() => {
@@ -416,7 +393,6 @@ export default defineComponent({
       language,
       options,
       style,
-      themes,
       files,
       extraStyle,
       variables,
