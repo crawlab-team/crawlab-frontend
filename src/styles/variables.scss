@@ -5,6 +5,7 @@ $white: #ffffff;
 $primaryColor: #409EFF;
 $primaryPlainColor: rgb(217, 236, 255);
 $infoColor: #303133;
+$infoMediumColor: #909399;
 $infoLightColor: rgb(233, 233, 235);
 $infoPlainColor: rgb(244, 244, 245);
 $infoBorderColor: #e6e6e6;
@@ -64,7 +65,7 @@ $navTabsHeight: 40px;
 $navActionsDefaultHeight: 40px;
 $navActionsCollapseTransitionDuration: $defaultTransitionDuration;
 $navActionsGroupBorderColor: $infoBorderColor;
-$navActionsItemColor: $infoColor;
+$navActionsItemColor: $infoMediumColor;
 
 // file-editor
 $fileEditorMaskBg: rgba(255, 255, 255, 0.05);
@@ -86,6 +87,7 @@ $fileEditorNavTabsItemActiveColor: $primaryColor;
   primaryColor: $primaryColor;
   primaryPlainColor: $primaryPlainColor;
   infoColor: $infoColor;
+  infoMediumColor: $infoMediumColor;
   infoLightColor: $infoLightColor;
   infoPlainColor: $infoPlainColor;
   infoBorderColor: $infoBorderColor;

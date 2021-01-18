@@ -31,10 +31,18 @@ export default defineComponent({
 }
 </style>
 <style scoped>
+.nav-action-item >>> .title {
+  color: inherit;
+}
+
 .nav-action-item >>> .label {
   color: inherit;
   font-size: 14px;
   margin-right: 5px;
   margin-left: 5px;
+}
+
+.nav-action-item >>> .el-button .icon {
+  margin-right: 3px;
 }
 </style>

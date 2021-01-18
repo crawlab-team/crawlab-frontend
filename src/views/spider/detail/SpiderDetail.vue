@@ -26,6 +26,11 @@
       <NavActions :collapsed="actionsCollapsed">
         <NavActionGroup>
           <NavActionItem>
+            <el-tooltip content="Spider Actions">
+              <font-awesome-icon :icon="['fa', 'spider']" class="title"/>
+            </el-tooltip>
+          </NavActionItem>
+          <NavActionItem>
             <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
           </NavActionItem>
           <NavActionItem>
@@ -40,12 +45,21 @@
         </NavActionGroup>
         <NavActionGroup v-if="activeTabName === 'files'">
           <NavActionItem>
-            <el-tooltip content="Editor Theme">
-              <font-awesome-icon :icon="['fa', 'palette']" :style="{color: variables.primaryColor}" class="label icon"/>
+            <el-tooltip content="File Editor Actions">
+              <font-awesome-icon :icon="['fa', 'laptop-code']" class="title"/>
             </el-tooltip>
-            <el-select :model-value="editorTheme" size="small" style="width: 120px" @change="onEditorThemeChange">
-              <el-option v-for="theme in themes" :key="theme" :label="theme" :value="theme"/>
-            </el-select>
+          </NavActionItem>
+          <NavActionItem>
+            <el-button size="small" type="primary">
+              <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
+              Settings
+            </el-button>
+            <!--            <el-tooltip content="Editor Theme">-->
+            <!--              <font-awesome-icon :icon="['fa', 'palette']" :style="{color: variables.primaryColor}" class="label icon"/>-->
+            <!--            </el-tooltip>-->
+            <!--            <el-select :model-value="editorTheme" size="small" style="width: 120px" @change="onEditorThemeChange">-->
+            <!--              <el-option v-for="theme in themes" :key="theme" :label="theme" :value="theme"/>-->
+            <!--            </el-select>-->
           </NavActionItem>
         </NavActionGroup>
       </NavActions>
