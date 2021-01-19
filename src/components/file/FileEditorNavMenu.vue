@@ -3,6 +3,7 @@
       :style="{
         borderRight: `1px solid ${style.backgroundColor}`
       }"
+      ref="fileEditorNavMenu"
       class="file-editor-nav-menu"
   >
     <el-tree
@@ -74,6 +75,8 @@ export default defineComponent({
     'node-db-click',
   ],
   setup(props, {emit}) {
+    const fileEditorNavMenu = ref<HTMLDivElement>();
+
     const clickStatus = reactive<FileEditorNavMenuClickStatus>({
       clicked: false,
       item: undefined,
@@ -154,6 +157,7 @@ export default defineComponent({
     });
 
     return {
+      fileEditorNavMenu,
       onNodeClick,
       isSelected,
     };

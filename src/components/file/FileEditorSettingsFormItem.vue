@@ -2,7 +2,13 @@
   <el-select v-if="type === 'select'" :value="value" @change="onChange">
     <el-option v-for="op in data.options" :key="op" :label="op" :value="op"/>
   </el-select>
-  <el-input-number v-else-if="type === 'input-number'" :min="data.min" :value="value" @change="onChange"/>
+  <el-input-number
+      v-else-if="type === 'input-number'"
+      :min="data.min !== undefined ? data.min : 0"
+      :step="data.step !== undefined ? data.step : 1"
+      :value="value"
+      @change="onChange"
+  />
   <el-switch v-else-if="type === 'switch'" :value="value" @change="onChange"/>
 </template>
 

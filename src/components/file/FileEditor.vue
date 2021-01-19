@@ -1,5 +1,5 @@
 <template>
-  <div class="file-editor">
+  <div ref="fileEditor" class="file-editor">
     <div :class="navMenuCollapsed ? 'collapsed' : ''" class="nav-menu">
       <div
           :style="{
@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, onMounted, onUnmounted, ref, watch} from 'vue';
 import {Editor, EditorConfiguration} from 'codemirror';
 import {useStore} from 'vuex';
 import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
@@ -146,6 +146,8 @@ export default defineComponent({
     const store = useStore();
     const {file} = store.state as RootStoreState;
 
+    const fileEditor = ref<HTMLDivElement>();
+
     const codeMirrorEditor = ref<HTMLDivElement>();
 
     const tabs = ref<FileNavItem[]>([]);
@@ -167,6 +169,10 @@ export default defineComponent({
     let codeMirrorTemplateEditor: Editor | null = null;
 
     const codeMirrorTemplate = ref<HTMLDivElement>();
+
+    let codeMirrorEditorSearchLabel: HTMLSpanElement | undefined;
+
+    let codeMirrorEditorSearchInput: HTMLInputElement | undefined;
 
     const showCodeMirrorEditor = computed<boolean>(() => {
       return !!activeFileItem.value;
@@ -338,8 +344,32 @@ export default defineComponent({
       initTheme(options.value.theme);
     };
 
+    const updateSearchInput = () => {
+      codeMirrorEditorSearchLabel = codeMirrorEditor.value?.querySelector<HTMLSpanElement>('.CodeMirror-search-label') || undefined;
+      codeMirrorEditorSearchInput = codeMirrorEditor.value?.querySelector<HTMLInputElement>('.CodeMirror-search-field') || undefined;
+      if (!codeMirrorEditorSearchInput) return;
+      codeMirrorEditorSearchInput.onblur = () => {
+        if (codeMirrorEditorSearchLabel?.textContent?.includes('Search')) {
+          setTimeout(() => {
+            codeMirrorEditorSearchInput?.parentElement?.remove();
+            editor?.focus();
+          }, 10);
+        }
+      };
+    };
+
     const onToggleNavMenu = () => {
       navMenuCollapsed.value = !navMenuCollapsed.value;
+    };
+
+    const listenToKeyboardEvents = () => {
+      editor?.on('blur', () => {
+        updateSearchInput();
+      });
+    };
+
+    const unlistenToKeyboardEvents = () => {
+      document.onkeydown = null;
     };
 
     watch(content, () => {
@@ -354,7 +384,7 @@ export default defineComponent({
       }, 100);
     });
 
-    onMounted(async () => {
+    onMounted(() => {
       // init codemirror editor
       const el = codeMirrorEditor.value as HTMLElement;
       editor = getCodemirrorEditor(el, options.value);
@@ -373,6 +403,9 @@ export default defineComponent({
         updateStyle();
       }, 100);
 
+      // listen to keyboard events key
+      listenToKeyboardEvents();
+
       // init codemirror template
       const elTemplate = codeMirrorTemplate.value as HTMLElement;
       codeMirrorTemplateEditor = getCodemirrorEditor(elTemplate, options.value);
@@ -380,7 +413,13 @@ export default defineComponent({
       codeMirrorTemplateEditor.setOption('mode', 'text/x-python');
     });
 
+    onUnmounted(() => {
+      // turnoff listening to keyboard events
+      unlistenToKeyboardEvents();
+    });
+
     return {
+      fileEditor,
       codeMirrorEditor,
       tabs,
       activeFileItem,
