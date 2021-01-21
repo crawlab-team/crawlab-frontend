@@ -42,7 +42,15 @@ export default defineComponent({
   margin-left: 5px;
 }
 
-.nav-action-item >>> .el-button .icon {
-  margin-right: 3px;
+.nav-action-item >>> .el-button.el-button--small {
+  height: 32px;
+}
+
+.nav-action-item >>> .el-button:not(.is-circle) .fa {
+  margin-right: 0;
+}
+
+.nav-action-item >>> .el-button .icon + span {
+  margin-left: 5px;
 }
 </style>

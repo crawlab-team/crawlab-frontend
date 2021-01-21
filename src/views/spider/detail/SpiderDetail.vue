@@ -31,16 +31,19 @@
             </el-tooltip>
           </NavActionItem>
           <NavActionItem>
-            <el-button icon="fa fa-play" size="small" type="success">Run</el-button>
+            <el-tooltip content="Run">
+              <el-button icon="fa fa-play" size="small" type="success"/>
+            </el-tooltip>
           </NavActionItem>
           <NavActionItem>
-            <el-button icon="fa fa-edit" size="small" type="warning">Edit</el-button>
+            <el-tooltip content="Clone">
+              <el-button icon="fa fa-clone" size="small" type="info"/>
+            </el-tooltip>
           </NavActionItem>
           <NavActionItem>
-            <el-button icon="fa fa-clone" size="small" type="info">Clone</el-button>
-          </NavActionItem>
-          <NavActionItem>
-            <el-button icon="fa fa-star-o" plain size="small" type="info">Fav</el-button>
+            <el-tooltip content="Favourite">
+              <el-button icon="fa fa-star-o" plain size="small" type="info"/>
+            </el-tooltip>
           </NavActionItem>
         </NavActionGroup>
         <NavActionGroup v-if="activeTabName === 'files'">
@@ -50,16 +53,32 @@
             </el-tooltip>
           </NavActionItem>
           <NavActionItem @click="onOpenFilesSettings">
-            <el-button size="small" type="primary">
-              <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
-              Settings
-            </el-button>
-            <!--            <el-tooltip content="Editor Theme">-->
-            <!--              <font-awesome-icon :icon="['fa', 'palette']" :style="{color: variables.primaryColor}" class="label icon"/>-->
-            <!--            </el-tooltip>-->
-            <!--            <el-select :model-value="editorTheme" size="small" style="width: 120px" @change="onEditorThemeChange">-->
-            <!--              <el-option v-for="theme in themes" :key="theme" :label="theme" :value="theme"/>-->
-            <!--            </el-select>-->
+            <el-tooltip content="File Editor Settings">
+              <el-button size="small" type="primary">
+                <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
+              </el-button>
+            </el-tooltip>
+          </NavActionItem>
+        </NavActionGroup>
+        <NavActionGroup v-if="activeTabName === 'files'">
+          <NavActionItem>
+            <el-tooltip content="Git">
+              <font-awesome-icon :icon="['fab', 'git-alt']" class="title"/>
+            </el-tooltip>
+          </NavActionItem>
+          <NavActionItem @click="() => {}">
+            <el-tooltip content="Update Project">
+              <el-button size="small" type="success">
+                <font-awesome-icon :icon="['fa', 'code-branch']" class="icon"/>
+              </el-button>
+            </el-tooltip>
+          </NavActionItem>
+          <NavActionItem @click="() => {}">
+            <el-tooltip content="Commit">
+              <el-button size="small" type="warning">
+                <font-awesome-icon :icon="['fa', 'paper-plane']" class="icon"/>
+              </el-button>
+            </el-tooltip>
           </NavActionItem>
         </NavActionGroup>
       </NavActions>

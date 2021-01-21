@@ -43,6 +43,7 @@ import {plainClone} from '@/utils/object';
 import variables from '@/styles/variables.scss';
 import {getOptionDefinition, getThemes} from '@/utils/codemirror';
 import FileEditorSettingsFormItem from '@/components/file/FileEditorSettingsFormItem.vue';
+import {onBeforeRouteLeave} from 'vue-router';
 
 export default defineComponent({
   name: 'FileEditorSettingsDialog',
@@ -133,6 +134,10 @@ export default defineComponent({
 
     onBeforeMount(() => {
       resetOptions();
+    });
+
+    onBeforeRouteLeave(() => {
+      store.commit(`${storeNamespace}/setEditorSettingsDialogVisible`, false);
     });
 
     return {
