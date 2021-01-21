@@ -52,14 +52,14 @@
               <font-awesome-icon :icon="['fa', 'laptop-code']" class="title"/>
             </el-tooltip>
           </NavActionItem>
-          <NavActionItem @click="onOpenFilesSettings">
+          <NavActionItem>
             <el-tooltip content="Upload File">
               <el-button size="small" type="primary">
                 <font-awesome-icon :icon="['fa', 'upload']" class="icon"/>
               </el-button>
             </el-tooltip>
             <el-tooltip content="File Editor Settings">
-              <el-button size="small" type="info">
+              <el-button size="small" type="info" @click="onOpenFilesSettings">
                 <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
               </el-button>
             </el-tooltip>
