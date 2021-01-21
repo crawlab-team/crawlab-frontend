@@ -53,8 +53,13 @@
             </el-tooltip>
           </NavActionItem>
           <NavActionItem @click="onOpenFilesSettings">
-            <el-tooltip content="File Editor Settings">
+            <el-tooltip content="Upload File">
               <el-button size="small" type="primary">
+                <font-awesome-icon :icon="['fa', 'upload']" class="icon"/>
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="File Editor Settings">
+              <el-button size="small" type="info">
                 <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
               </el-button>
             </el-tooltip>
@@ -68,7 +73,7 @@
           </NavActionItem>
           <NavActionItem @click="() => {}">
             <el-tooltip content="Update Project">
-              <el-button size="small" type="success">
+              <el-button size="small" type="primary">
                 <font-awesome-icon :icon="['fa', 'code-branch']" class="icon"/>
               </el-button>
             </el-tooltip>
