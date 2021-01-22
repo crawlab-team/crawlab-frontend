@@ -4,6 +4,7 @@
         v-for="(item, $index) in items"
         :key="$index"
         class="context-menu-item"
+        @click="onClick(item)"
     >
       <span class="prefix">
         <font-awesome-icon v-if="item.icon" :icon="item.icon"/>
@@ -28,8 +29,16 @@ export default defineComponent({
       },
     },
   },
-  setup() {
-    return {};
+  setup(props, {emit}) {
+    const onClick = (item: ContextMenuItem) => {
+      if (!item.action) return;
+      item.action();
+      emit('hide');
+    };
+
+    return {
+      onClick,
+    };
   },
 });
 </script>

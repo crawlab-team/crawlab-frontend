@@ -53,6 +53,8 @@
           :style="style"
           @tab-click="onTabClick"
           @tab-close="onTabClose"
+          @tab-close-others="onTabCloseOthers"
+          @tab-close-all="onTabCloseAll"
           @tab-dragend="onTabDragEnd"
       >
         <template v-if="navMenuCollapsed" #prefix>
@@ -321,6 +323,16 @@ export default defineComponent({
       }
     };
 
+    const onTabCloseOthers = (tab: FileNavItem) => {
+      tabs.value = [tab];
+      activeFileItem.value = tab;
+    };
+
+    const onTabCloseAll = () => {
+      tabs.value = [];
+      activeFileItem.value = undefined;
+    };
+
     const onTabDragEnd = (newTabs: FileNavItem[]) => {
       tabs.value = newTabs;
     };
@@ -457,6 +469,8 @@ export default defineComponent({
       onContentChange,
       onTabClick,
       onTabClose,
+      onTabCloseOthers,
+      onTabCloseAll,
       onTabDragEnd,
       onToggleNavMenu,
     };

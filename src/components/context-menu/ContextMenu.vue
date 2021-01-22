@@ -32,11 +32,16 @@ export const contextMenuDefaultProps = {
   },
 };
 
+export const contextMenuDefaultEmits = [
+  'hide',
+];
+
 export default defineComponent({
   name: 'ContextMenu',
   directives: {
     ClickOutside,
   },
+  emits: contextMenuDefaultEmits,
   props: contextMenuDefaultProps,
   setup(props, {emit}) {
     const onClickOutside = () => {

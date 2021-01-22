@@ -15,24 +15,20 @@ import ContextMenu, {contextMenuDefaultProps} from '@/components/context-menu/Co
 import ContextMenuList from '@/components/context-menu/ContextMenuList.vue';
 
 export default defineComponent({
-  name: 'FileEditorNavMenuContextMenu',
+  name: 'FileEditorNavTabsContextMenu',
   components: {ContextMenuList, ContextMenu},
   props: contextMenuDefaultProps,
   emits: [
     'hide',
-    'new-file',
-    'new-directory',
-    'rename',
-    'clone',
-    'delete',
+    'close',
+    'close-others',
+    'close-all',
   ],
   setup(props, {emit}) {
     const items = readonly<ContextMenuItem[]>([
-      {title: 'New File', icon: ['fa', 'file-alt'], action: () => emit('new-file')},
-      {title: 'New Directory', icon: ['fa', 'folder-plus'], action: () => emit('new-directory')},
-      {title: 'Rename', icon: ['fa', 'edit'], action: () => emit('rename')},
-      {title: 'Duplicate', icon: ['fa', 'clone'], action: () => emit('clone')},
-      {title: 'Delete', icon: ['fa', 'trash'], action: () => emit('delete')},
+      {title: 'Close', icon: ['fa', 'times'], action: () => emit('close')},
+      {title: 'Close Others', action: () => emit('close-others')},
+      {title: 'Close All', action: () => emit('close-all')},
     ]);
 
     return {

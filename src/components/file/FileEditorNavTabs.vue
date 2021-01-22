@@ -13,25 +13,34 @@
         @d-end="onDragEnd"
     >
       <template v-slot="{item}">
-        <div
-            :class="activeTab && activeTab.path === item.path ? 'active' : ''"
-            :style="{
-              backgroundColor: style.backgroundColor,
-            }"
-            class="file-editor-nav-tab"
-            @click="onClick(item)"
+        <FileEditorNavTabsContextMenu
+            :visible="isShowContextMenu(item)"
+            @close="onClose(item)"
+            @hide="onContextMenuHide"
+            @close-others="onCloseOthers(item)"
+            @close-all="onCloseAll"
         >
-          <span class="icon">
-            <atom-material-icon :is-dir="item.is_dir" :name="item.name"/>
-          </span>
-          <span class="title">
-            {{ getTitle(item) }}
-          </span>
-          <span class="close-btn" @click.stop="onClose(item)">
-            <i class="el-icon-close"></i>
-          </span>
-          <div class="background"/>
-        </div>
+          <div
+              :class="activeTab && activeTab.path === item.path ? 'active' : ''"
+              :style="{
+                backgroundColor: style.backgroundColor,
+              }"
+              class="file-editor-nav-tab"
+              @click="onClick(item)"
+              @contextmenu.prevent="onContextMenuShow(item)"
+          >
+            <span class="icon">
+              <atom-material-icon :is-dir="item.is_dir" :name="item.name"/>
+            </span>
+            <span class="title">
+              {{ getTitle(item) }}
+            </span>
+            <span class="close-btn" @click.stop="onClose(item)">
+              <i class="el-icon-close"></i>
+            </span>
+            <div class="background"/>
+          </div>
+        </FileEditorNavTabsContextMenu>
       </template>
     </DraggableList>
     <slot name="suffix"></slot>
@@ -39,13 +48,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import DraggableList from '@/components/drag/DraggableList.vue';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
+import FileEditorNavTabsContextMenu from '@/components/file/FileEditorNavTabsContextMenu.vue';
 
 export default defineComponent({
   name: 'FileEditorNavTabs',
-  components: {AtomMaterialIcon, DraggableList},
+  components: {FileEditorNavTabsContextMenu, AtomMaterialIcon, DraggableList},
   props: {
     activeTab: {
       type: Object,
@@ -69,9 +79,13 @@ export default defineComponent({
   emits: [
     'tab-click',
     'tab-close',
+    'tab-close-others',
+    'tab-close-all',
     'tab-dragend',
   ],
   setup(props, {emit}) {
+    const activeContextMenuItem = ref<FileNavItem>();
+
     const getTitle = (item: FileNavItem) => {
       return item.name;
     };
@@ -84,15 +98,41 @@ export default defineComponent({
       emit('tab-close', item);
     };
 
+    const onCloseOthers = (item: FileNavItem) => {
+      emit('tab-close-others', item);
+    };
+
+    const onCloseAll = () => {
+      emit('tab-close-all');
+    };
+
     const onDragEnd = (items: FileNavItem[]) => {
       emit('tab-dragend', items);
     };
 
+    const onContextMenuShow = (item: FileNavItem) => {
+      activeContextMenuItem.value = item;
+    };
+
+    const onContextMenuHide = () => {
+      activeContextMenuItem.value = undefined;
+    };
+
+    const isShowContextMenu = (item: FileNavItem) => {
+      return activeContextMenuItem.value?.path === item.path;
+    };
+
     return {
+      activeContextMenuItem,
       getTitle,
       onClick,
       onClose,
+      onCloseOthers,
+      onCloseAll,
       onDragEnd,
+      onContextMenuShow,
+      onContextMenuHide,
+      isShowContextMenu,
     };
   },
 });
