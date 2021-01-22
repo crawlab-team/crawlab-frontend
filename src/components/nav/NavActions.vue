@@ -1,7 +1,7 @@
 <template>
   <div
       ref="navActions"
-      :class="collapsed ? 'collapsed' : ''"
+      :class="classes"
       :style="style"
       class="nav-actions"
   >
@@ -24,6 +24,8 @@ export default defineComponent({
 
     const navActions = ref<HTMLDivElement | null>(null);
 
+    const unmounted = ref<boolean>(true);
+
     const collapsed = computed<boolean>(() => {
       const {collapsed} = props as NavActionsProps;
       return collapsed || false;
@@ -33,6 +35,13 @@ export default defineComponent({
       return {
         height: height.value,
       };
+    });
+
+    const classes = computed<string[]>(() => {
+      const cls = [];
+      if (collapsed.value) cls.push('collapsed');
+      if (unmounted.value) cls.push('unmounted');
+      return cls;
     });
 
     const updateHeight = () => {
@@ -47,13 +56,22 @@ export default defineComponent({
       }
     };
 
+    const getHeight = () => {
+      return height.value;
+    };
+
     watch(collapsed, () => updateHeight());
 
-    onMounted(() => updateHeight());
+    onMounted(() => {
+      updateHeight();
+      unmounted.value = false;
+    });
 
     return {
       navActions,
       style,
+      classes,
+      getHeight,
     };
   },
 });
@@ -75,6 +93,10 @@ export default defineComponent({
 
   &.collapsed {
     border-bottom: none;
+  }
+
+  &.unmounted {
+    position: absolute;
   }
 }
 </style>

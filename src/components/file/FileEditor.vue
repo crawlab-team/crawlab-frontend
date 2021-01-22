@@ -220,6 +220,15 @@ export default defineComponent({
 
     const extraStyle = computed<string>(() => {
       return `<style>
+.file-editor .file-editor-nav-menu::-webkit-scrollbar {
+  background-color: ${style.value.backgroundColor};
+  width: 8px;
+  height: 8px;
+}
+.file-editor .file-editor-nav-menu::-webkit-scrollbar-thumb {
+  background-color: ${variables.primaryColor};
+  border-radius: 4px;
+}
 .file-editor .file-editor-content .code-mirror-editor .CodeMirror-vscrollbar::-webkit-scrollbar {
   background-color: ${style.value.backgroundColor};
   width: 8px;
@@ -482,7 +491,7 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .file-editor {
-  min-height: 100%;
+  height: 100%;
   display: flex;
 
   .nav-menu {
@@ -510,10 +519,6 @@ export default defineComponent({
       .right {
         display: flex;
       }
-    }
-
-    .file-editor-nav-menu {
-      flex: 1;
     }
   }
 

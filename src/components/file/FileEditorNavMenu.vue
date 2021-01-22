@@ -1,6 +1,7 @@
 <template>
   <div
       :style="{
+        backgroundColor: style.backgroundColorGutters,
         borderRight: `1px solid ${style.backgroundColor}`
       }"
       ref="fileEditorNavMenu"
@@ -266,8 +267,13 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .file-editor-nav-menu {
+  flex: 1;
+  max-height: 100%;
+  overflow: auto;
+
   .el-tree {
     height: 100%;
+    width: fit-content;
 
     .el-tree-node {
       .nav-item-wrapper {

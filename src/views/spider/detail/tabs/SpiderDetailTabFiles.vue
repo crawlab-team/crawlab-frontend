@@ -113,6 +113,11 @@ export default defineComponent({
         is_dir: false,
       },
       {
+        path: 'test.rb',
+        name: 'test.rb',
+        is_dir: false,
+      },
+      {
         path: 'test.java',
         name: 'test.java',
         is_dir: false,
@@ -127,7 +132,20 @@ export default defineComponent({
         name: 'Dockerfile',
         is_dir: false,
       },
+      {
+        path: 'this-is-a-very-looooooooooooooooooooooooooooooong-script.js',
+        name: 'this-is-a-very-looooooooooooooooooooooooooooooong-script.js',
+        is_dir: false,
+      },
     ]);
+
+    for (let i = 0; i < 20; i++) {
+      navItems.value.push({
+        path: `test-script-${i}.js`,
+        name: `test-script-${i}.js`,
+        is_dir: false,
+      });
+    }
 
     // const onNavItemClick = (item: FileNavItem) => {
     // };

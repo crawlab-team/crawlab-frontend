@@ -42,7 +42,7 @@ export default defineComponent({
 @import "../styles/variables.scss";
 
 .basic-layout {
-  min-height: 100vh;
+  height: 100vh;
 
   .container {
     position: fixed;
@@ -50,7 +50,7 @@ export default defineComponent({
     left: $sidebarWidth;
     display: block;
     width: calc(100vw - #{$sidebarWidth});
-    min-height: 100vh;
+    height: 100vh;
     transition: left $sidebarCollapseTransitionDuration;
     z-index: 2;
 
@@ -61,7 +61,7 @@ export default defineComponent({
 
     .container-body {
       background-color: $containerBg;
-      min-height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
+      height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
     }
   }
 }

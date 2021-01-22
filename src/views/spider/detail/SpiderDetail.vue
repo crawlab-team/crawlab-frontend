@@ -11,7 +11,7 @@
       />
     </div>
     <div class="content">
-      <NavTabs :active-key="activeTabName" :items="tabs" @select="onNavTabsSelect">
+      <NavTabs :active-key="activeTabName" :items="tabs" class="nav-tabs" @select="onNavTabsSelect">
         <template v-slot:extra>
           <el-tooltip
               v-model="showActionsToggleTooltip"
@@ -23,7 +23,7 @@
           </el-tooltip>
         </template>
       </NavTabs>
-      <NavActions :collapsed="actionsCollapsed">
+      <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
         <NavActionGroup>
           <NavActionItem>
             <el-tooltip content="Spider Actions">
@@ -87,7 +87,7 @@
           </NavActionItem>
         </NavActionGroup>
       </NavActions>
-      <div class="content-container">
+      <div :style="contentContainerStyle" class="content-container">
         <router-view/>
       </div>
     </div>
@@ -101,7 +101,7 @@ import {useRoute, useRouter} from 'vue-router';
 import {useStore} from 'vuex';
 import {plainClone} from '@/utils/object';
 import variables from '@/styles/variables.scss';
-import NavActions from '@/components/nav/NavActions.vue';
+import NavActionsComp from '@/components/nav/NavActions.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 
@@ -110,7 +110,7 @@ export default defineComponent({
   components: {
     NavActionGroup,
     NavActionItem,
-    NavActions,
+    NavActions: NavActionsComp,
     NavSidebar: NavSidebarComp,
     NavTabs: NavTabsComp,
   },
@@ -124,6 +124,8 @@ export default defineComponent({
     const {spider} = store.state as RootStoreState;
 
     const navSidebar = ref<NavSidebar | null>(null);
+
+    const navActions = ref<NavActions | null>(null);
 
     const showActionsToggleTooltip = ref<boolean>(false);
 
@@ -173,6 +175,12 @@ export default defineComponent({
       return tabs;
     });
 
+    const contentContainerStyle = computed(() => {
+      return {
+        height: `calc(100% - ${variables.navTabsHeight} - 1px${navActions.value ? ' - ' + navActions.value.getHeight() : ''})`,
+      };
+    });
+
     const onNavSidebarSelect = (id: string) => {
       router.push(`/spiders/${id}`);
     };
@@ -208,11 +216,13 @@ export default defineComponent({
       spiderNavItems,
       activeSpiderId,
       navSidebar,
+      navActions,
       showActionsToggleTooltip,
       tabs,
       activeTabName,
       sidebarCollapsed,
       actionsCollapsed,
+      contentContainerStyle,
       onNavSidebarSelect,
       onNavSidebarToggle,
       onActionsToggle,
@@ -227,6 +237,7 @@ export default defineComponent({
 
 .spider-detail {
   display: flex;
+  height: 100%;
 
   &.collapsed {
     .sidebar {
@@ -254,8 +265,15 @@ export default defineComponent({
     flex-direction: column;
     max-width: calc(100% - #{$navSidebarWidth} - 20px - 20px);
 
+    .nav-tabs {
+      height: calc(#{$navTabsHeight} + 1px);
+    }
+
+    .nav-actions {
+      height: fit-content;
+    }
+
     .content-container {
-      height: 100%;
       flex: 1;
     }
   }
