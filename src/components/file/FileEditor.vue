@@ -43,6 +43,7 @@
           :style="style"
           @node-click="onNavItemClick"
           @node-db-click="onNavItemDbClick"
+          @node-drop="onNavItemDrop"
       />
     </div>
     <div class="file-editor-content">
@@ -114,6 +115,7 @@ import '@/utils/codemirror';
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 import FileEditorSettingsDialog from '@/components/file/FileEditorSettingsDialog.vue';
+import {FileRoot} from '@/constants/file';
 
 export default defineComponent({
   name: 'FileEditor',
@@ -141,6 +143,7 @@ export default defineComponent({
     'tab-click',
     'node-click',
     'node-db-click',
+    'node-drop',
   ],
   setup(props, {emit}) {
     const store = useStore();
@@ -258,8 +261,13 @@ export default defineComponent({
 
     const files = computed<FileNavItem[]>(() => {
       const {navItems} = props as FileEditorProps;
-      if (!fileSearchString.value) return navItems;
-      return getFilteredFiles(navItems);
+      const root: FileNavItem = {
+        path: FileRoot,
+        name: FileRoot,
+        is_dir: true,
+        children: fileSearchString.value ? getFilteredFiles(navItems) : navItems,
+      };
+      return [root];
     });
 
     const updateTabs = (item: FileNavItem) => {
@@ -278,6 +286,14 @@ export default defineComponent({
 
       // update tabs
       updateTabs(item);
+    };
+
+    const onNavItemDrop = (items: FileNavItem[]) => {
+      if (items.length > 0 && items[0].path === FileRoot) {
+        emit('node-drop', items[0].children);
+        return;
+      }
+      emit('node-drop', items);
     };
 
     const onContentChange = (value: string) => {
@@ -437,6 +453,7 @@ export default defineComponent({
       variables,
       onNavItemClick,
       onNavItemDbClick,
+      onNavItemDrop,
       onContentChange,
       onTabClick,
       onTabClose,

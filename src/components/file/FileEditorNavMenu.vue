@@ -11,6 +11,7 @@
         :data="items"
         :expand-on-click-node="false"
         :highlight-current="false"
+        :allow-drop="allowDrop"
         empty-text="No files available"
         icon-class="fa fa-angle-right"
         :style="{
@@ -18,6 +19,12 @@
           color: style.color,
         }"
         node-key="path"
+        :default-expanded-keys="['~']"
+        draggable
+        @node-drag-enter="onNodeDragEnter"
+        @node-drag-leave="onNodeDragLeave"
+        @node-drag-end="onNodeDragEnd"
+        @node-drop="onNodeDrop"
         @node-click="onNodeClick"
         @node-contextmenu="onNodeContextMenuShow"
     >
@@ -26,9 +33,9 @@
             :visible="isShowContextMenu(data)"
             @hide="onNodeContextMenuHide"
         >
-          <div class="item-wrapper">
-            <div :class="isSelected(data) ? 'selected' : ''" class="background"/>
-            <div :class="isSelected(data) ? 'selected' : ''" class="nav-item">
+          <div :class="getItemClass(data)" class="nav-item-wrapper">
+            <div class="background"/>
+            <div class="nav-item">
               <span class="icon">
                 <atom-material-icon :is-dir="data.is_dir" :name="data.name"/>
               </span>
@@ -45,9 +52,11 @@
 
 <script lang="ts">
 import {defineComponent, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {ClickOutside} from 'element-plus/lib/directives';
+import Node from 'element-plus/lib/el-tree/src/model/node';
+import {DropType} from 'element-plus/lib/el-tree/src/tree.type';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import {KeyControl, KeyMeta} from '@/constants/keyboard';
-import {ClickOutside} from 'element-plus/lib/directives';
 import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
 
 export default defineComponent({
@@ -87,6 +96,7 @@ export default defineComponent({
   emits: [
     'node-click',
     'node-db-click',
+    'node-drop',
   ],
   setup(props, ctx) {
     const {emit} = ctx;
@@ -99,6 +109,8 @@ export default defineComponent({
     });
 
     const selectedCache = reactive<FileEditorNavMenuCache<boolean>>({});
+
+    const dragCache = reactive<FileEditorNavMenuCache<boolean>>({});
 
     const isCtrlKeyPressed = ref<boolean>(false);
 
@@ -156,13 +168,56 @@ export default defineComponent({
       activeContextMenuItem.value = undefined;
     };
 
+    const onNodeDragEnter = (draggingNode: Node, dropNode: Node) => {
+      const item = dropNode.data as FileNavItem;
+      if (!item.path) return;
+      dragCache[item.path] = true;
+    };
+
+    const onNodeDragLeave = (draggingNode: Node, dropNode: Node) => {
+      const item = dropNode.data as FileNavItem;
+      if (!item.path) return;
+      dragCache[item.path] = false;
+    };
+
+    const onNodeDragEnd = () => {
+      for (const key in dragCache) {
+        dragCache[key] = false;
+      }
+    };
+
+    const onNodeDrop = () => {
+      const {items} = props as FileEditorNavMenuProps;
+      emit('node-drop', items);
+    };
+
     const isSelected = (item: FileNavItem): boolean => {
       if (!item.path) return false;
       return selectedCache[item.path] || false;
     };
 
+    const isDroppable = (item: FileNavItem): boolean => {
+      if (!item.path) return false;
+      return dragCache[item.path] || false;
+    };
+
     const isShowContextMenu = (item: FileNavItem) => {
       return activeContextMenuItem.value?.path === item.path;
+    };
+
+    const allowDrop = (draggingNode: Node, dropNode: Node, type: DropType) => {
+      if (type !== 'inner') return false;
+      if (draggingNode.data?.path === dropNode.data?.path) return false;
+      if (draggingNode.parent?.data?.path === dropNode.data?.path) return false;
+      const item = dropNode.data as FileNavItem;
+      return item.is_dir;
+    };
+
+    const getItemClass = (item: FileNavItem): string[] => {
+      const cls = [];
+      if (isSelected(item)) cls.push('selected');
+      if (isDroppable(item)) cls.push('droppable');
+      return cls;
     };
 
     onMounted(() => {
@@ -193,8 +248,15 @@ export default defineComponent({
       onNodeClick,
       onNodeContextMenuShow,
       onNodeContextMenuHide,
+      onNodeDragEnter,
+      onNodeDragLeave,
+      onNodeDragEnd,
+      onNodeDrop,
       isSelected,
+      isDroppable,
       isShowContextMenu,
+      allowDrop,
+      getItemClass,
     };
   },
 });
@@ -208,36 +270,50 @@ export default defineComponent({
     height: 100%;
 
     .el-tree-node {
-      .nav-item:hover,
-      .background:hover + .nav-item {
-        color: $fileEditorNavMenuItemSelectedColor;
-      }
-
-      .background {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-        z-index: -1;
-
+      .nav-item-wrapper {
         &.selected {
-          background-color: $fileEditorMaskBg;
+          .background {
+            background-color: $fileEditorMaskBg;
+          }
+
+          .nav-item {
+            color: $fileEditorNavMenuItemSelectedColor;
+          }
         }
-      }
 
-      .nav-item {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        user-select: none;
+        &.droppable {
+          & * {
+            pointer-events: none;
+          }
 
-        &.selected {
+          .nav-item {
+            border: 1px dashed $fileEditorNavMenuItemDragTargetBorderColor;
+          }
+        }
+
+        .nav-item:hover,
+        .background:hover + .nav-item {
           color: $fileEditorNavMenuItemSelectedColor;
         }
 
-        .icon {
-          margin-right: 5px;
+        .background {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          left: 0;
+          top: 0;
+          z-index: -1;
+        }
+
+        .nav-item {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          user-select: none;
+
+          .icon {
+            margin-right: 5px;
+          }
         }
       }
     }
