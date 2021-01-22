@@ -19,17 +19,25 @@
         }"
         node-key="path"
         @node-click="onNodeClick"
+        @node-contextmenu="onNodeContextMenuShow"
     >
       <template #default="{ data }">
-        <div :class="isSelected(data) ? 'selected' : ''" class="background"/>
-        <div :class="isSelected(data) ? 'selected' : ''" class="nav-item">
-          <span class="icon">
-            <atom-material-icon :is-dir="data.is_dir" :name="data.name"/>
-          </span>
-          <span class="title">
-            {{ data.name }}
-          </span>
-        </div>
+        <FileEditorNavMenuContextMenu
+            :visible="isShowContextMenu(data)"
+            @hide="onNodeContextMenuHide"
+        >
+          <div class="item-wrapper">
+            <div :class="isSelected(data) ? 'selected' : ''" class="background"/>
+            <div :class="isSelected(data) ? 'selected' : ''" class="nav-item">
+              <span class="icon">
+                <atom-material-icon :is-dir="data.is_dir" :name="data.name"/>
+              </span>
+              <span class="title">
+                {{ data.name }}
+              </span>
+            </div>
+          </div>
+        </FileEditorNavMenuContextMenu>
       </template>
     </el-tree>
   </div>
@@ -39,11 +47,17 @@
 import {defineComponent, onMounted, onUnmounted, reactive, ref} from 'vue';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import {KeyControl, KeyMeta} from '@/constants/keyboard';
+import {ClickOutside} from 'element-plus/lib/directives';
+import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
 
 export default defineComponent({
   name: 'FileEditorNavMenu',
   components: {
+    FileEditorNavMenuContextMenu,
     AtomMaterialIcon
+  },
+  directives: {
+    ClickOutside,
   },
   props: {
     activeItem: {
@@ -74,7 +88,9 @@ export default defineComponent({
     'node-click',
     'node-db-click',
   ],
-  setup(props, {emit}) {
+  setup(props, ctx) {
+    const {emit} = ctx;
+
     const fileEditorNavMenu = ref<HTMLDivElement>();
 
     const clickStatus = reactive<FileEditorNavMenuClickStatus>({
@@ -86,9 +102,12 @@ export default defineComponent({
 
     const isCtrlKeyPressed = ref<boolean>(false);
 
+    const activeContextMenuItem = ref<FileNavItem>();
+
     const resetClickStatus = () => {
       clickStatus.clicked = false;
       clickStatus.item = undefined;
+      activeContextMenuItem.value = undefined;
     };
 
     const updateSelectedMap = (item: FileNavItem) => {
@@ -129,9 +148,21 @@ export default defineComponent({
       }, 200);
     };
 
+    const onNodeContextMenuShow = (ev: Event, item: FileNavItem) => {
+      activeContextMenuItem.value = item;
+    };
+
+    const onNodeContextMenuHide = () => {
+      activeContextMenuItem.value = undefined;
+    };
+
     const isSelected = (item: FileNavItem): boolean => {
       if (!item.path) return false;
       return selectedCache[item.path] || false;
+    };
+
+    const isShowContextMenu = (item: FileNavItem) => {
+      return activeContextMenuItem.value?.path === item.path;
     };
 
     onMounted(() => {
@@ -157,9 +188,13 @@ export default defineComponent({
     });
 
     return {
+      activeContextMenuItem,
       fileEditorNavMenu,
       onNodeClick,
+      onNodeContextMenuShow,
+      onNodeContextMenuHide,
       isSelected,
+      isShowContextMenu,
     };
   },
 });

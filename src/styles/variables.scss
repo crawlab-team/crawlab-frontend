@@ -82,6 +82,10 @@ $fileEditorNavTabsItemActiveBg: $primaryPlainColor;
 $fileEditorNavTabsItemActiveColor: $primaryColor;
 $fileEditorSettingsDialogLabelWidth: 240px;
 
+// context-menu
+$contextMenuItemHeight: 36px;
+$contextMenuItemMaxWidth: 360px;
+
 // the :export directive is the magic sauce for webpack
 :export {
   white: $white;
@@ -140,4 +144,6 @@ $fileEditorSettingsDialogLabelWidth: 240px;
   fileEditorNavTabsItemActiveBg: $fileEditorNavTabsItemActiveBg;
   fileEditorNavTabsItemActiveColor: $fileEditorNavTabsItemActiveColor;
   fileEditorSettingsDialogLabelWidth: $fileEditorSettingsDialogLabelWidth;
+  contextMenuItemHeight: $contextMenuItemHeight;
+  contextMenuItemMaxWidth: $contextMenuItemMaxWidth;
 }
