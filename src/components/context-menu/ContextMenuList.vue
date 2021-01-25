@@ -7,7 +7,10 @@
         @click="onClick(item)"
     >
       <span class="prefix">
-        <font-awesome-icon v-if="item.icon" :icon="item.icon"/>
+        <template v-if="item.icon">
+          <font-awesome-icon v-if="Array.isArray(item.icon)" :icon="item.icon"/>
+          <atom-material-icon v-else-if="typeof item.icon === 'string'" :is-dir="false" :name="item.icon"/>
+        </template>
       </span>
       <span class="title">
         {{ item.title }}
@@ -18,12 +21,14 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
+import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 
 export default defineComponent({
   name: 'ContextMenuList',
+  components: {AtomMaterialIcon},
   props: {
     items: {
-      type: Array,
+      type: [Array, String],
       default: () => {
         return [];
       },
@@ -50,6 +55,7 @@ export default defineComponent({
   list-style: none;
   margin: 0;
   padding: 0;
+  min-width: auto;
 
   .context-menu-item {
     height: $contextMenuItemHeight;
@@ -64,8 +70,16 @@ export default defineComponent({
       background-color: $primaryPlainColor;
     }
 
+    .title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .prefix {
       width: 24px;
+      display: flex;
+      align-items: center;
     }
   }
 }

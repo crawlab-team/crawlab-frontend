@@ -48,6 +48,7 @@
     </div>
     <div class="file-editor-content">
       <FileEditorNavTabs
+          ref="navTabs"
           :active-tab="activeFileItem"
           :tabs="tabs"
           :style="style"
@@ -84,6 +85,29 @@
       >
         You can edit or view a file by double-clicking one of the files on the left.
       </div>
+      <template v-if="navTabs && navTabs.showMoreVisible">
+        <FileEditorNavTabsShowMoreContextMenu
+            :tabs="tabs"
+            :visible="showMoreContextMenuVisible"
+            @hide="onShowMoreHide"
+            @tab-click="onClickShowMoreContextMenuItem"
+        >
+          <div
+              :style="{
+                background: style.backgroundColor,
+                color: style.color,
+              }"
+              class="nav-tabs-suffix"
+          >
+            <el-tooltip content="Show more">
+              <span class="action-icon" @click.prevent="onShowMoreShow">
+                <div class="background"/>
+                <font-awesome-icon :icon="['fa', 'angle-down']"/>
+              </span>
+            </el-tooltip>
+          </div>
+        </FileEditorNavTabsShowMoreContextMenu>
+      </template>
     </div>
   </div>
   <div ref="codeMirrorTemplate" class="code-mirror-template"/>
@@ -97,6 +121,7 @@ import {Editor, EditorConfiguration} from 'codemirror';
 import {useStore} from 'vuex';
 import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
 import variables from '@/styles/variables.scss';
+import {FileRoot} from '@/constants/file';
 
 // codemirror css
 import 'codemirror/lib/codemirror.css';
@@ -117,7 +142,7 @@ import '@/utils/codemirror';
 import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 import FileEditorSettingsDialog from '@/components/file/FileEditorSettingsDialog.vue';
-import {FileRoot} from '@/constants/file';
+import FileEditorNavTabsShowMoreContextMenu from '@/components/file/FileEditorNavTabsShowMoreContextMenu.vue';
 
 export default defineComponent({
   name: 'FileEditor',
@@ -125,6 +150,7 @@ export default defineComponent({
     FileEditorSettingsDialog,
     FileEditorNavTabs,
     FileEditorNavMenu,
+    FileEditorNavTabsShowMoreContextMenu,
   },
   props: {
     content: {
@@ -178,6 +204,10 @@ export default defineComponent({
     let codeMirrorEditorSearchLabel: HTMLSpanElement | undefined;
 
     let codeMirrorEditorSearchInput: HTMLInputElement | undefined;
+
+    const navTabs = ref<typeof FileEditorNavTabs>();
+
+    const showMoreContextMenuVisible = ref<boolean>(false);
 
     const showCodeMirrorEditor = computed<boolean>(() => {
       return !!activeFileItem.value;
@@ -242,6 +272,9 @@ export default defineComponent({
   background-color: ${variables.primaryColor};
   border-radius: 4px;
 }
+.file-editor .file-editor-nav-tabs::-webkit-scrollbar {
+  display: none;
+}
 </style>`;
     });
 
@@ -281,8 +314,9 @@ export default defineComponent({
       return [root];
     });
 
-    const updateTabs = (item: FileNavItem) => {
-      if (!tabs.value.find(t => t.path === item.path)) {
+    const updateTabs = (item?: FileNavItem) => {
+      // add tab
+      if (item && !tabs.value.find(t => t.path === item.path)) {
         tabs.value.push(item);
       }
     };
@@ -344,6 +378,19 @@ export default defineComponent({
 
     const onTabDragEnd = (newTabs: FileNavItem[]) => {
       tabs.value = newTabs;
+    };
+
+    const onShowMoreShow = () => {
+      showMoreContextMenuVisible.value = true;
+    };
+
+    const onShowMoreHide = () => {
+      showMoreContextMenuVisible.value = false;
+    };
+
+    const onClickShowMoreContextMenuItem = (tab: FileNavItem) => {
+      activeFileItem.value = tab;
+      emit('tab-click', tab);
     };
 
     const updateEditorOptions = () => {
@@ -466,6 +513,8 @@ export default defineComponent({
       codeMirrorTemplate,
       showSettings,
       showCodeMirrorEditor,
+      navTabs,
+      showMoreContextMenuVisible,
       language,
       options,
       style,
@@ -482,6 +531,9 @@ export default defineComponent({
       onTabCloseAll,
       onTabDragEnd,
       onToggleNavMenu,
+      onShowMoreShow,
+      onShowMoreHide,
+      onClickShowMoreContextMenuItem,
     };
   },
 });
@@ -523,15 +575,11 @@ export default defineComponent({
   }
 
   .file-editor-content {
+    position: relative;
     flex: 1;
     display: flex;
     min-width: calc(100% - #{$fileEditorNavMenuWidth});
     flex-direction: column;
-
-    .file-editor-nav-tabs {
-      overflow: hidden;
-      height: $fileEditorNavTabsHeight;
-    }
 
     .code-mirror-editor {
       flex: 1;
@@ -549,6 +597,18 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .nav-tabs-suffix {
+      width: 30px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: $fileEditorNavTabsHeight;
     }
   }
 

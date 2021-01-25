@@ -1,5 +1,6 @@
 <template>
   <div
+      ref="navTabs"
       :style="{
         backgroundColor: style.backgroundColorGutters,
         color: style.color,
@@ -32,9 +33,11 @@
             <span class="icon">
               <atom-material-icon :is-dir="item.is_dir" :name="item.name"/>
             </span>
-            <span class="title">
-              {{ getTitle(item) }}
-            </span>
+            <el-tooltip :content="getTitle(item)" :show-after="500">
+              <span class="title">
+                {{ getTitle(item) }}
+              </span>
+            </el-tooltip>
             <span class="close-btn" @click.stop="onClose(item)">
               <i class="el-icon-close"></i>
             </span>
@@ -43,12 +46,11 @@
         </FileEditorNavTabsContextMenu>
       </template>
     </DraggableList>
-    <slot name="suffix"></slot>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 import DraggableList from '@/components/drag/DraggableList.vue';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import FileEditorNavTabsContextMenu from '@/components/file/FileEditorNavTabsContextMenu.vue';
@@ -82,9 +84,26 @@ export default defineComponent({
     'tab-close-others',
     'tab-close-all',
     'tab-dragend',
+    'show-more',
   ],
   setup(props, {emit}) {
     const activeContextMenuItem = ref<FileNavItem>();
+
+    const navTabs = ref<HTMLDivElement>();
+
+    const navTabsWidth = ref<number>();
+
+    const navTabsOverflowWidth = ref<number>();
+
+    const showMoreVisible = computed<boolean>(() => {
+      if (navTabsWidth.value === undefined || navTabsOverflowWidth.value === undefined) return false;
+      return navTabsOverflowWidth.value > navTabsWidth.value;
+    });
+
+    const tabs = computed<FileNavItem[]>(() => {
+      const {tabs} = props as FileEditorNavTabsProps;
+      return tabs;
+    });
 
     const getTitle = (item: FileNavItem) => {
       return item.name;
@@ -122,8 +141,34 @@ export default defineComponent({
       return activeContextMenuItem.value?.path === item.path;
     };
 
+    const updateWidths = () => {
+      if (!navTabs.value) return;
+
+      // width
+      navTabsWidth.value = Number(getComputedStyle(navTabs.value).width.replace('px', ''));
+
+      // overflow width
+      const el = navTabs.value.querySelector('.draggable-list');
+      if (el) {
+        navTabsOverflowWidth.value = Number(getComputedStyle(el).width.replace('px', ''));
+      }
+    };
+
+    watch(tabs.value, () => {
+      setTimeout(updateWidths, 100);
+    });
+
+    onMounted(() => {
+      // update tabs widths
+      updateWidths();
+    });
+
     return {
       activeContextMenuItem,
+      navTabs,
+      navTabsWidth,
+      navTabsOverflowWidth,
+      showMoreVisible,
       getTitle,
       onClick,
       onClose,
@@ -142,15 +187,21 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .file-editor-nav-tabs {
+  position: relative;
   display: flex;
   align-items: center;
+  overflow: auto;
+  height: $fileEditorNavTabsHeight;
 
   .file-editor-nav-tab {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     height: $fileEditorNavTabsHeight;
+    max-width: $fileEditorNavTabsItemMaxWidth;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding: 0 10px;
     font-size: 14px;
     cursor: pointer;
@@ -186,6 +237,9 @@ export default defineComponent({
     }
 
     .title {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       color: $fileEditorNavTabsItemColor;
       z-index: 1;
     }
@@ -194,6 +248,15 @@ export default defineComponent({
       margin-left: 5px;
       z-index: 1;
     }
+  }
+
+  .suffix {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 }
 </style>
