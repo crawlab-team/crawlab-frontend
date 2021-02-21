@@ -62,6 +62,7 @@ export default defineComponent({
     .container-body {
       background-color: $containerBg;
       height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
+      overflow: auto;
     }
   }
 }
