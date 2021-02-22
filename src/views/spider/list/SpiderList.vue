@@ -20,18 +20,19 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, h} from 'vue';
+import {defineComponent} from 'vue';
 import Table from '@/components/table/Table.vue';
-import {ElTag} from 'element-plus';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
+import {useRouter} from 'vue-router';
 
 export default defineComponent({
   name: 'SpiderList',
   components: {NavActionGroup, NavActions, NavActionItem, Table},
   setup() {
+    const router = useRouter();
+
     const tableData: Spider[] = (() => {
       const data: Spider[] = [];
       for (let i = 0; i < 10; i++) {
@@ -64,11 +65,11 @@ export default defineComponent({
         label: 'Project',
         width: '120',
       },
-      {
-        key: 'is_long_task',
-        label: 'Is Long Task',
-        width: '80',
-      },
+      // {
+      //   key: 'is_long_task',
+      //   label: 'Is Long Task',
+      //   width: '80',
+      // },
       {
         key: 'latest_tasks',
         label: 'Latest Tasks',
@@ -86,12 +87,12 @@ export default defineComponent({
       },
       {
         key: 'update_ts',
-        label: 'Update Time',
+        label: 'Updated At',
         width: '140',
       },
       {
         key: 'create_ts',
-        label: 'Create Time',
+        label: 'Created At',
         width: '140',
       },
       {
@@ -107,23 +108,47 @@ export default defineComponent({
       {
         key: 'actions',
         label: 'Actions',
-        width: '220',
+        width: '180',
         fixed: 'right',
-        value: (row: Spider, column: TableColumn) => {
-          return h(
-              ElTag,
-              {
-                type: 'danger',
-                size: 'small',
-                onClick: () => {
-                  console.log(row, column);
-                }
-              },
-              () => [
-                h(FontAwesomeIcon, {icon: ['fa', 'trash-alt']})
-              ]
-          );
-        },
+        buttons: [
+          {
+            type: 'success',
+            size: 'mini',
+            icon: ['fa', 'play'],
+            tooltip: 'Run',
+            onClick: (row) => {
+              console.log('run', row);
+            }
+          },
+          {
+            type: 'primary',
+            size: 'mini',
+            icon: ['fa', 'search'],
+            tooltip: 'View',
+            onClick: (row) => {
+              router.push(`/spiders/${row._id}`);
+              console.log('view', row);
+            }
+          },
+          {
+            type: 'info',
+            size: 'mini',
+            icon: ['fa', 'clone'],
+            tooltip: 'Clone',
+            onClick: (row) => {
+              console.log('clone', row);
+            }
+          },
+          {
+            type: 'danger',
+            size: 'mini',
+            icon: ['fa', 'trash-alt'],
+            tooltip: 'Delete',
+            onClick: (row) => {
+              console.log('delete', row);
+            }
+          },
+        ],
       },
     ];
 

@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <el-table
-        :data="data"
+        :data="tableData"
         :fit="false"
         :row-key="rowKey"
         border
@@ -17,11 +17,11 @@
           :sortable="c.sortable"
           :width="c.width"
       >
+        <template #header="scope">
+          <TableHeader :column="c" :index="scope.$index" @filter="onFilter"/>
+        </template>
         <template #default="scope">
-          <table-cell
-              :column="c"
-              :row="scope.row"
-          />
+          <TableCell :column="c" :row="scope.row"/>
         </template>
       </el-table-column>
     </el-table>
@@ -36,12 +36,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {computed, defineComponent} from 'vue';
 import TableCell from '@/components/table/TableCell.vue';
+import TableHeader from '@/components/table/TableHeader.vue';
 
 export default defineComponent({
   name: 'Table',
-  components: {TableCell},
+  components: {TableCell, TableHeader},
   props: {
     data: {
       type: Array,
@@ -67,7 +68,7 @@ export default defineComponent({
     },
     pageSize: {
       type: Number,
-      default: 20,
+      default: 10,
     },
     rowKey: {
       type: String,
@@ -75,7 +76,19 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
-    return {};
+    const tableData = computed(() => {
+      const {data} = props as TableProps;
+      return data;
+    });
+
+    const onFilter = (column: TableColumn, filter: any) => {
+      console.log('onFilter', column, filter);
+    };
+
+    return {
+      tableData,
+      onFilter,
+    };
   },
 });
 </script>
