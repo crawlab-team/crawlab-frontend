@@ -1,12 +1,20 @@
 <template>
   <div class="table-header-dialog-sort">
+    <div class="title">
+      Sort
+      <el-tooltip v-if="value" content="Clear sort">
+        <span class="clear-icon" @click="onClear">
+          <font-awesome-icon :icon="['far', 'times-circle']"/>
+        </span>
+      </el-tooltip>
+    </div>
     <el-radio-group :model-value="value" size="mini" type="primary" @change="onChange">
-      <el-radio-button label="ascending">
-        <font-awesome-icon :icon="['fa', 'sort-alpha-down']"/>
+      <el-radio-button :label="ASCENDING" class="sort-btn">
+        <font-awesome-icon :icon="['fa', 'sort-amount-up']"/>
         Ascending
       </el-radio-button>
-      <el-radio-button label="descending">
-        <font-awesome-icon :icon="['fa', 'sort-alpha-down-alt']"/>
+      <el-radio-button :label="DESCENDING" class="sort-btn">
+        <font-awesome-icon :icon="['fa', 'sort-amount-down-alt']"/>
         Descending
       </el-radio-button>
     </el-radio-group>
@@ -15,6 +23,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
+import {ASCENDING, DESCENDING, UNSORTED} from '@/constants/sort';
 
 export default defineComponent({
   name: 'TableHeaderDialogSort',
@@ -29,24 +38,55 @@ export default defineComponent({
   ],
   setup(props, {emit}) {
     const onChange = (value: string) => {
+      if (value === UNSORTED) {
+        emit('change', undefined);
+        return;
+      }
       emit('change', value);
+    };
+
+    const onClear = () => {
+      emit('change');
     };
 
     return {
       onChange,
+      onClear,
+      UNSORTED,
+      ASCENDING,
+      DESCENDING,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@import "../../styles/variables.scss";
+
 .table-header-dialog-sort {
+  .title {
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: $infoMediumColor;
+
+    .clear-icon {
+      cursor: pointer;
+    }
+  }
+
   .el-radio-group {
     width: 100%;
     display: flex;
 
-    .el-radio-button {
-      flex: 1;
+    .sort-btn.el-radio-button {
+      &:not(.unsorted) {
+        flex: 1;
+      }
+
+      &.unsorted {
+        flex-basis: 20px;
+      }
     }
   }
 }

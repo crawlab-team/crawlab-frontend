@@ -1,0 +1,3 @@
+interface TableHeaderDialogFilterProps {
+  items?: string[];
+}

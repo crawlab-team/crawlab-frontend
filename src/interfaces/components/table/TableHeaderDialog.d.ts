@@ -6,6 +6,11 @@ interface TableHeaderDialogProps {
   sort?: string;
 }
 
+interface TableHeaderDialogValue {
+  sort?: string;
+  filter?: TableColumnFilter;
+}
+
 interface TableColumnFilter {
   [key: string]: any;
 }

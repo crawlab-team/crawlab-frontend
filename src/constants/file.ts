@@ -1,1 +1,1 @@
-export const FileRoot = '~';
+export const FILE_ROOT = '~';

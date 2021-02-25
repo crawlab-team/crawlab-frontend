@@ -57,7 +57,7 @@ import {ClickOutside} from 'element-plus/lib/directives';
 import Node from 'element-plus/lib/el-tree/src/model/node';
 import {DropType} from 'element-plus/lib/el-tree/src/tree.type';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
-import {KeyControl, KeyMeta} from '@/constants/keyboard';
+import {KEY_CONTROL, KEY_META} from '@/constants/keyboard';
 import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
 
 export default defineComponent({
@@ -225,13 +225,13 @@ export default defineComponent({
       // listen to keyboard events
       document.onkeydown = (ev: KeyboardEvent) => {
         if (!ev) return;
-        if (ev.key === KeyControl || ev.key === KeyMeta) {
+        if (ev.key === KEY_CONTROL || ev.key === KEY_META) {
           isCtrlKeyPressed.value = true;
         }
       };
       document.onkeyup = (ev: KeyboardEvent) => {
         if (!ev) return;
-        if (ev.key === KeyControl || ev.key === KeyMeta) {
+        if (ev.key === KEY_CONTROL || ev.key === KEY_META) {
           isCtrlKeyPressed.value = false;
         }
       };

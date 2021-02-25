@@ -17,7 +17,7 @@ export default defineComponent({
       required: false,
     },
     icon: {
-      type: Array,
+      type: [Array, String],
       required: true,
     },
     status: {

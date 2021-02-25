@@ -1,3 +1,3 @@
-export const KeyMeta = 'Meta';
-export const KeyControl = 'Control';
-export const KeyEsc = 'Escape';
+export const KEY_META = 'Meta';
+export const KEY_CONTROL = 'Control';
+export const KEY_ESC = 'Escape';

@@ -121,7 +121,7 @@ import {Editor, EditorConfiguration} from 'codemirror';
 import {useStore} from 'vuex';
 import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
 import variables from '@/styles/variables.scss';
-import {FileRoot} from '@/constants/file';
+import {FILE_ROOT} from '@/constants/file';
 
 // codemirror css
 import 'codemirror/lib/codemirror.css';
@@ -306,8 +306,8 @@ export default defineComponent({
     const files = computed<FileNavItem[]>(() => {
       const {navItems} = props as FileEditorProps;
       const root: FileNavItem = {
-        path: FileRoot,
-        name: FileRoot,
+        path: FILE_ROOT,
+        name: FILE_ROOT,
         is_dir: true,
         children: fileSearchString.value ? getFilteredFiles(navItems) : navItems,
       };
@@ -334,7 +334,7 @@ export default defineComponent({
     };
 
     const onNavItemDrop = (items: FileNavItem[]) => {
-      if (items.length > 0 && items[0].path === FileRoot) {
+      if (items.length > 0 && items[0].path === FILE_ROOT) {
         emit('node-drop', items[0].children);
         return;
       }

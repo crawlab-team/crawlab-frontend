@@ -10,13 +10,13 @@
         :visible="dialogVisible"
         @apply="onDialogApply"
         @clear="onDialogClear"
-        @hide="onDialogHide"
+        @cancel="onDialogCancel"
     >
       <template #reference>
         <div class="actions">
           <TableHeaderAction
               v-for="{key, tooltip, icon, onClick} in actions"
-              :key="key"
+              :key="key + JSON.stringify(icon)"
               :icon="icon"
               :status="actionStatusMap[key]"
               :tooltip="tooltip"
@@ -29,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, ref} from 'vue';
+import {computed, defineComponent, reactive, ref} from 'vue';
 import TableHeaderDialog from '@/components/table/TableHeaderDialog.vue';
 import TableHeaderAction from '@/components/table/TableHeaderAction.vue';
+import {ASCENDING, DESCENDING} from '@/constants/sort';
 
 export default defineComponent({
   name: 'TableHeader',
@@ -62,30 +63,42 @@ export default defineComponent({
       sort: {active: false, focused: false},
     });
 
-    const actions: TableHeaderActionProps[] = [
-      {
-        key: 'sort',
-        tooltip: 'Sort',
-        icon: ['fa', 'sort-amount-down'],
-        onClick: () => {
-          const {column} = props as TableHeaderProps;
-          dialogVisible.value = true;
-          // actionStatusMap.sort.active = true;
-          actionStatusMap.sort.focused = true;
-        }
-      },
-      {
-        key: 'filter',
-        tooltip: 'Filter',
-        icon: ['fa', 'filter'],
-        onClick: () => {
-          const {column} = props as TableHeaderProps;
-          dialogVisible.value = true;
-          // actionStatusMap.filter.active = true;
-          actionStatusMap.filter.focused = true;
-        }
-      },
-    ];
+    const sortData = ref<string>();
+    const filterData = ref<TableColumnFilter>();
+
+    const actions = computed<TableColumnButton[]>(() => {
+      let sortIcon = ['fa', 'sort-amount-down-alt'];
+      let sortTooltip = 'Sort';
+      if (sortData.value === ASCENDING) {
+        sortIcon = ['fa', 'sort-amount-up'];
+        sortTooltip = 'Sorted Ascending';
+      } else if (sortData.value === DESCENDING) {
+        sortIcon = ['fa', 'sort-amount-down-alt'];
+        sortTooltip = 'Sorted Descending';
+      }
+      return [
+        {
+          key: 'sort',
+          tooltip: sortTooltip,
+          icon: sortIcon,
+          onClick: () => {
+            const {column} = props as TableHeaderProps;
+            dialogVisible.value = true;
+            actionStatusMap.sort.focused = true;
+          }
+        },
+        {
+          key: 'filter',
+          tooltip: 'Filter',
+          icon: ['fa', 'filter'],
+          onClick: () => {
+            const {column} = props as TableHeaderProps;
+            dialogVisible.value = true;
+            actionStatusMap.filter.focused = true;
+          }
+        },
+      ];
+    });
 
     const hideDialog = () => {
       dialogVisible.value = false;
@@ -93,21 +106,40 @@ export default defineComponent({
       actionStatusMap.sort.focused = false;
     };
 
-    const onDialogHide = () => {
+    const clearDialog = () => {
+      actionStatusMap.filter.active = false;
+      actionStatusMap.sort.active = false;
+      sortData.value = undefined;
+      filterData.value = undefined;
+      hideDialog();
+    };
+
+    const onDialogCancel = () => {
       hideDialog();
     };
 
     const onDialogClear = () => {
-      // TODO: implement
-      actionStatusMap.filter.active = false;
-      actionStatusMap.sort.active = false;
-      hideDialog();
+      clearDialog();
     };
 
-    const onDialogApply = () => {
-      // TODO: implement
-      actionStatusMap.filter.active = true;
-      actionStatusMap.sort.active = true;
+    const onDialogApply = (value: TableHeaderDialogValue) => {
+      const {sort, filter} = value;
+
+      // set action status
+      if (sort) actionStatusMap.sort.active = true;
+      if (filter) actionStatusMap.filter.active = true;
+
+      // set action data
+      sortData.value = sort;
+      filterData.value = filter;
+
+      // if no data set, clear
+      if (!sortData.value && !filterData.value) {
+        clearDialog();
+        return;
+      }
+
+      // hide
       hideDialog();
     };
 
@@ -115,7 +147,7 @@ export default defineComponent({
       dialogVisible,
       actionStatusMap,
       actions,
-      onDialogHide,
+      onDialogCancel,
       onDialogClear,
       onDialogApply,
     };
