@@ -1,6 +1,9 @@
 <template>
   <span :class="classes" class="action" @click="onClick">
     <el-tooltip :content="tooltip">
+      <template v-if="isHtml" #content>
+        <div v-html="tooltip"/>
+      </template>
       <font-awesome-icon :icon="icon"/>
     </el-tooltip>
   </span>
@@ -13,8 +16,13 @@ export default defineComponent({
   name: 'TableHeaderAction',
   props: {
     tooltip: {
-      type: String,
+      type: [String, Object],
       required: false,
+    },
+    isHtml: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     icon: {
       type: [Array, String],

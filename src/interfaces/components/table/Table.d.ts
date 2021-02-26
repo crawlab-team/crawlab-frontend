@@ -17,6 +17,7 @@ declare global {
     rowKey?: string;
     buttons?: TableColumnButton[];
     value?: TableValueFunction<T> | any;
+    filterItems?: TableFilterItemsFunction | string[];
   }
 
   interface TableColumnButton {
@@ -24,9 +25,11 @@ declare global {
     size?: string;
     icon?: string | string[];
     tooltip?: string;
+    isHtml?: boolean;
     onClick?: TableButtonOnClickFunction;
   }
 
   type TableValueFunction<T = any> = (row: T, column: TableColumn<T>) => VNode;
   type TableButtonOnClickFunction<T = any> = (row: T, column: TableColumn<T>) => void;
+  type TableFilterItemsFunction<T = any> = (filter?: FilterConditionData[], column: TableColumn<T>) => string[];
 }

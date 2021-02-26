@@ -24,7 +24,7 @@
             <TableHeaderDialogSort :value="internalSort" @change="onSortChange"/>
           </div>
           <div class="item filter">
-            <TableHeaderDialogFilter/>
+            <TableHeaderDialogFilter :conditions="conditions" :search-string="searchString" @change="onFilterChange"/>
           </div>
         </div>
       </div>
@@ -42,12 +42,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, ref, watch} from 'vue';
 import {ClickOutside} from 'element-plus/lib/directives';
 import Button from '@/components/button/Button.vue';
 import TableHeaderDialogFilter from '@/components/table/TableHeaderDialogFilter.vue';
 import TableHeaderDialogSort from '@/components/table/TableHeaderDialogSort.vue';
 import variables from '@/styles/variables.scss';
+import {plainClone} from '@/utils/object';
 
 export default defineComponent({
   name: 'TableHeaderFilter',
@@ -90,13 +91,14 @@ export default defineComponent({
     'apply',
   ],
   setup(props, {emit}) {
-    const internalSort = ref<string>();
-    const internalFilter = ref<TableColumnFilter>();
+    const internalSort = ref<SortDirection>();
+    const internalFilter = ref<TableHeaderDialogFilterData>();
+
+    const searchString = computed<string | undefined>(() => internalFilter.value?.searchString);
+
+    const conditions = computed<FilterConditionData[] | undefined>(() => internalFilter.value?.conditions);
 
     const cancel = () => {
-      const {sort, filter} = props as TableHeaderDialogProps;
-      internalSort.value = sort;
-      internalFilter.value = filter;
       emit('cancel');
     };
 
@@ -126,20 +128,26 @@ export default defineComponent({
       internalSort.value = value;
     };
 
-    const onFilterChange = (value: TableColumnFilter) => {
+    const onFilterChange = (value: TableHeaderDialogFilterData) => {
       internalFilter.value = value;
     };
 
-    onMounted(() => {
-      const {sort, filter} = props as TableHeaderDialogProps;
-      internalSort.value = sort;
-      internalFilter.value = filter;
+    watch(() => {
+      const {visible} = props as TableHeaderDialogProps;
+      return visible;
+    }, () => {
+      const {sort, filter, visible} = props as TableHeaderDialogProps;
+      if (visible) {
+        internalSort.value = plainClone(sort);
+        internalFilter.value = plainClone(filter);
+      }
     });
 
     return {
       variables,
       internalSort,
-      internalFilter,
+      searchString,
+      conditions,
       onClickOutside,
       onCancel,
       onClear,

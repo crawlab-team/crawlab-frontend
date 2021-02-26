@@ -14,9 +14,11 @@
         class="filter-condition-value"
         size="mini"
         placeholder="Value"
-        @change="onValueChange"
+        @input="onValueChange"
     />
-    <el-icon class="icon" name="circle-close" @click="onDelete"/>
+    <el-tooltip content="Delete Condition">
+      <el-icon class="icon" name="circle-close" @click="onDelete"/>
+    </el-tooltip>
   </div>
 </template>
 
@@ -58,6 +60,14 @@ export const conditionTypesOptions: SelectOption[] = [
   {value: FILTER_CONDITION_TYPE_LESS_THAN_OR_EQUAL_TO, label: 'Less than or Equal to'},
 ];
 
+export const conditionTypesMap: { [key: string]: string } = (() => {
+  const map: { [key: string]: string } = {};
+  conditionTypesOptions.forEach(d => {
+    map[d.value] = d.label as string;
+  });
+  return map;
+})();
+
 export default defineComponent({
   name: 'FilterCondition',
   props: {
@@ -79,10 +89,6 @@ export default defineComponent({
       emit('change', condition);
     };
 
-    const onTypeClose = () => {
-      console.log('onTypeClose');
-    };
-
     const onValueChange = (conditionValue: string) => {
       const {condition} = props as FilterConditionProps;
       if (condition) {
@@ -98,7 +104,6 @@ export default defineComponent({
     return {
       conditionTypesOptions,
       onTypeChange,
-      onTypeClose,
       onValueChange,
       onDelete,
     };

@@ -1,3 +1,9 @@
 interface TableHeaderDialogFilterProps {
-  items?: string[];
+  searchString?: string;
+  conditions?: FilterConditionData[];
+}
+
+interface TableHeaderDialogFilterData {
+  searchString?: string;
+  conditions?: FilterConditionData[];
 }

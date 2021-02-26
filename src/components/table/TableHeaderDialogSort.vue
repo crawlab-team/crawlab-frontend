@@ -1,7 +1,7 @@
 <template>
   <div class="table-header-dialog-sort">
     <div class="title">
-      Sort
+      <span>Sort</span>
       <el-tooltip v-if="value" content="Clear sort">
         <span class="icon" @click="onClear">
           <el-icon name="circle-close"/>
@@ -37,7 +37,7 @@ export default defineComponent({
     'change'
   ],
   setup(props, {emit}) {
-    const onChange = (value: string) => {
+    const onChange = (value: SortDirection) => {
       if (value === UNSORTED) {
         emit('change', undefined);
         return;
@@ -69,9 +69,12 @@ export default defineComponent({
     font-weight: 900;
     margin-bottom: 10px;
     color: $infoMediumColor;
+    display: flex;
+    align-items: center;
 
     .icon {
       cursor: pointer;
+      margin-left: 5px;
     }
   }
 

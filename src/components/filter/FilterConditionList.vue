@@ -5,7 +5,7 @@
         :key="$index"
         class="filter-condition-item"
     >
-      <FilterCondition :condition="cond" @change="onChange($index)" @delete="onDelete($index)"/>
+      <FilterCondition :condition="cond" @change="onChange($index, $event)" @delete="onDelete($index)"/>
     </li>
   </ul>
 </template>
@@ -32,12 +32,10 @@ export default defineComponent({
     'change',
   ],
   setup(props, {emit}) {
-    const onChange = (index: number) => {
-      return (condition: FilterConditionData) => {
-        const {conditions} = props as FilterConditionListProps;
-        conditions[index] = condition;
-        emit('change', conditions);
-      };
+    const onChange = (index: number, condition: FilterConditionData) => {
+      const {conditions} = props as FilterConditionListProps;
+      conditions[index] = condition;
+      emit('change', conditions);
     };
 
     const onDelete = (index: number) => {

@@ -8,6 +8,8 @@
         :action-status-map="actionStatusMap"
         :column="column"
         :visible="dialogVisible"
+        :filter="filterData"
+        :sort="sortData"
         @apply="onDialogApply"
         @clear="onDialogClear"
         @cancel="onDialogCancel"
@@ -15,11 +17,12 @@
       <template #reference>
         <div class="actions">
           <TableHeaderAction
-              v-for="{key, tooltip, icon, onClick} in actions"
+              v-for="{key, tooltip, isHtml, icon, onClick} in actions"
               :key="key + JSON.stringify(icon)"
               :icon="icon"
               :status="actionStatusMap[key]"
               :tooltip="tooltip"
+              :is-html="isHtml"
               @click="onClick"
           />
         </div>
@@ -32,7 +35,9 @@
 import {computed, defineComponent, reactive, ref} from 'vue';
 import TableHeaderDialog from '@/components/table/TableHeaderDialog.vue';
 import TableHeaderAction from '@/components/table/TableHeaderAction.vue';
+import {conditionTypesMap} from '@/components/filter/FilterCondition.vue';
 import {ASCENDING, DESCENDING} from '@/constants/sort';
+import variables from '@/styles/variables.scss';
 
 export default defineComponent({
   name: 'TableHeader',
@@ -51,11 +56,9 @@ export default defineComponent({
     },
   },
   emits: [
-    'search',
-    'filter',
-    'sort',
+    'change',
   ],
-  setup(props) {
+  setup(props, {emit}) {
     const dialogVisible = ref<boolean>(false);
 
     const actionStatusMap = reactive<TableHeaderActionStatusMap>({
@@ -64,9 +67,10 @@ export default defineComponent({
     });
 
     const sortData = ref<string>();
-    const filterData = ref<TableColumnFilter>();
+    const filterData = ref<TableHeaderDialogFilterData>();
 
     const actions = computed<TableColumnButton[]>(() => {
+      // sort icon and tooltip
       let sortIcon = ['fa', 'sort-amount-down-alt'];
       let sortTooltip = 'Sort';
       if (sortData.value === ASCENDING) {
@@ -76,23 +80,40 @@ export default defineComponent({
         sortIcon = ['fa', 'sort-amount-down-alt'];
         sortTooltip = 'Sorted Descending';
       }
+
+      // filter tooltip
+      let filterTooltip = 'Filter';
+      let filterIsHtml = false;
+      if (filterData.value) {
+        const {searchString, conditions} = filterData.value;
+        if (searchString) {
+          filterTooltip += `<br><span style="color: ${variables.primaryColor}">Search:</span> <span style="color: ${variables.warningColor};">"${searchString}"</span>`;
+          filterIsHtml = true;
+        }
+        if (conditions && conditions.length > 0) {
+          filterTooltip += '<br>' + conditions.map(d =>
+              `<span style="color: ${variables.primaryColor};margin-right: 5px">${conditionTypesMap[d.type || '']}:</span> <span style="color: ${variables.warningColor};">"${d.value}"</span>`)
+              .join('<br>');
+          filterIsHtml = true;
+        }
+      }
+
       return [
         {
           key: 'sort',
           tooltip: sortTooltip,
           icon: sortIcon,
           onClick: () => {
-            const {column} = props as TableHeaderProps;
             dialogVisible.value = true;
             actionStatusMap.sort.focused = true;
           }
         },
         {
           key: 'filter',
-          tooltip: 'Filter',
+          tooltip: filterTooltip,
+          isHtml: filterIsHtml,
           icon: ['fa', 'filter'],
           onClick: () => {
-            const {column} = props as TableHeaderProps;
             dialogVisible.value = true;
             actionStatusMap.filter.focused = true;
           }
@@ -107,11 +128,21 @@ export default defineComponent({
     };
 
     const clearDialog = () => {
+      const {column} = props as TableHeaderProps;
+
+      // set status
       actionStatusMap.filter.active = false;
       actionStatusMap.sort.active = false;
+
+      // set data
       sortData.value = undefined;
       filterData.value = undefined;
+
+      // hide
       hideDialog();
+
+      // emit
+      emit('change', column, undefined, undefined);
     };
 
     const onDialogCancel = () => {
@@ -123,13 +154,14 @@ export default defineComponent({
     };
 
     const onDialogApply = (value: TableHeaderDialogValue) => {
+      const {column} = props as TableHeaderProps;
       const {sort, filter} = value;
 
-      // set action status
+      // set status
       if (sort) actionStatusMap.sort.active = true;
       if (filter) actionStatusMap.filter.active = true;
 
-      // set action data
+      // set data
       sortData.value = sort;
       filterData.value = filter;
 
@@ -141,12 +173,17 @@ export default defineComponent({
 
       // hide
       hideDialog();
+
+      // emit
+      emit('change', column, sortData.value, filterData.value);
     };
 
     return {
       dialogVisible,
       actionStatusMap,
       actions,
+      sortData,
+      filterData,
       onDialogCancel,
       onDialogClear,
       onDialogApply,

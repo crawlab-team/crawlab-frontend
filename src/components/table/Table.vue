@@ -18,7 +18,7 @@
           :width="c.width"
       >
         <template #header="scope">
-          <TableHeader :column="c" :index="scope.$index" @filter="onFilter"/>
+          <TableHeader :column="c" :index="scope.$index" @change="onHeaderChange"/>
         </template>
         <template #default="scope">
           <TableCell :column="c" :row="scope.row"/>
@@ -81,13 +81,13 @@ export default defineComponent({
       return data;
     });
 
-    const onFilter = (column: TableColumn, filter: any) => {
-      console.log('onFilter', column, filter);
+    const onHeaderChange = (column: TableColumn, sort: SortDirection, filter: FilterConditionData[]) => {
+      // console.log(column, sort, filter);
     };
 
     return {
       tableData,
-      onFilter,
+      onHeaderChange,
     };
   },
 });

@@ -1,7 +1,16 @@
 <template>
   <div class="table-header-dialog-filter">
     <div class="title">
-      Filter
+      <span>Filter</span>
+      <el-input
+          :model-value="internalSearchString"
+          class="search"
+          clearable
+          placeholder="Search"
+          prefix-icon="el-icon-search"
+          size="mini"
+          @input="onSearch"
+      />
       <el-tooltip content="Add Condition">
         <span class="icon" @click="onAddCondition">
           <el-icon name="circle-plus-outline"/>
@@ -9,10 +18,7 @@
       </el-tooltip>
     </div>
     <el-form>
-      <el-form-item size="mini">
-        <el-input placeholder="Search" prefix-icon="el-icon-search"/>
-      </el-form-item>
-      <FilterConditionList :conditions="conditions" @change="onConditionsChange"/>
+      <FilterConditionList :conditions="internalConditions" @change="onConditionsChange"/>
     </el-form>
     <template v-if="items.length > 0">
       <ul class="item-list">
@@ -29,10 +35,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, ref, watch} from 'vue';
 import Empty from '@/components/empty/Empty.vue';
 import {getDefaultFilterCondition} from '@/components/filter/FilterCondition.vue';
 import FilterConditionList from '@/components/filter/FilterConditionList.vue';
+import {debounce} from '@/utils/debounce';
 
 export default defineComponent({
   name: 'TableHeaderDialogFilter',
@@ -40,26 +47,75 @@ export default defineComponent({
     FilterConditionList,
     Empty,
   },
-  setup() {
+  props: {
+    searchString: {
+      type: String,
+      required: false,
+    },
+    conditions: {
+      type: Array,
+      required: false,
+      default: () => {
+        return [];
+      }
+    }
+  },
+  emits: [
+    'change',
+  ],
+  setup(props, {emit}) {
     const items = ref<string[]>([]);
-    const conditions = ref<FilterConditionData[]>([getDefaultFilterCondition()]);
+    const internalConditions = ref<FilterConditionData[]>([getDefaultFilterCondition()]);
+    const internalSearchString = ref<string>();
+
+    const filterData = computed<TableHeaderDialogFilterData>(() => {
+      return {
+        searchString: internalSearchString.value,
+        conditions: internalConditions.value,
+      };
+    });
 
     const onAddCondition = () => {
-      conditions.value.push(getDefaultFilterCondition());
+      internalConditions.value.push(getDefaultFilterCondition());
     };
 
     const onConditionsChange = (newConditions: FilterConditionData[]) => {
-      if (newConditions.length === 0) {
-        newConditions.push(getDefaultFilterCondition());
-      }
-      conditions.value = newConditions;
+      internalConditions.value = newConditions;
+      emit('change', filterData.value);
     };
+
+    const search = debounce(() => {
+      emit('change', filterData.value);
+    });
+
+    const onSearch = (value?: string) => {
+      internalSearchString.value = value;
+      search();
+    };
+
+    watch(() => {
+      const {searchString} = props as TableHeaderDialogFilterProps;
+      return searchString;
+    }, (value) => {
+      internalSearchString.value = value;
+    });
+
+    watch(() => {
+      const {conditions} = props as TableHeaderDialogFilterProps;
+      return conditions;
+    }, (value) => {
+      if (value) {
+        internalConditions.value = value;
+      }
+    });
 
     return {
       items,
-      conditions,
+      internalSearchString,
+      internalConditions,
       onAddCondition,
       onConditionsChange,
+      onSearch,
     };
   },
 });
@@ -74,9 +130,17 @@ export default defineComponent({
     font-weight: 900;
     margin-bottom: 10px;
     color: $infoMediumColor;
+    display: flex;
+    align-items: center;
+
+    .search {
+      margin-left: 5px;
+      flex: 1;
+    }
 
     .icon {
       cursor: pointer;
+      margin-left: 5px;
     }
   }
 

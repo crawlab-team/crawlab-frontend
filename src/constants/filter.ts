@@ -8,3 +8,4 @@ export const FILTER_CONDITION_TYPE_GREATER_THAN = 'greater-than';
 export const FILTER_CONDITION_TYPE_LESS_THAN = 'less-than';
 export const FILTER_CONDITION_TYPE_GREATER_THAN_OR_EQUAL_TO = 'greater-than-or-equal-to';
 export const FILTER_CONDITION_TYPE_LESS_THAN_OR_EQUAL_TO = 'less-than-or-equal-to';
+export const FILTER_CONDITION_TYPE_SEARCH = 'search';
