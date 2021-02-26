@@ -1,11 +1,18 @@
 <template>
   <div class="table-header-dialog-filter">
-    <div class="title">Filter</div>
+    <div class="title">
+      Filter
+      <el-tooltip content="Add Condition">
+        <span class="icon" @click="onAddCondition">
+          <el-icon name="circle-plus-outline"/>
+        </span>
+      </el-tooltip>
+    </div>
     <el-form>
       <el-form-item size="mini">
         <el-input placeholder="Search" prefix-icon="el-icon-search"/>
       </el-form-item>
-      <FilterCondition/>
+      <FilterConditionList :conditions="conditions" @change="onConditionsChange"/>
     </el-form>
     <template v-if="items.length > 0">
       <ul class="item-list">
@@ -22,24 +29,38 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import Empty from '@/components/empty/Empty.vue';
-import FilterCondition from '@/components/filter/FilterCondition.vue';
+import {getDefaultFilterCondition} from '@/components/filter/FilterCondition.vue';
+import FilterConditionList from '@/components/filter/FilterConditionList.vue';
 
 export default defineComponent({
   name: 'TableHeaderDialogFilter',
-  components: {FilterCondition, Empty},
-  props: {
-    items: {
-      type: Array,
-      required: false,
-      default: () => {
-        return [];
-      }
-    }
+  components: {
+    FilterConditionList,
+    Empty,
   },
   setup() {
-    return {};
+    const items = ref<string[]>([]);
+    const conditions = ref<FilterConditionData[]>([getDefaultFilterCondition()]);
+
+    const onAddCondition = () => {
+      conditions.value.push(getDefaultFilterCondition());
+    };
+
+    const onConditionsChange = (newConditions: FilterConditionData[]) => {
+      if (newConditions.length === 0) {
+        newConditions.push(getDefaultFilterCondition());
+      }
+      conditions.value = newConditions;
+    };
+
+    return {
+      items,
+      conditions,
+      onAddCondition,
+      onConditionsChange,
+    };
   },
 });
 </script>
@@ -53,6 +74,10 @@ export default defineComponent({
     font-weight: 900;
     margin-bottom: 10px;
     color: $infoMediumColor;
+
+    .icon {
+      cursor: pointer;
+    }
   }
 
   .item-list {

@@ -1,0 +1,10 @@
+export const FILTER_CONDITION_TYPE_NOT_SET = 'not-set';
+export const FILTER_CONDITION_TYPE_CONTAINS = 'contains';
+export const FILTER_CONDITION_TYPE_NOT_CONTAINS = 'not-contains';
+export const FILTER_CONDITION_TYPE_REGEX = 'regex';
+export const FILTER_CONDITION_TYPE_EQUAL_TO = 'equal-to';
+export const FILTER_CONDITION_TYPE_NOT_EQUAL_TO = 'not-equal-to';
+export const FILTER_CONDITION_TYPE_GREATER_THAN = 'greater-than';
+export const FILTER_CONDITION_TYPE_LESS_THAN = 'less-than';
+export const FILTER_CONDITION_TYPE_GREATER_THAN_OR_EQUAL_TO = 'greater-than-or-equal-to';
+export const FILTER_CONDITION_TYPE_LESS_THAN_OR_EQUAL_TO = 'less-than-or-equal-to';

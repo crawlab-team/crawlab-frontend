@@ -3,8 +3,8 @@
     <div class="title">
       Sort
       <el-tooltip v-if="value" content="Clear sort">
-        <span class="clear-icon" @click="onClear">
-          <font-awesome-icon :icon="['far', 'times-circle']"/>
+        <span class="icon" @click="onClear">
+          <el-icon name="circle-close"/>
         </span>
       </el-tooltip>
     </div>
@@ -70,7 +70,7 @@ export default defineComponent({
     margin-bottom: 10px;
     color: $infoMediumColor;
 
-    .clear-icon {
+    .icon {
       cursor: pointer;
     }
   }
