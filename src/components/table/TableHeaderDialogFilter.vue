@@ -20,17 +20,23 @@
     <el-form>
       <FilterConditionList :conditions="internalConditions" @change="onConditionsChange"/>
     </el-form>
-    <template v-if="items.length > 0">
-      <ul class="item-list">
-        <li v-for="item in items" :key="item">
-          <el-checkbox/>
-          <span>{{ item }}</span>
-        </li>
-      </ul>
-    </template>
-    <template v-else>
-      <Empty description="No data available"></Empty>
-    </template>
+    <div class="items">
+      <template v-if="filteredItems.length > 0">
+        <el-checkbox-group v-model="internalItems" class="item-list" @change="onItemsChange">
+          <el-checkbox
+              v-for="(item, $index) in filteredItems"
+              :key="$index"
+              :label="item.value"
+              class="item"
+          >
+            {{ item.label }}
+          </el-checkbox>
+        </el-checkbox-group>
+      </template>
+      <template v-else>
+        <Empty description="No data available"></Empty>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -48,6 +54,10 @@ export default defineComponent({
     Empty,
   },
   props: {
+    column: {
+      type: Object,
+      required: false,
+    },
     searchString: {
       type: String,
       required: false,
@@ -58,21 +68,58 @@ export default defineComponent({
       default: () => {
         return [];
       }
-    }
+    },
   },
   emits: [
     'change',
   ],
   setup(props, {emit}) {
-    const items = ref<string[]>([]);
     const internalConditions = ref<FilterConditionData[]>([getDefaultFilterCondition()]);
     const internalSearchString = ref<string>();
+    const internalItems = ref<string[]>([]);
 
     const filterData = computed<TableHeaderDialogFilterData>(() => {
       return {
         searchString: internalSearchString.value,
         conditions: internalConditions.value,
+        items: internalItems.value,
       };
+    });
+
+    const filteredItems = computed<SelectOption[]>(() => {
+      const {column} = props as TableHeaderDialogFilterProps;
+
+      const items = column?.filterItems;
+
+      // undefined items
+      if (!items) {
+        // console.log('undefined items');
+        return [];
+      }
+
+      // items as function
+      if (typeof items === 'function') {
+        // console.log('items as function');
+        return items(filterData.value, column) as SelectOption[];
+      }
+
+      // invalid type of items or empty items
+      if (!Array.isArray(items) || items.length === 0) {
+        // console.log('invalid type of items or empty items');
+        return [];
+      }
+
+      // items as an array of string
+      if (typeof items[0] === 'string') {
+        // console.log('items as an array of string');
+        return (items as string[]).map((d: string) => {
+          return {label: d, value: d};
+        });
+      }
+
+      // items as an array of SelectOption
+      // console.log('items as an array of SelectOption');
+      return items as SelectOption[];
     });
 
     const onAddCondition = () => {
@@ -81,6 +128,11 @@ export default defineComponent({
 
     const onConditionsChange = (newConditions: FilterConditionData[]) => {
       internalConditions.value = newConditions;
+      emit('change', filterData.value);
+    };
+
+    const onItemsChange = (newItems: string[]) => {
+      internalItems.value = newItems;
       emit('change', filterData.value);
     };
 
@@ -106,15 +158,20 @@ export default defineComponent({
     }, (value) => {
       if (value) {
         internalConditions.value = value;
+        if (internalConditions.value.length === 0) {
+          internalConditions.value.push(getDefaultFilterCondition());
+        }
       }
     });
 
     return {
-      items,
       internalSearchString,
       internalConditions,
+      internalItems,
+      filteredItems,
       onAddCondition,
       onConditionsChange,
+      onItemsChange,
       onSearch,
     };
   },
@@ -125,6 +182,10 @@ export default defineComponent({
 @import "../../styles/variables.scss";
 
 .table-header-dialog-filter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
   .title {
     font-size: 14px;
     font-weight: 900;
@@ -144,12 +205,33 @@ export default defineComponent({
     }
   }
 
-  .item-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    height: 100%;
+  .items {
     overflow: auto;
+    flex: 1;
+    border: 1px solid $infoBorderColor;
+    padding: 10px;
+
+    .item-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      max-height: 240px;
+      display: flex;
+      flex-direction: column;
+
+      .item {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        .label {
+          margin-left: 5px;
+        }
+      }
+    }
   }
 }
 </style>

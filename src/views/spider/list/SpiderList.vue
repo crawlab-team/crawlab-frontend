@@ -59,11 +59,22 @@ export default defineComponent({
         key: 'type',
         label: 'Spider Type',
         width: '120',
+        filterItems: [
+          {label: 'Customized', value: 'customized'},
+          {label: 'Configurable', value: 'configurable'},
+        ],
       },
       {
         key: 'project_name',
         label: 'Project',
         width: '120',
+        filterItems: () => {
+          const arr: SelectOption[] = [];
+          for (let i = 0; i < 20; i++) {
+            arr.push({label: `Item ${i + 1}`, value: (i + 1).toString()});
+          }
+          return arr;
+        },
       },
       // {
       //   key: 'is_long_task',

@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import FilterCondition from '@/components/filter/FilterCondition.vue';
+import FilterCondition, {getDefaultFilterCondition} from '@/components/filter/FilterCondition.vue';
 
 export default defineComponent({
   name: 'FilterConditionList',
@@ -41,6 +41,9 @@ export default defineComponent({
     const onDelete = (index: number) => {
       const {conditions} = props as FilterConditionListProps;
       conditions.splice(index, 1);
+      if (conditions.length === 0) {
+        conditions.push(getDefaultFilterCondition());
+      }
       emit('change', conditions);
     };
 

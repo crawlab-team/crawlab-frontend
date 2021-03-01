@@ -24,18 +24,27 @@
             <TableHeaderDialogSort :value="internalSort" @change="onSortChange"/>
           </div>
           <div class="item filter">
-            <TableHeaderDialogFilter :conditions="conditions" :search-string="searchString" @change="onFilterChange"/>
+            <TableHeaderDialogFilter
+                :column="column"
+                :conditions="conditions"
+                :search-string="searchString"
+                @change="onFilterChange"
+            />
           </div>
         </div>
       </div>
       <div class="footer">
-        <!--      <IconButton tooltip="Cancel" type="info" size="mini" icon="el-icon-close" round plain @click="onCancel"/>-->
-        <!--      <IconButton tooltip="Confirm" type="primary" size="mini" icon="el-icon-check" round @click="onConfirm"/>-->
-        <!--            <Button tooltip="Cancel" type="info" size="mini" icon="el-icon-close" plain>Cancel</Button>-->
-        <!--      <Button tooltip="Confirm" type="primary" size="mini" icon="el-icon-check">Confirm</Button>-->
         <Button plain size="mini" tooltip="Cancel" type="info" @click="onCancel">Cancel</Button>
-        <Button size="mini" tooltip="Clear Conditions" type="danger" @click="onClear">Clear</Button>
-        <Button size="mini" tooltip="Apply Conditions" type="primary" @click="onApply">Apply</Button>
+        <Button size="mini" tooltip="Clear" type="danger" @click="onClear">Clear</Button>
+        <Button
+            :disabled="isApplyDisabled"
+            size="mini"
+            tooltip="Apply"
+            type="primary"
+            @click="onApply"
+        >
+          Apply
+        </Button>
       </div>
     </div>
   </el-popover>
@@ -49,6 +58,7 @@ import TableHeaderDialogFilter from '@/components/table/TableHeaderDialogFilter.
 import TableHeaderDialogSort from '@/components/table/TableHeaderDialogSort.vue';
 import variables from '@/styles/variables.scss';
 import {plainClone} from '@/utils/object';
+import {FILTER_CONDITION_TYPE_NOT_SET} from '@/constants/filter';
 
 export default defineComponent({
   name: 'TableHeaderFilter',
@@ -96,10 +106,37 @@ export default defineComponent({
 
     const searchString = computed<string | undefined>(() => internalFilter.value?.searchString);
 
-    const conditions = computed<FilterConditionData[] | undefined>(() => internalFilter.value?.conditions);
+    const conditions = computed<FilterConditionData[]>(() => internalFilter.value?.conditions || []);
+
+    const items = computed<string[]>(() => internalFilter.value?.items || []);
+
+    const trueConditions = computed<FilterConditionData[]>(() => {
+      return conditions.value?.filter(d => d.type !== FILTER_CONDITION_TYPE_NOT_SET);
+    });
+
+    const isEmptyFilter = computed<boolean>(() => {
+      return !searchString.value && trueConditions.value.length == 0 && items.value.length === 0;
+    });
+
+    const isApplyDisabled = computed<boolean>(() => {
+      for (const cond of trueConditions.value) {
+        if (!cond.value) {
+          return true;
+        }
+      }
+      return false;
+    });
 
     const cancel = () => {
+      // console.debug('cancel');
       emit('cancel');
+    };
+
+    const clear = () => {
+      internalSort.value = undefined;
+      internalFilter.value = undefined;
+      // console.debug('clear');
+      emit('clear');
     };
 
     const onClickOutside = () => {
@@ -111,24 +148,29 @@ export default defineComponent({
     };
 
     const onClear = () => {
-      internalSort.value = undefined;
-      internalFilter.value = undefined;
-      emit('clear');
+      clear();
     };
 
     const onApply = () => {
+      if (!internalSort.value && isEmptyFilter.value) {
+        clear();
+        return;
+      }
       const value: TableHeaderDialogValue = {
         sort: internalSort.value,
         filter: internalFilter.value,
       };
+      // console.debug('apply');
       emit('apply', value);
     };
 
     const onSortChange = (value: string) => {
+      // console.debug('onSortChange');
       internalSort.value = value;
     };
 
     const onFilterChange = (value: TableHeaderDialogFilterData) => {
+      // console.debug('onFilterChange');
       internalFilter.value = value;
     };
 
@@ -148,6 +190,7 @@ export default defineComponent({
       internalSort,
       searchString,
       conditions,
+      isApplyDisabled,
       onClickOutside,
       onCancel,
       onClear,
@@ -197,7 +240,6 @@ export default defineComponent({
       min-height: 100%;
       display: flex;
       flex-direction: column;
-      //justify-content: space-between;
 
       .item {
         padding: 10px 0;
@@ -207,12 +249,18 @@ export default defineComponent({
           padding-top: 0;
         }
 
+        &:last-child {
+          border-bottom: none;
+        }
+
         &.sort {
           flex-basis: 100%;
         }
 
         &.filter {
           flex: 1;
+          display: flex;
+          flex-direction: column;
         }
       }
     }
@@ -220,7 +268,6 @@ export default defineComponent({
 
   .footer {
     height: 30px;
-    margin-top: 10px;
     text-align: right;
   }
 }

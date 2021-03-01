@@ -12,8 +12,10 @@
     <el-input
         :model-value="condition.value"
         class="filter-condition-value"
+        :class="isInvalidValue ? 'invalid' : ''"
         size="mini"
         placeholder="Value"
+        :disabled="condition.type === FILTER_CONDITION_TYPE_NOT_SET"
         @input="onValueChange"
     />
     <el-tooltip content="Delete Condition">
@@ -23,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {computed, defineComponent} from 'vue';
 import {
   FILTER_CONDITION_TYPE_CONTAINS,
   FILTER_CONDITION_TYPE_EQUAL_TO,
@@ -81,10 +83,21 @@ export default defineComponent({
     'delete',
   ],
   setup(props, {emit}) {
+    const isInvalidValue = computed<boolean>(() => {
+      const {condition} = props as FilterConditionProps;
+      if (condition?.type === FILTER_CONDITION_TYPE_NOT_SET) {
+        return false;
+      }
+      return !condition?.value;
+    });
+
     const onTypeChange = (conditionType: string) => {
       const {condition} = props as FilterConditionProps;
       if (condition) {
         condition.type = conditionType;
+        if (condition.type === FILTER_CONDITION_TYPE_NOT_SET) {
+          condition.value = undefined;
+        }
       }
       emit('change', condition);
     };
@@ -102,7 +115,9 @@ export default defineComponent({
     };
 
     return {
+      FILTER_CONDITION_TYPE_NOT_SET,
       conditionTypesOptions,
+      isInvalidValue,
       onTypeChange,
       onValueChange,
       onDelete,
@@ -141,5 +156,9 @@ export default defineComponent({
 .filter-condition >>> .filter-condition-value.el-input .el-input__inner {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.filter-condition >>> .filter-condition-value.el-input.invalid .el-input__inner {
+  border-color: #F56C6C;
 }
 </style>

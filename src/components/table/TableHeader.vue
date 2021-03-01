@@ -38,6 +38,7 @@ import TableHeaderAction from '@/components/table/TableHeaderAction.vue';
 import {conditionTypesMap} from '@/components/filter/FilterCondition.vue';
 import {ASCENDING, DESCENDING} from '@/constants/sort';
 import variables from '@/styles/variables.scss';
+import {FILTER_CONDITION_TYPE_NOT_SET} from '@/constants/filter';
 
 export default defineComponent({
   name: 'TableHeader',
@@ -85,15 +86,25 @@ export default defineComponent({
       let filterTooltip = 'Filter';
       let filterIsHtml = false;
       if (filterData.value) {
-        const {searchString, conditions} = filterData.value;
+        const {searchString, conditions, items} = filterData.value;
+
+        // search string
         if (searchString) {
           filterTooltip += `<br><span style="color: ${variables.primaryColor}">Search:</span> <span style="color: ${variables.warningColor};">"${searchString}"</span>`;
           filterIsHtml = true;
         }
+
+        // filter conditions
         if (conditions && conditions.length > 0) {
-          filterTooltip += '<br>' + conditions.map(d =>
-              `<span style="color: ${variables.primaryColor};margin-right: 5px">${conditionTypesMap[d.type || '']}:</span> <span style="color: ${variables.warningColor};">"${d.value}"</span>`)
+          filterTooltip += '<br>' + conditions.filter(d => d.type !== FILTER_CONDITION_TYPE_NOT_SET)
+              .map(d => `<span style="color: ${variables.primaryColor};margin-right: 5px">${conditionTypesMap[d.type || '']}:</span> <span style="color: ${variables.warningColor};">"${d.value}"</span>`)
               .join('<br>');
+          filterIsHtml = true;
+        }
+
+        // filter items
+        if (items && items.length > 0) {
+          filterTooltip += `<br><span style="color: ${variables.primaryColor};margin-right: 5px">Include:</span><span style="color: ${variables.warningColor}">` + items.join(', ') + '</span>';
           filterIsHtml = true;
         }
       }
