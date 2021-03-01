@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip :content="tooltip ? tooltip : undefined">
+  <el-tooltip :content="tooltip" :disabled="!tooltip">
     <el-button
         :circle="circle"
         :disabled="disabled"

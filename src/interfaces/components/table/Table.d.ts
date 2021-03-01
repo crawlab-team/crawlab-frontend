@@ -4,6 +4,7 @@ declare global {
   interface TableProps {
     data: any[];
     columns: TableColumn[];
+    selectedColumnKeys: string[];
   }
 
   interface TableColumn<T = any> {
@@ -18,6 +19,7 @@ declare global {
     buttons?: TableColumnButton[];
     value?: TableValueFunction<T> | any;
     filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
+    disableTransfer?: boolean;
   }
 
   interface TableColumnButton {

@@ -26,6 +26,7 @@ import NavActions from '@/components/nav/NavActions.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import {useRouter} from 'vue-router';
+import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 
 export default defineComponent({
   name: 'SpiderList',
@@ -117,7 +118,7 @@ export default defineComponent({
         width: '140',
       },
       {
-        key: 'actions',
+        key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
         width: '180',
         fixed: 'right',
