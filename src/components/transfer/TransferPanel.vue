@@ -1,5 +1,5 @@
 <template>
-  <el-card class="transfer-panel">
+  <el-card class="transfer-panel" shadow="never">
     <template #header>
       <div class="transfer-panel-header">
         <div class="left">
@@ -140,7 +140,7 @@ export default defineComponent({
 
 .transfer-panel {
   flex: 1;
-  //width: 360px;
+  min-width: 240px;
   padding: 0 10px;
 
   .transfer-panel-header {
@@ -155,7 +155,6 @@ export default defineComponent({
       .title {
         padding-left: 10px;
         font-size: 16px;
-        color: $infoColor;
       }
     }
   }
