@@ -18,6 +18,7 @@ export default defineComponent({
     description: {
       type: String,
       required: false,
+      default: 'No Data Available'
     }
   },
   setup() {

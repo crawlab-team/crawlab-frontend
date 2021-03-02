@@ -5,7 +5,6 @@
       title="Table Columns Customization">
     <div class="table-columns-transfer-content">
       <Transfer
-          :button-texts="['Unselect', 'Select']"
           :data="computedData"
           :titles="['Available', 'Selected']"
           :value="internalSelectedColumnKeys"

@@ -4,7 +4,8 @@ declare global {
   interface TransferProps {
     value: Key[];
     data: DataItem[];
-    titles?: string[];
-    buttonTexts?: string[];
+    titles: string[];
+    buttonTexts: string[];
+    buttonTooltips: string[];
   }
 }
