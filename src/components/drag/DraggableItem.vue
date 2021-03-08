@@ -8,7 +8,7 @@
       @dragenter="$emit('d-enter', item)"
       @dragleave="$emit('d-leave', item)"
   >
-    <draggable-item-content :item="item"/>
+    <DraggableItemContent :item="item"/>
   </div>
 </template>
 
