@@ -3,7 +3,6 @@ import {Table, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
 
 const useStore = (props: TableProps, ctx: SetupContext, table: Ref<Table | undefined>) => {
   const setColumns = (states: TableStoreStates, columns: TableColumnCtx[]) => {
-    console.log(columns);
     states._columns.value = columns;
   };
 
