@@ -1,5 +1,5 @@
 import {computed, ref, Ref, SetupContext} from 'vue';
-import {Table} from 'element-plus/lib/el-table/src/table.type';
+import {Table, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
 import {cloneArray, plainClone} from '@/utils/object';
 import useStore from '@/components/table/store';
 
@@ -20,21 +20,20 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     return map;
   });
 
+  const columnsCtx = computed<TableColumnCtx[]>(() => {
+    return table.value?.store.states.columns.value || [];
+  });
+
   const columnCtxMap = computed<TableColumnCtxMap>(() => {
     const map = {} as TableColumnCtxMap;
-    const columns = table.value?.store.states.columns.value || [];
-    columns.forEach(c => {
+    columnsCtx.value.forEach(c => {
       map[c.columnKey] = c;
     });
     return map;
   });
 
   const selectedColumns = computed<TableColumn[]>(() => {
-    return internalSelectedColumnKeys.value.map((key, index) => {
-      const d = columnsMap.value[key];
-      d.index = index;
-      return d;
-    });
+    return internalSelectedColumnKeys.value.map(key => columnsMap.value[key]);
   });
 
   const onShowCustomizeColumns = () => {
@@ -45,12 +44,26 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     columnsTransferVisible.value = false;
   };
 
+  const isColumnsEqual = (columnKeys: string[]) => {
+    const columnKeysSorted = cloneArray(columnKeys).sort().join(',');
+    const internalSelectedColumnKeysSorted = cloneArray(internalSelectedColumnKeys.value).sort().join(',');
+    return columnKeysSorted === internalSelectedColumnKeysSorted;
+  };
+
   const updateColumns = (columnKeys: string[]) => {
     if (!store.value) return;
+
+    // selection column keys
+    const selectionColumnKeys = columnsCtx.value.filter(d => d.type === 'selection').map(d => d.columnKey);
+
+    // column keys
+    const columns = selectionColumnKeys.concat(columnKeys).map(key => columnCtxMap.value[key]);
+
+    if (isColumnsEqual(columnKeys)) {
+      store.value?.commit('setColumns', columns);
+      store.value?.updateColumns();
+    }
     internalSelectedColumnKeys.value = columnKeys;
-    const columns = columnKeys.map(key => columnCtxMap.value[key]);
-    store.value?.commit('setColumns', columns);
-    store.value?.updateColumns();
   };
 
   const onColumnsChange = (value: string[]) => {

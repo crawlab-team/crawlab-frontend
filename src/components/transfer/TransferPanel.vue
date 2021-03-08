@@ -37,6 +37,7 @@
                 <el-checkbox
                     :label="item.key"
                     class="check-item"
+                    :disabled="item.disabled"
                 >
                   {{ item.label }}
                 </el-checkbox>

@@ -170,6 +170,7 @@ export default defineComponent({
             }
           },
         ],
+        disableTransfer: true,
       },
     ];
     const tableTotal = 100;

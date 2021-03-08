@@ -17,6 +17,7 @@
           reserve-selection
           type="selection"
           width="40"
+          fixed="left"
       />
       <el-table-column
           v-for="c in selectedColumns"
