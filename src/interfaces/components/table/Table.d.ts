@@ -1,8 +1,9 @@
-import {VNode} from 'vue';
+import {Ref, VNode} from 'vue';
+import {AnyObject, Store, StoreMutations, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
 
 declare global {
   interface TableProps {
-    data: any[];
+    data: TableData;
     columns: TableColumn[];
     selectedColumnKeys: string[];
   }
@@ -12,6 +13,7 @@ declare global {
     label: string;
     width?: number | string;
     minWidth?: number | string;
+    index?: number;
     align?: string;
     sortable?: boolean;
     fixed?: string | boolean;
@@ -20,6 +22,20 @@ declare global {
     value?: TableValueFunction<T> | any;
     filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
     disableTransfer?: boolean;
+  }
+
+  interface TableRowData {
+    [key: string]: any;
+  }
+
+  type TableData = TableRowData[];
+
+  interface TableColumnsMap<T = any> {
+    [key: string]: TableColumn<T>;
+  }
+
+  interface TableColumnCtxMap {
+    [key: string]: TableColumnCtx;
   }
 
   interface TableColumnButton {
@@ -34,4 +50,17 @@ declare global {
   type TableValueFunction<T = any> = (row: T, column: TableColumn<T>) => VNode;
   type TableButtonOnClickFunction<T = any> = (row: T, column: TableColumn<T>) => void;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
+
+  interface TableStore extends Store {
+    mutations: TableStoreMutations;
+  }
+
+  interface TableStoreMutations extends StoreMutations {
+    setColumns: (states: TableStoreStates, columns: TableColumnCtx[]) => void;
+  }
+
+  interface TableStoreStates {
+    _data: Ref<AnyObject[]>;
+    _columns: Ref<TableColumnCtx[]>;
+  }
 }

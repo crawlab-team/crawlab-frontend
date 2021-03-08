@@ -8,4 +8,8 @@ declare global {
     buttonTexts: string[];
     buttonTooltips: string[];
   }
+
+  interface DataMap {
+    [key: string]: DataItem;
+  }
 }

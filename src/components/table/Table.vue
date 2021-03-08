@@ -3,21 +3,33 @@
     <!-- Table Body -->
     <el-table
         v-if="selectedColumns.length > 0"
+        ref="table"
         :data="tableData"
         :fit="false"
         :row-key="rowKey"
         border
         size="small"
+        @selection-change="onSelectionChange"
     >
+      <el-table-column
+          v-if="selectable"
+          align="center"
+          reserve-selection
+          type="selection"
+          width="40"
+      />
       <el-table-column
           v-for="c in selectedColumns"
           :key="c.key"
+          :column-key="c.key"
           :align="c.align"
           :fixed="c.fixed ? c.fixed : false"
           :label="c.label"
           :min-width="c.minWidth"
           :sortable="c.sortable"
           :width="c.width"
+          :index="c.index"
+          :resizable="c.resizable === undefined ? true : c.resizable"
       >
         <template #header="scope">
           <TableHeader :column="c" :index="scope.$index" @change="onHeaderChange"/>
@@ -72,12 +84,16 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeMount, ref} from 'vue';
+import {defineComponent, onBeforeMount, PropType, ref, SetupContext} from 'vue';
+import {Table} from 'element-plus/lib/el-table/src/table.type';
 import TableCell from '@/components/table/TableCell.vue';
 import TableHeader from '@/components/table/TableHeader.vue';
 import FaIconButton from '@/components/button/FaIconButton.vue';
 import TableColumnsTransfer from '@/components/table/TableColumnsTransfer.vue';
-import {cloneArray, plainClone} from '@/utils/object';
+import useColumn from '@/components/table/column';
+import useHeader from '@/components/table/header';
+import useData from '@/components/table/data';
+import useSelection from '@/components/table/selection';
 
 export default defineComponent({
   name: 'Table',
@@ -89,21 +105,21 @@ export default defineComponent({
   },
   props: {
     data: {
-      type: Array,
+      type: Array as PropType<TableData>,
       required: true,
       default: () => {
         return [];
       },
     },
     columns: {
-      type: Array,
+      type: Array as PropType<TableColumn[]>,
       required: true,
       default: () => {
         return [];
       },
     },
     selectedColumnKeys: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
       default: () => {
         return [];
@@ -125,60 +141,59 @@ export default defineComponent({
       type: String,
       default: '_id',
     },
+    selectable: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props, {emit}) {
-    const internalSelectedColumnKeys = ref<string[]>([]);
-    const columnsTransferVisible = ref<boolean>(false);
+  emits: [
+    'export',
+    'header-change',
+    'pagination-change',
+    'selection-change',
+  ],
+  setup(props: TableProps, ctx: SetupContext) {
+    const table = ref<Table>();
 
-    const tableData = computed(() => {
-      const {data} = props as TableProps;
-      return data;
-    });
+    const {
+      tableData,
+    } = useData(props, ctx);
 
-    const selectedColumns = computed<TableColumn[]>(() => {
-      const {columns} = props as TableProps;
-      return columns.filter(d => internalSelectedColumnKeys.value.includes(d.key));
-    });
+    const {
+      internalSelectedColumnKeys,
+      columnsTransferVisible,
+      selectedColumns,
+      onShowCustomizeColumns,
+      onHideColumnsTransfer,
+      onColumnsChange,
+      initColumns,
+    } = useColumn(props, ctx, table);
 
-    const onHeaderChange = (column: TableColumn, sort: SortDirection, filter: FilterConditionData[]) => {
-      // console.log(column, sort, filter);
-    };
+    const {
+      onExport,
+      onHeaderChange,
+    } = useHeader(props, ctx);
 
-    const onExport = () => {
-      emit('export');
-    };
-
-    const onShowCustomizeColumns = () => {
-      columnsTransferVisible.value = true;
-    };
-
-    const onHideColumnsTransfer = () => {
-      columnsTransferVisible.value = false;
-    };
-
-    const onColumnsChange = (value: string[]) => {
-      internalSelectedColumnKeys.value = value;
-    };
+    const {
+      onSelectionChange,
+    } = useSelection(props, ctx);
 
     onBeforeMount(() => {
-      const {columns, selectedColumnKeys} = props as TableProps;
-      if (selectedColumnKeys.length > 0) {
-        internalSelectedColumnKeys.value = plainClone(selectedColumnKeys);
-      } else {
-        internalSelectedColumnKeys.value = cloneArray(columns.map(d => d.key));
-      }
+      initColumns();
     });
 
     return {
+      table,
+      tableData,
       internalSelectedColumnKeys,
       columnsTransferVisible,
-      tableData,
       selectedColumns,
       onHeaderChange,
       onShowCustomizeColumns,
       onHideColumnsTransfer,
       onColumnsChange,
       onExport,
+      onSelectionChange,
     };
   },
 });

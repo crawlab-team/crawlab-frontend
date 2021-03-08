@@ -32,14 +32,16 @@
               class="check-list"
               @change="onCheck"
           >
-            <el-checkbox
-                v-for="item in items"
-                :key="item.key"
-                :label="item.key"
-                class="check-item"
-            >
-              {{ item.label }}
-            </el-checkbox>
+            <DraggableList :items="items" @d-end="onDragEnd">
+              <template #default="{item}">
+                <el-checkbox
+                    :label="item.key"
+                    class="check-item"
+                >
+                  {{ item.label }}
+                </el-checkbox>
+              </template>
+            </DraggableList>
           </el-checkbox-group>
         </template>
         <template v-else>
@@ -56,10 +58,14 @@
 import {computed, defineComponent, ref, watch} from 'vue';
 import {DataItem, Key} from 'element-plus/lib/el-transfer/src/transfer';
 import Empty from '@/components/empty/Empty.vue';
+import DraggableList from '@/components/drag/DraggableList.vue';
 
 export default defineComponent({
   name: 'TransferPanel',
-  components: {Empty},
+  components: {
+    DraggableList,
+    Empty,
+  },
   props: {
     title: {
       type: String,
@@ -83,6 +89,7 @@ export default defineComponent({
   },
   emits: [
     'check',
+    'drag',
   ],
   setup(props, {emit}) {
     const searchString = ref<string>('');
@@ -113,13 +120,17 @@ export default defineComponent({
       emit('check', value ? data.map(d => d.key) : []);
     };
 
+    const onDragEnd = (items: DataItem[]) => {
+      emit('drag', items);
+    };
+
     watch(() => {
       const {checked} = props as TransferPanelProps;
       return checked;
     }, () => {
       const {checked, data} = props as TransferPanelProps;
       isCheckedAll.value = checked.length > 0 && checked.length === data.length;
-      isIntermediate.value = checked.length > 0 && checked.length < checked.length;
+      isIntermediate.value = checked.length > 0 && checked.length < data.length;
     });
 
     return {
@@ -130,6 +141,7 @@ export default defineComponent({
       summary,
       onCheck,
       onCheckAll,
+      onDragEnd,
     };
   },
 });
@@ -179,5 +191,12 @@ export default defineComponent({
       height: 360px;
     }
   }
+}
+</style>
+<style scoped>
+.transfer-panel >>> .draggable-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 </style>

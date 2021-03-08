@@ -33,7 +33,7 @@ export const buttonProps = {
   size: {
     type: String,
     required: false,
-    default: 'small',
+    default: 'mini',
   },
   round: {
     type: Boolean,

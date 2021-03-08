@@ -4,9 +4,10 @@
       <NavActions ref="navActions" class="nav-actions">
         <NavActionGroup>
           <NavActionItem>
-            <el-tooltip content="Spider Actions">
-              <font-awesome-icon :icon="['fa', 'spider']" class="title"/>
-            </el-tooltip>
+            <Button size="mini" tooltip="New Spider" type="success">
+              <font-awesome-icon :icon="['fa' ,'plus']"/>
+              New Spider
+            </Button>
           </NavActionItem>
         </NavActionGroup>
       </NavActions>
@@ -14,24 +15,33 @@
           :columns="tableColumns"
           :data="tableData"
           :total="tableTotal"
+          selectable
+          @selection-change="onSelect"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import Table from '@/components/table/Table.vue';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import {useRouter} from 'vue-router';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import Button from '@/components/button/Button.vue';
 
 export default defineComponent({
   name: 'SpiderList',
-  components: {NavActionGroup, NavActions, NavActionItem, Table},
-  setup() {
+  components: {
+    Button,
+    NavActions,
+    NavActionItem,
+    NavActionGroup,
+    Table,
+  },
+  setup(props, {emit}) {
     const router = useRouter();
 
     const tableData: Spider[] = (() => {
@@ -48,7 +58,6 @@ export default defineComponent({
       }
       return data;
     })();
-
     const tableColumns: TableColumn<Spider>[] = [
       {
         key: 'display_name',
@@ -163,13 +172,19 @@ export default defineComponent({
         ],
       },
     ];
-
     const tableTotal = 100;
+
+    const selection = ref<Spider[]>([]);
+    const onSelect = (value: Spider[]) => {
+      selection.value = value;
+    };
 
     return {
       tableData,
       tableColumns,
       tableTotal,
+      selection,
+      onSelect,
     };
   },
 });

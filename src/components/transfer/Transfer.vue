@@ -6,6 +6,7 @@
         :title="titles[0]"
         class="transfer-panel-left"
         @check="onLeftCheck"
+        @drag="onLeftDrag"
     />
     <div class="actions">
       <Button :disabled="leftDisabled" :tooltip="leftTooltip || 'Move to Left'" size="large" @click="onLeftMove">
@@ -27,13 +28,14 @@
         :title="titles[1]"
         class="transfer-panel-right"
         @check="onRightCheck"
+        @drag="onRightDrag"
     />
   </div>
 </template>
 
 <script lang="ts">
 import {computed, defineComponent, ref} from 'vue';
-import {Key} from 'element-plus/lib/el-transfer/src/transfer';
+import {DataItem, Key} from 'element-plus/lib/el-transfer/src/transfer';
 import TransferPanel from '@/components/transfer/TransferPanel.vue';
 import Button from '@/components/button/Button.vue';
 
@@ -81,12 +83,21 @@ export default defineComponent({
     'change',
   ],
   setup(props, {emit}) {
+    const dataMap = computed<DataMap>(() => {
+      const {data} = props as TransferProps;
+      const map = {} as DataMap;
+      data.forEach(d => {
+        map[d.key] = d;
+      });
+      return map;
+    });
+
     const leftChecked = ref<Key[]>([]);
-    const leftData = computed(() => {
+    const leftData = computed<DataItem[]>(() => {
       const {value, data} = props as TransferProps;
       return data.filter(d => !value.includes(d.key));
     });
-    const leftTooltip = computed(() => {
+    const leftTooltip = computed<string>(() => {
       const {buttonTooltips} = props as TransferProps;
       return buttonTooltips[0];
     });
@@ -95,11 +106,11 @@ export default defineComponent({
     };
 
     const rightChecked = ref<Key[]>([]);
-    const rightData = computed(() => {
-      const {value, data} = props as TransferProps;
-      return data.filter(d => value.includes(d.key));
+    const rightData = computed<DataItem[]>(() => {
+      const {value} = props as TransferProps;
+      return value.map(key => dataMap.value[key]);
     });
-    const rightTooltip = computed(() => {
+    const rightTooltip = computed<string>(() => {
       const {buttonTooltips} = props as TransferProps;
       return buttonTooltips[1];
     });
@@ -120,11 +131,22 @@ export default defineComponent({
       change(newValue);
       rightChecked.value = [];
     };
+    const onLeftDrag = (items: DataItem[]) => {
+      const {value} = props as TransferProps;
+      const itemKeys = items.map(d => d.key);
+      const newValue = value.filter(d => !itemKeys.includes(d));
+      change(newValue);
+    };
+
     const onRightMove = () => {
       const {value} = props as TransferProps;
       const newValue = value.concat(leftChecked.value);
       change(newValue);
       leftChecked.value = [];
+    };
+    const onRightDrag = (items: DataItem[]) => {
+      const newValue = items.map(d => d.key);
+      change(newValue);
     };
 
     return {
@@ -134,12 +156,14 @@ export default defineComponent({
       leftTooltip,
       onLeftCheck,
       onLeftMove,
+      onLeftDrag,
       rightChecked,
       rightData,
       rightDisabled,
       rightTooltip,
       onRightCheck,
       onRightMove,
+      onRightDrag,
     };
   },
 });

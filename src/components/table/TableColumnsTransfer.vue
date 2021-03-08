@@ -48,6 +48,7 @@ export default defineComponent({
   emits: [
     'close',
     'change',
+    'sort',
     'apply',
   ],
   setup(props, {emit}) {
