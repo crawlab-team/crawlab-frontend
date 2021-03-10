@@ -17,6 +17,7 @@ export default {
       clone: false,
       run: false,
     },
+    spiderForm: undefined,
   },
   getters: {
     // tab name for spider detail
@@ -43,6 +44,9 @@ export default {
       for (const key in state.dialogVisible) {
         state.dialogVisible[key as SpiderDialogKey] = false;
       }
+    },
+    setSpiderForm: (state: SpiderStoreState, value: Spider) => {
+      state.spiderForm = value;
     },
   },
   actions: {}

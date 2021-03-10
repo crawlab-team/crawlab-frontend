@@ -4,7 +4,7 @@ import {cloneArray, plainClone} from '@/utils/object';
 import useStore from '@/components/table/store';
 
 const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | undefined>) => {
-  const {columns, selectedColumnKeys} = props;
+  const {columns} = props;
 
   const {store} = useStore(props, ctx, table);
 
@@ -34,6 +34,10 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
 
   const selectedColumns = computed<TableColumn[]>(() => {
     return internalSelectedColumnKeys.value.map(key => columnsMap.value[key]);
+  });
+
+  const defaultSelectedColumns = computed<TableColumn[]>(() => {
+    return columns.filter(d => !d.defaultHidden);
   });
 
   const onShowColumnsTransfer = () => {
@@ -71,8 +75,8 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
   };
 
   const initColumns = () => {
-    if (selectedColumnKeys.length > 0) {
-      internalSelectedColumnKeys.value = plainClone(selectedColumnKeys);
+    if (defaultSelectedColumns.value.length < columns.length) {
+      internalSelectedColumnKeys.value = plainClone(defaultSelectedColumns.value.map(d => d.key));
     } else {
       internalSelectedColumnKeys.value = cloneArray(columns.map(d => d.key));
     }

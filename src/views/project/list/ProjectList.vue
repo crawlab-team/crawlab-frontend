@@ -1,13 +1,13 @@
 <template>
-  Node
+  ProjectList
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'NodeList',
-  setup() {
+  name: 'ProjectList',
+  setup(props, {emit}) {
     return {};
   },
 });

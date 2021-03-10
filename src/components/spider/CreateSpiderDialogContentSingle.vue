@@ -6,8 +6,8 @@
     <FormItem :span="2" label="Display Name" required>
       <el-input placeholder="Display Name"/>
     </FormItem>
-    <FormItem :span="3" label="Description">
-      <el-input placeholder="Description" type="textarea"/>
+    <FormItem :span="3" label="Remark">
+      <el-input placeholder="Remark" type="textarea"/>
     </FormItem>
   </Form>
   <!--  <el-form-->

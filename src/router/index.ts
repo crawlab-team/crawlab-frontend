@@ -19,7 +19,12 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: 'nodes',
         name: 'NodeList',
-        component: () => import('@/views/node/NodeList.vue'),
+        component: () => import('@/views/node/list/NodeList.vue'),
+      },
+      {
+        path: 'projects',
+        name: 'ProjectList',
+        component: () => import('@/views/project/list/ProjectList.vue'),
       },
       {
         path: 'spiders',

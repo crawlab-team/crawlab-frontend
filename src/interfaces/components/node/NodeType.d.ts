@@ -1,0 +1,3 @@
+interface NodeTypeProps {
+  isMaster?: boolean;
+}

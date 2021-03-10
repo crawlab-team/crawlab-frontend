@@ -10,3 +10,7 @@ interface FormContext {
   size?: string;
   grid: number;
 }
+
+interface FormModel {
+  [key: string]: any;
+}

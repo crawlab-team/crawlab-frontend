@@ -11,6 +11,7 @@ declare global {
     actionsCollapsed: boolean;
     tabs: NavItem[];
     dialogVisible: SpiderDialogVisible;
+    spiderForm?: Spider;
   }
 
   interface SpiderStoreGetters extends GetterTree<SpiderStoreState, RootStoreState> {
@@ -23,5 +24,6 @@ declare global {
     showDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
     hideDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
     resetDialogs: StoreMutation<SpiderStoreState>;
+    setSpiderForm: StoreMutation<SpiderStoreState, Spider>;
   }
 }

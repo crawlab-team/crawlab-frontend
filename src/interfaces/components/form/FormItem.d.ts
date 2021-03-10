@@ -1,7 +1,8 @@
 interface FormItemProps {
-  size?: string;
+  prop?: string;
   label?: string;
   labelTooltip?: string;
-  required: boolean;
+  size?: string;
   span: number;
+  required: boolean;
 }

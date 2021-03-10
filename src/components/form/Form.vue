@@ -3,6 +3,7 @@
       :inline="inline"
       :label-width="labelWidth"
       :size="size"
+      :model="model"
       class="form"
   >
     <slot></slot>
@@ -10,11 +11,17 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, provide, reactive} from 'vue';
+import {computed, defineComponent, PropType, provide, reactive} from 'vue';
 
 export default defineComponent({
   name: 'Form',
   props: {
+    model: {
+      type: Object as PropType<FormModel>,
+      default: () => {
+        return {};
+      }
+    },
     inline: {
       type: Boolean,
       default: true,

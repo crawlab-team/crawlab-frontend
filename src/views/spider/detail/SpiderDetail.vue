@@ -130,6 +130,7 @@ export default defineComponent({
     const showActionsToggleTooltip = ref<boolean>(false);
 
     const spiderNavItems = computed<NavItem[]>(() => {
+      // TODO: implement with real data
       const list = [] as NavItem[];
       for (let i = 0; i < 50; i++) {
         const s: Spider = {
@@ -138,7 +139,7 @@ export default defineComponent({
           display_name: `Spider ${i + 1}`,
         };
         list.push({
-          id: s._id,
+          id: s._id || '',
           title: s.display_name,
           subtitle: s.name,
         });

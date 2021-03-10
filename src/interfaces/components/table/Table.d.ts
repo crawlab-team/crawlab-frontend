@@ -28,13 +28,14 @@ declare global {
     value?: TableValueFunction<T> | any;
     filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
     disableTransfer?: boolean;
+    defaultHidden?: boolean;
   }
 
-  interface TableRowData {
+  interface TableAnyRowData {
     [key: string]: any;
   }
 
-  type TableData = TableRowData[];
+  type TableData<T = TableAnyRowData> = T[];
 
   interface TableColumnsMap<T = any> {
     [key: string]: TableColumn<T>;

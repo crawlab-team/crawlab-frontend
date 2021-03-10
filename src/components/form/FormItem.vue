@@ -1,6 +1,7 @@
 <template>
   <div ref="formItem" :style="style" class="form-item">
     <el-form-item
+        :prop="prop"
         :label="label"
         :required="required || form?.required"
         :size="size || form?.size"
@@ -25,7 +26,7 @@ import {computed, defineComponent, inject, onMounted, ref} from 'vue';
 export default defineComponent({
   name: 'FormItem',
   props: {
-    size: {
+    prop: {
       type: String,
       required: false,
     },
@@ -34,6 +35,10 @@ export default defineComponent({
       required: false,
     },
     labelTooltip: {
+      type: String,
+      required: false,
+    },
+    size: {
       type: String,
       required: false,
     },
@@ -46,7 +51,7 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 1,
-    }
+    },
   },
   setup(props: FormItemProps, {emit}) {
     const formItem = ref<HTMLDivElement>();

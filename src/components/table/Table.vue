@@ -218,7 +218,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../styles/variables.scss";
+
 .table {
+  background-color: $containerWhiteBg;
+
   .el-table {
     width: 100%;
   }
