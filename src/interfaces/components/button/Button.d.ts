@@ -6,4 +6,5 @@ interface ButtonProps {
   circle?: boolean;
   plain?: boolean;
   disabled?: boolean;
+  isIcon?: boolean;
 }

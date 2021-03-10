@@ -6,6 +6,12 @@ declare global {
     data: TableData;
     columns: TableColumn[];
     selectedColumnKeys: string[];
+    total: number;
+    page: number;
+    pageSize: number;
+    rowKey: string;
+    selectable: boolean;
+    visibleButtons: BuiltInTableActionButtonName[];
   }
 
   interface TableColumn<T = any> {

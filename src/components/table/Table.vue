@@ -44,24 +44,21 @@
 
     <!-- Table Footer-->
     <div class="table-footer">
-      <div class="actions">
-        <FaIconButton
-            :icon="['fa', 'file-export']"
-            class="action-btn"
-            size="mini"
-            tooltip="Export"
-            type="primary"
-            @click="onExport"
-        />
-        <FaIconButton
-            :icon="['fa', 'arrows-alt']"
-            class="action-btn"
-            size="mini"
-            tooltip="Customize Columns"
-            type="primary"
-            @click="onShowCustomizeColumns"
-        />
-      </div>
+      <TableActions
+          :selection="internalSelection"
+          @click-add="onAdd"
+          @click-edit="onEdit"
+          @click-delete="onDelete"
+          @click-export="onExport"
+          @show-columns-transfer="onShowColumnsTransfer"
+      >
+        <template #prefix>
+          <slot name="actions-prefix"></slot>
+        </template>
+        <template #suffix>
+          <slot name="actions-suffix"></slot>
+        </template>
+      </TableActions>
       <el-pagination
           :current-page="page"
           :page-size="pageSize"
@@ -89,18 +86,19 @@ import {defineComponent, onBeforeMount, PropType, ref, SetupContext} from 'vue';
 import {Table} from 'element-plus/lib/el-table/src/table.type';
 import TableCell from '@/components/table/TableCell.vue';
 import TableHeader from '@/components/table/TableHeader.vue';
-import FaIconButton from '@/components/button/FaIconButton.vue';
 import TableColumnsTransfer from '@/components/table/TableColumnsTransfer.vue';
 import useColumn from '@/components/table/column';
 import useHeader from '@/components/table/header';
 import useData from '@/components/table/data';
 import useSelection from '@/components/table/selection';
+import TableActions from '@/components/table/TableActions.vue';
+import useAction from '@/components/table/action';
 
 export default defineComponent({
   name: 'Table',
   components: {
+    TableActions,
     TableColumnsTransfer,
-    FaIconButton,
     TableCell,
     TableHeader,
   },
@@ -146,6 +144,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    visibleButtons: {
+      type: Array as PropType<BuiltInTableActionButtonName[]>,
+      required: false,
+      default: () => {
+        return [];
+      }
+    }
   },
   emits: [
     'export',
@@ -164,20 +169,27 @@ export default defineComponent({
       internalSelectedColumnKeys,
       columnsTransferVisible,
       selectedColumns,
-      onShowCustomizeColumns,
+      onShowColumnsTransfer,
       onHideColumnsTransfer,
       onColumnsChange,
       initColumns,
     } = useColumn(props, ctx, table);
 
     const {
-      onExport,
       onHeaderChange,
     } = useHeader(props, ctx);
 
     const {
+      selection: internalSelection,
       onSelectionChange,
     } = useSelection(props, ctx);
+
+    const {
+      onAdd,
+      onEdit,
+      onDelete,
+      onExport,
+    } = useAction(props, ctx);
 
     onBeforeMount(() => {
       initColumns();
@@ -190,11 +202,15 @@ export default defineComponent({
       columnsTransferVisible,
       selectedColumns,
       onHeaderChange,
-      onShowCustomizeColumns,
+      onShowColumnsTransfer,
       onHideColumnsTransfer,
       onColumnsChange,
       onExport,
+      internalSelection,
       onSelectionChange,
+      onAdd,
+      onEdit,
+      onDelete,
     };
   },
 });
@@ -210,9 +226,6 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     padding: 10px;
-
-    .actions {
-    }
 
     .pagination {
       text-align: right;

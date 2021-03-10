@@ -7,8 +7,8 @@
       :size="size"
       :tooltip="tooltip"
       :type="type"
+      is-icon
       class="fa-icon-button"
-      style="padding: 7px"
       @click="() => $emit('click')"
   >
     <font-awesome-icon :icon="icon"/>
@@ -42,4 +42,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.el-button,
+.el-button--mini,
+.fa-icon-button,
+.fa-icon-button >>> .el-button,
+.fa-icon-button >>> .el-button--mini,
+.fa-icon-button >>> .button {
+  padding: 7px;
+}
 </style>

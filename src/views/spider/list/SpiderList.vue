@@ -17,7 +17,19 @@
           :total="tableTotal"
           selectable
           @selection-change="onSelect"
-      />
+      >
+        <template #actions-prefix>
+          <FaIconButton
+              :disabled="selection.length === 0"
+              :icon="['fa', 'play']"
+              class="action-btn"
+              size="mini"
+              tooltip="Run"
+              type="success"
+              @click="onClickRun"
+          />
+        </template>
+      </Table>
     </div>
   </div>
 </template>
@@ -31,11 +43,13 @@ import NavActionItem from '@/components/nav/NavActionItem.vue';
 import {useRouter} from 'vue-router';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 import Button from '@/components/button/Button.vue';
+import FaIconButton from '@/components/button/FaIconButton.vue';
 
 export default defineComponent({
   name: 'SpiderList',
   components: {
     Button,
+    FaIconButton,
     NavActions,
     NavActionItem,
     NavActionGroup,
@@ -180,12 +194,17 @@ export default defineComponent({
       selection.value = value;
     };
 
+    const onClickRun = () => {
+      // TODO: implement
+    };
+
     return {
       tableData,
       tableColumns,
       tableTotal,
       selection,
       onSelect,
+      onClickRun,
     };
   },
 });

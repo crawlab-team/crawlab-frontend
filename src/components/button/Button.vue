@@ -1,18 +1,21 @@
 <template>
   <el-tooltip :content="tooltip" :disabled="!tooltip">
-    <el-button
-        :circle="circle"
-        :disabled="disabled"
-        :plain="plain"
-        :round="round"
-        :size="size"
-        :title="tooltip"
-        :type="type"
-        class="button"
-        @click="() => $emit('click')"
-    >
-      <slot></slot>
-    </el-button>
+    <span class="button-wrapper">
+      <el-button
+          :circle="circle"
+          :class="isIcon ? 'icon-button' : ''"
+          :disabled="disabled"
+          :plain="plain"
+          :round="round"
+          :size="size"
+          :title="tooltip"
+          :type="type"
+          class="button"
+          @click="() => $emit('click')"
+      >
+        <slot></slot>
+      </el-button>
+    </span>
   </el-tooltip>
 </template>
 
@@ -55,6 +58,11 @@ export const buttonProps = {
     required: false,
     default: false,
   },
+  isIcon: {
+    type: Boolean,
+    required: false,
+    default: false,
+  }
 };
 
 export default defineComponent({
@@ -70,4 +78,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.button-wrapper {
+  margin-right: 10px;
+}
+</style>
+
+<style scoped>
+.button-wrapper >>> .icon-button {
+  padding: 7px;
+}
 </style>

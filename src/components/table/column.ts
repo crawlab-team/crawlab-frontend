@@ -36,7 +36,7 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     return internalSelectedColumnKeys.value.map(key => columnsMap.value[key]);
   });
 
-  const onShowCustomizeColumns = () => {
+  const onShowColumnsTransfer = () => {
     columnsTransferVisible.value = true;
   };
 
@@ -83,7 +83,7 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     columnsMap,
     columnsTransferVisible,
     selectedColumns,
-    onShowCustomizeColumns,
+    onShowColumnsTransfer,
     onHideColumnsTransfer,
     onColumnsChange,
     initColumns,
