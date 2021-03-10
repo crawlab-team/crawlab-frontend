@@ -46,11 +46,10 @@
     <div class="table-footer">
       <TableActions
           :selection="internalSelection"
-          @click-add="onAdd"
-          @click-edit="onEdit"
-          @click-delete="onDelete"
-          @click-export="onExport"
-          @show-columns-transfer="onShowColumnsTransfer"
+          @delete="onDelete"
+          @edit="onEdit"
+          @export="onExport"
+          @customize-columns="onShowColumnsTransfer"
       >
         <template #prefix>
           <slot name="actions-prefix"></slot>
@@ -153,6 +152,8 @@ export default defineComponent({
     }
   },
   emits: [
+    'edit',
+    'delete',
     'export',
     'header-change',
     'pagination-change',

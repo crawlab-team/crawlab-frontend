@@ -47,7 +47,7 @@
         size="mini"
         tooltip="Customize Columns"
         type="primary"
-        @click="onShowColumnsTransfer"
+        @click="onCustomizeColumns"
     />
     <slot name="suffix"></slot>
   </div>
@@ -70,11 +70,10 @@ export default defineComponent({
     FaIconButton,
   },
   emits: [
-    'click-add',
-    'click-edit',
-    'click-delete',
-    'click-export',
-    'show-columns-transfer'
+    'edit',
+    'delete',
+    'export',
+    'customize-columns'
   ],
   props: {
     selection: {
@@ -93,24 +92,24 @@ export default defineComponent({
     }
   },
   setup(props: TableActionsProps, {emit}) {
-    const onAdd = () => {
-      emit('click-add');
-    };
+    // const onAdd = () => {
+    //   emit('click-add');
+    // };
 
     const onEdit = () => {
-      emit('click-edit');
+      emit('edit');
     };
 
     const onDelete = () => {
-      emit('click-delete');
+      emit('delete');
     };
 
     const onExport = () => {
-      emit('click-export');
+      emit('export');
     };
 
-    const onShowColumnsTransfer = () => {
-      emit('show-columns-transfer');
+    const onCustomizeColumns = () => {
+      emit('customize-columns');
     };
 
     const showButton = (name: string): boolean => {
@@ -125,11 +124,11 @@ export default defineComponent({
       TABLE_ACTION_DELETE,
       TABLE_ACTION_EXPORT,
       TABLE_ACTION_CUSTOMIZE_COLUMNS,
-      onAdd,
+      // onAdd,
       onEdit,
       onDelete,
       onExport,
-      onShowColumnsTransfer,
+      onCustomizeColumns,
       showButton,
     };
   },

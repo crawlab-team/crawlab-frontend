@@ -6,11 +6,11 @@ declare global {
     mutations: SpiderStoreMutations;
   }
 
-
   interface SpiderStoreState {
     sidebarCollapsed: boolean;
     actionsCollapsed: boolean;
     tabs: NavItem[];
+    dialogVisible: SpiderDialogVisible;
   }
 
   interface SpiderStoreGetters extends GetterTree<SpiderStoreState, RootStoreState> {
@@ -20,5 +20,8 @@ declare global {
   interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {
     setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
     setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
+    showDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
+    hideDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
+    resetDialogs: StoreMutation<SpiderStoreState>;
   }
 }

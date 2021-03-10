@@ -4,7 +4,7 @@
       <NavActions ref="navActions" class="nav-actions">
         <NavActionGroup>
           <NavActionItem>
-            <Button size="mini" tooltip="New Spider" type="success">
+            <Button size="mini" tooltip="New Spider" type="success" @click="onClickCreate">
               <font-awesome-icon :icon="['fa' ,'plus']"/>
               New Spider
             </Button>
@@ -32,6 +32,10 @@
       </Table>
     </div>
   </div>
+
+  <!-- Dialogs (handled by store) -->
+  <CreateSpiderDialog/>
+  <!-- ./Dialogs -->
 </template>
 
 <script lang="ts">
@@ -44,10 +48,13 @@ import {useRouter} from 'vue-router';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 import Button from '@/components/button/Button.vue';
 import FaIconButton from '@/components/button/FaIconButton.vue';
+import CreateSpiderDialog from '@/components/spider/CreateSpiderDialog.vue';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'SpiderList',
   components: {
+    CreateSpiderDialog,
     Button,
     FaIconButton,
     NavActions,
@@ -55,9 +62,17 @@ export default defineComponent({
     NavActionGroup,
     Table,
   },
-  setup(props, {emit}) {
+  setup() {
+    // router
     const router = useRouter();
 
+    // store
+    const storeNamespace = 'spider';
+    const store = useStore<RootStoreState>();
+    const {commit} = store;
+    const {dialogVisible} = store.state.spider as SpiderStoreState;
+
+    // table data
     const tableData: Spider[] = (() => {
       const data: Spider[] = [];
       for (let i = 0; i < 10; i++) {
@@ -72,6 +87,8 @@ export default defineComponent({
       }
       return data;
     })();
+
+    // table columns
     const tableColumns: TableColumn<Spider>[] = [
       {
         key: 'display_name',
@@ -194,16 +211,32 @@ export default defineComponent({
       selection.value = value;
     };
 
+    const onClickCreate = () => {
+      commit(`${storeNamespace}/showDialog`, 'create');
+    };
+
+    const onClickEdit = () => {
+      commit(`${storeNamespace}/showDialog`, 'edit');
+    };
+
+    const onClickClone = () => {
+      commit(`${storeNamespace}/showDialog`, 'clone');
+    };
+
     const onClickRun = () => {
-      // TODO: implement
+      commit(`${storeNamespace}/showDialog`, 'run');
     };
 
     return {
+      dialogVisible,
       tableData,
       tableColumns,
       tableTotal,
       selection,
       onSelect,
+      onClickCreate,
+      onClickEdit,
+      onClickClone,
       onClickRun,
     };
   },

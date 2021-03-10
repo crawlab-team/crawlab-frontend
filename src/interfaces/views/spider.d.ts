@@ -1,3 +1,7 @@
+// interface SpiderListProps {
+//   // nothing
+// }
+
 interface Spider {
   _id: string;
   name: string;
@@ -5,3 +9,12 @@ interface Spider {
 }
 
 type SpiderTabName = 'overview' | 'files' | 'tasks' | 'settings';
+
+interface SpiderDialogVisible {
+  create: boolean;
+  clone: boolean;
+  edit: boolean;
+  run: boolean;
+}
+
+type SpiderDialogKey = DialogKey | 'run';
