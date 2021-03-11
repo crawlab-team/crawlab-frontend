@@ -72,6 +72,11 @@ export default defineComponent({
     const {commit} = store;
     const {dialogVisible} = store.state.spider as SpiderStoreState;
 
+    // TODO: dummy data
+    const spiderTypes = ['Customized', 'Configurable'];
+    const projectNames = ['Project 1', 'Project 2', 'Project 3'];
+    const statuses = ['Pending', 'Running', 'Finished', 'Error', 'Cancelled'];
+
     // table data
     const tableData: Spider[] = (() => {
       const data: Spider[] = [];
@@ -79,10 +84,24 @@ export default defineComponent({
         const _id = (i + 1).toString();
         const name = `spider-${_id}`;
         const display_name = `Spider ${_id}`;
+        const spider_type = spiderTypes[Math.floor(Math.random() * spiderTypes.length)];
+        const project_name = projectNames[Math.floor(Math.random() * projectNames.length)];
+        const last_status = statuses[Math.floor(Math.random() * statuses.length)];
+        const last_run_ts = '10s';
+        const update_ts = new Date().toLocaleString();
+        const create_ts = new Date().toLocaleString();
+        const create_username = 'admin';
         data.push({
           _id,
           name,
           display_name,
+          spider_type,
+          project_name,
+          last_status,
+          last_run_ts,
+          update_ts,
+          create_ts,
+          create_username,
         });
       }
       return data;
@@ -98,7 +117,7 @@ export default defineComponent({
         hasFilter: true,
       },
       {
-        key: 'type',
+        key: 'spider_type',
         label: 'Spider Type',
         width: '120',
         filterItems: [
@@ -113,9 +132,9 @@ export default defineComponent({
         width: '120',
         filterItems: () => {
           const arr: SelectOption[] = [];
-          for (let i = 0; i < 20; i++) {
-            arr.push({label: `Item ${i + 1}`, value: (i + 1).toString()});
-          }
+          projectNames.forEach((d, i) => {
+            arr.push({label: d, value: (i + 1).toString()});
+          });
           return arr;
         },
         hasFilter: true,
@@ -129,6 +148,7 @@ export default defineComponent({
         key: 'latest_tasks',
         label: 'Latest Tasks',
         width: '180',
+        defaultHidden: true,
       },
       {
         key: 'last_status',
@@ -138,17 +158,17 @@ export default defineComponent({
       {
         key: 'last_run_ts',
         label: 'Last Run',
-        width: '140',
+        width: '150',
       },
       {
         key: 'update_ts',
         label: 'Updated At',
-        width: '140',
+        width: '150',
       },
       {
         key: 'create_ts',
         label: 'Created At',
-        width: '140',
+        width: '150',
       },
       {
         key: 'create_username',
