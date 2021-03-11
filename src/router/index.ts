@@ -56,6 +56,21 @@ export const routes: Array<RouteRecordRaw> = [
           },
         ]
       },
+      {
+        path: 'tasks',
+        name: 'TaskList',
+        component: () => import('@/views/task/list/TaskList.vue'),
+      },
+      {
+        path: 'schedules',
+        name: 'ScheduleList',
+        component: () => import('@/views/schedule/list/ScheduleList.vue'),
+      },
+      {
+        path: 'users',
+        name: 'UserList',
+        component: () => import('@/views/user/list/UserList.vue'),
+      },
     ],
   },
 ];

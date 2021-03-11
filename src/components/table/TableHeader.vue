@@ -5,6 +5,7 @@
     </span>
 
     <TableHeaderDialog
+        v-if="column.hasFilter"
         :action-status-map="actionStatusMap"
         :column="column"
         :visible="dialogVisible"

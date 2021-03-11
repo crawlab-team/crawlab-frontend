@@ -29,7 +29,10 @@ declare global {
     filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
     disableTransfer?: boolean;
     defaultHidden?: boolean;
+    hasFilter?: boolean;
   }
+
+  type TableColumns<T = any> = TableColumn<T>[];
 
   interface TableAnyRowData {
     [key: string]: any;

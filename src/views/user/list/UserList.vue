@@ -1,5 +1,5 @@
 <template>
-  <div class="project-list">
+  <div class="user-list">
     <div class="content">
       <Table
           :columns="tableColumns"
@@ -12,66 +12,48 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, h} from 'vue';
-import ProjectTag from '@/components/project/ProjectTag.vue';
+import {computed, defineComponent} from 'vue';
 import Table from '@/components/table/Table.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 
 export default defineComponent({
-  name: 'ProjectList',
+  name: 'UserList',
   components: {
     Table,
   },
   setup(props, {emit}) {
-    // TODO: implement with real data
-    const types = [
-      'primary',
-      'success',
-      'warning',
-      'danger',
-      'info',
-    ];
-
     // table data
-    const tableData: TableData<Project> = [
+    const tableData: TableData<User> = [
       {
-        name: 'Alpha',
-        description: 'Alpha Project',
-        tags: ['test', 'dev'],
+        username: 'admin',
+        role: 'admin',
+        email: 'admin@crawlab.cn'
       },
       {
-        name: 'Beta',
-        description: 'Beta Project',
-        tags: ['release', 'test'],
-      },
+        username: 'Bob',
+        role: 'cto',
+        email: 'bob@crawlab.cn',
+      }
     ];
 
     // TODO: implement with real data
     const tableTotal = computed(() => tableData.length);
 
     // table columns
-    const tableColumns: TableColumns<Project> = [
+    const tableColumns: TableColumns<User> = [
       {
-        key: 'name',
-        label: 'Name',
-        width: '150',
-      },
-      {
-        key: 'description',
-        label: 'Description',
+        key: 'username',
+        label: 'Username',
         width: '200',
       },
       {
-        key: 'tags',
-        label: 'Tags',
-        value: (row: Project) => {
-          if (!row.tags) return [];
-          const tags = row.tags.map(tag => h(ProjectTag, {
-            label: tag,
-            type: types[Math.floor(Math.random() * types.length)],
-          }));
-          return h('div', tags);
-        },
+        key: 'role',
+        label: 'Role',
+        width: '200',
+      },
+      {
+        key: 'email',
+        label: 'email',
         width: '200',
       },
       {

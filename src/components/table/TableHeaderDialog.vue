@@ -35,7 +35,7 @@
       </div>
       <div class="footer">
         <Button plain size="mini" tooltip="Cancel" type="info" @click="onCancel">Cancel</Button>
-        <Button size="mini" tooltip="Clear" type="danger" @click="onClear">Clear</Button>
+        <Button plain size="mini" tooltip="Clear" type="warning" @click="onClear">Clear</Button>
         <Button
             :disabled="isApplyDisabled"
             size="mini"

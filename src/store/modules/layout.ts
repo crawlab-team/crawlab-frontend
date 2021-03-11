@@ -7,8 +7,12 @@ export default {
     sidebarCollapsed: false,
     menuItems: [
       {path: '/', title: 'Home', icon: ['fa', 'home']},
-      {path: '/nodes', title: 'Node', icon: ['fas', 'server']},
-      {path: '/spiders', title: 'Spider', icon: ['fas', 'spider']},
+      {path: '/nodes', title: 'Nodes', icon: ['fa', 'server']},
+      {path: '/projects', title: 'Projects', icon: ['fa', 'project-diagram']},
+      {path: '/spiders', title: 'Spiders', icon: ['fa', 'spider']},
+      {path: '/tasks', title: 'Tasks', icon: ['fa', 'tasks']},
+      {path: '/schedules', title: 'Schedules', icon: ['fa', 'clock']},
+      {path: '/users', title: 'Users', icon: ['fa', 'users']},
     ],
 
     // tabs view

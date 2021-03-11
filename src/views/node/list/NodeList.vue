@@ -4,6 +4,7 @@
       <Table
           :columns="tableColumns"
           :data="tableData"
+          :total="tableTotal"
           selectable
       />
     </div>
@@ -11,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, h} from 'vue';
+import {computed, defineComponent, h} from 'vue';
 import Table from '@/components/table/Table.vue';
 import NodeType from '@/components/node/NodeType.vue';
 import {Node} from '@/interfaces/views/node.d';
@@ -23,6 +24,7 @@ export default defineComponent({
   name: 'NodeList',
   components: {Table},
   setup() {
+    // table data
     const tableData: TableData<Node> = [
       {
         name: 'Master Node',
@@ -53,34 +55,39 @@ export default defineComponent({
       },
     ];
 
-    const tableColumns: TableColumn<Node>[] = [
+    // TODO: implement with real data
+    const tableTotal = computed(() => tableData.length);
+
+    // table columns
+    const tableColumns: TableColumns<Node> = [
       {
         key: 'name',
         label: 'Name',
         width: '150',
+        hasFilter: true,
       },
       {
         key: 'ip',
         label: 'Ip',
         width: '120',
+        hasFilter: true,
       },
       {
         key: 'mac',
         label: 'MAC',
         width: '150',
-        defaultHidden: true,
+        hasFilter: true,
       },
       {
         key: 'hostname',
         label: 'Hostname',
         width: '150',
-        defaultHidden: true,
+        hasFilter: true,
       },
       {
         key: 'description',
         label: 'Description',
         width: '200',
-        defaultHidden: true,
       },
       {
         key: 'type',
@@ -89,6 +96,7 @@ export default defineComponent({
         value: (row: Node, column: TableColumn<Node>) => {
           return h(NodeType, {isMaster: row.is_master});
         },
+        hasFilter: true,
       },
       {
         key: 'active',
@@ -97,6 +105,7 @@ export default defineComponent({
         value: (row: Node, column: TableColumn<Node>) => {
           return h(NodeActive, {active: row.active});
         },
+        hasFilter: true,
       },
       {
         key: 'enabled',
@@ -105,6 +114,7 @@ export default defineComponent({
         value: (row: Node, column: TableColumn<Node>) => {
           return h(Switch, {value: row.enabled});
         },
+        hasFilter: true,
       },
       {
         key: COLUMN_NAME_ACTIONS,
@@ -124,6 +134,7 @@ export default defineComponent({
 
     return {
       tableData,
+      tableTotal,
       tableColumns,
     };
   },

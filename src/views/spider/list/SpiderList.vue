@@ -89,12 +89,13 @@ export default defineComponent({
     })();
 
     // table columns
-    const tableColumns: TableColumn<Spider>[] = [
+    const tableColumns: TableColumns<Spider> = [
       {
         key: 'display_name',
         label: 'Name',
         width: '160',
         align: 'left',
+        hasFilter: true,
       },
       {
         key: 'type',
@@ -104,6 +105,7 @@ export default defineComponent({
           {label: 'Customized', value: 'customized'},
           {label: 'Configurable', value: 'configurable'},
         ],
+        hasFilter: true,
       },
       {
         key: 'project_name',
@@ -116,6 +118,7 @@ export default defineComponent({
           }
           return arr;
         },
+        hasFilter: true,
       },
       // {
       //   key: 'is_long_task',
@@ -151,6 +154,7 @@ export default defineComponent({
         key: 'create_username',
         label: 'Created By',
         width: '100',
+        hasFilter: true,
       },
       {
         key: 'remark',
