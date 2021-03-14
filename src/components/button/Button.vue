@@ -80,6 +80,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .button-wrapper {
   margin-right: 10px;
+  border-collapse: collapse;
 }
 </style>
 

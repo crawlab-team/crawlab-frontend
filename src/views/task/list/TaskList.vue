@@ -93,18 +93,21 @@ export default defineComponent({
       {
         key: 'spider_name',
         label: 'Spider',
+        icon: ['fa', 'spider'],
         width: '150',
         hasFilter: true,
       },
       {
         key: 'node_name',
         label: 'Node',
+        icon: ['fa', 'server'],
         width: '150',
         hasFilter: true,
       },
       {
         key: 'status',
         label: 'Status',
+        icon: ['fa', 'heartbeat'],
         width: '100',
         value: (row: Task) => {
           return h(TaskStatus, {status: row.status});
@@ -114,6 +117,7 @@ export default defineComponent({
       {
         key: 'mode',
         label: 'Mode',
+        icon: ['fa', 'list-ul'],
         width: '100',
         hasFilter: true,
         value: (row: Task) => {
@@ -123,31 +127,37 @@ export default defineComponent({
       {
         key: 'pid',
         label: 'PID',
+        icon: ['fa', 'list-ol'],
         width: '100',
       },
       {
         key: 'schedule_name',
         label: 'Schedule',
+        icon: ['fa', 'clock'],
         width: '150',
       },
       {
         key: 'cmd',
         label: 'Command',
+        icon: ['fa', 'terminal'],
         width: '120',
       },
       {
         key: 'param',
         label: 'Params',
+        icon: ['fa', 'bars'],
         width: '120',
       },
       {
         key: 'error',
         label: 'Error',
+        icon: ['fa', 'exclamation-circle'],
         width: '120',
       },
       {
         key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
+        icon: ['fa', 'tools'],
         fixed: 'right',
         width: '200',
         buttons: [

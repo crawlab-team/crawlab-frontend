@@ -17,7 +17,7 @@ export default defineComponent({
       required: false,
     }
   },
-  setup(props) {
+  setup(props: AtomMaterialIconProps) {
     const html = computed<string>(() => {
       const {name, isDir} = props;
       const icon = isDir ? getFolderIconFromName(name) : getFileIconFromName(name);

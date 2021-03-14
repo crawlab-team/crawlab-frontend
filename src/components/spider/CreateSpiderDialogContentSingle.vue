@@ -6,27 +6,13 @@
     <FormItem :span="2" label="Display Name" required>
       <el-input placeholder="Display Name"/>
     </FormItem>
+    <FormItem :span="3" label="Command" required>
+      <el-input placeholder="Command"/>
+    </FormItem>
     <FormItem :span="3" label="Remark">
       <el-input placeholder="Remark" type="textarea"/>
     </FormItem>
   </Form>
-  <!--  <el-form-->
-  <!--      class="create-spider-dialog-content-single"-->
-  <!--      inline-->
-  <!--      label-width="150px"-->
-  <!--      size="mini"-->
-  <!--      status-icon-->
-  <!--  >-->
-  <!--    <el-form-item class="span-1" size="mini" label="Name" required>-->
-  <!--      <el-input placeholder="Name"/>-->
-  <!--    </el-form-item>-->
-  <!--    <el-form-item class="span-2" size="mini" label="Display Name">-->
-  <!--      <el-input placeholder="Display Name"/>-->
-  <!--    </el-form-item>-->
-  <!--    <el-form-item class="span-3" size="mini" label="Description">-->
-  <!--      <el-input type="textarea" placeholder="Description"/>-->
-  <!--    </el-form-item>-->
-  <!--  </el-form>-->
 </template>
 
 <script lang="ts">

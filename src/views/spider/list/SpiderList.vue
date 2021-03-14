@@ -59,6 +59,8 @@ import {
   TASK_STATUS_PENDING,
   TASK_STATUS_RUNNING
 } from '@/constants/task';
+import SpiderType from '@/components/spider/SpiderType.vue';
+import {SPIDER_TYPE_CONFIGURABLE, SPIDER_TYPE_CUSTOMIZED} from '@/constants/spider';
 
 export default defineComponent({
   name: 'SpiderList',
@@ -82,7 +84,10 @@ export default defineComponent({
     const {dialogVisible} = store.state.spider as SpiderStoreState;
 
     // TODO: dummy data
-    const spiderTypes = ['Customized', 'Configurable'];
+    const spiderTypes = [
+      SPIDER_TYPE_CUSTOMIZED,
+      SPIDER_TYPE_CONFIGURABLE,
+    ];
     const projectNames = ['Project 1', 'Project 2', 'Project 3'];
     const statuses = [
       TASK_STATUS_PENDING,
@@ -128,6 +133,7 @@ export default defineComponent({
       {
         key: 'display_name',
         label: 'Name',
+        icon: ['fa', 'font'],
         width: '160',
         align: 'left',
         hasFilter: true,
@@ -135,19 +141,21 @@ export default defineComponent({
       {
         key: 'spider_type',
         label: 'Spider Type',
+        icon: ['fa', 'list'],
         width: '120',
         filterItems: [
           {label: 'Customized', value: 'customized'},
           {label: 'Configurable', value: 'configurable'},
         ],
         hasFilter: true,
-        // value: (row: Spider) => {
-        //   return h()
-        // }
+        value: (row: Spider) => {
+          return h(SpiderType, {type: row.spider_type});
+        }
       },
       {
         key: 'project_name',
         label: 'Project',
+        icon: ['fa', 'project-diagram'],
         width: '120',
         filterItems: () => {
           const arr: SelectOption[] = [];
@@ -166,12 +174,14 @@ export default defineComponent({
       {
         key: 'latest_tasks',
         label: 'Latest Tasks',
+        icon: ['fa', 'project-diagram'],
         width: '180',
         defaultHidden: true,
       },
       {
         key: 'last_status',
         label: 'Last Status',
+        icon: ['fa', 'heartbeat'],
         width: '120',
         hasFilter: true,
         value: (row: Spider) => {
@@ -181,32 +191,38 @@ export default defineComponent({
       {
         key: 'last_run_ts',
         label: 'Last Run',
-        width: '160',
-      },
-      {
-        key: 'update_ts',
-        label: 'Updated At',
+        icon: ['fa', 'clock'],
         width: '160',
       },
       {
         key: 'create_ts',
         label: 'Created At',
+        icon: ['far', 'calendar-plus'],
+        width: '160',
+      },
+      {
+        key: 'update_ts',
+        label: 'Updated At',
+        icon: ['far', 'calendar-check'],
         width: '160',
       },
       {
         key: 'create_username',
         label: 'Created By',
+        icon: ['fa', 'user'],
         width: '100',
         hasFilter: true,
       },
       {
         key: 'remark',
         label: 'Remark',
+        icon: ['fa', 'comment-alt'],
         width: '140',
       },
       {
         key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
+        icon: ['fa', 'tools'],
         width: '180',
         fixed: 'right',
         buttons: [
@@ -226,7 +242,6 @@ export default defineComponent({
             tooltip: 'View',
             onClick: (row) => {
               router.push(`/spiders/${row._id}`);
-              console.log('view', row);
             }
           },
           {

@@ -1,10 +1,13 @@
 <template>
-  <el-tooltip :content="tooltip">
-    <el-tag :type="type" class="task-status" size="mini">
-      <font-awesome-icon :class="spinning ? 'fa-spin' : ''" :icon="icon" class="icon"/>
-      <span>{{ label }}</span>
-    </el-tag>
-  </el-tooltip>
+  <Tag
+      :icon="data.icon"
+      :label="data.label"
+      :spinning="data.spinning"
+      :tooltip="data.tooltip"
+      :type="data.type"
+      width="80px"
+      @click="$emit('click')"
+  />
 </template>
 
 <script lang="ts">
@@ -17,107 +20,79 @@ import {
   TASK_STATUS_PENDING,
   TASK_STATUS_RUNNING
 } from '@/constants/task';
+import Tag from '@/components/tag/Tag.vue';
 
 export default defineComponent({
   name: 'TaskStatus',
+  components: {
+    Tag,
+  },
   props: {
     status: {
       type: String as PropType<TaskStatus>,
       required: false,
     }
   },
+  emits: ['click'],
   setup(props: TaskStatusProps, {emit}) {
-    const type = computed<string>(() => {
+    const data = computed<TagData>(() => {
       const {status} = props;
       switch (status) {
         case TASK_STATUS_PENDING:
-          return 'primary';
+          return {
+            label: 'Pending',
+            tooltip: 'Task is pending in the queue',
+            type: 'primary',
+            icon: ['fa', 'hourglass-start'],
+          };
         case TASK_STATUS_RUNNING:
-          return 'warning';
+          return {
+            label: 'Running',
+            tooltip: 'Task is currently running',
+            type: 'warning',
+            icon: ['fa', 'spinner'],
+            spinning: true,
+          };
         case TASK_STATUS_FINISHED:
-          return 'success';
+          return {
+            label: 'Finished',
+            tooltip: 'Task finished successfully',
+            type: 'success',
+            icon: ['fa', 'check'],
+          };
         case TASK_STATUS_ERROR:
-          return 'danger';
+          return {
+            label: 'Error',
+            tooltip: 'Task ended with an error',
+            type: 'danger',
+            icon: ['fa', 'times'],
+          };
         case TASK_STATUS_CANCELLED:
-          return 'info';
+          return {
+            label: 'Cancelled',
+            tooltip: 'Task has been cancelled',
+            type: 'info',
+            icon: ['fa', 'ban'],
+          };
         case TASK_STATUS_ABNORMAL:
-          return 'danger';
+          return {
+            label: 'Cancelled',
+            tooltip: 'Task ended abnormally',
+            type: 'info',
+            icon: ['fa', 'exclamation'],
+          };
         default:
-          return 'info';
+          return {
+            label: 'Unknown',
+            tooltip: 'Unknown task status',
+            type: 'info',
+            icon: ['fa', 'question'],
+          };
       }
-    });
-
-    const label = computed<string>(() => {
-      const {status} = props;
-      switch (status) {
-        case TASK_STATUS_PENDING:
-          return 'Pending';
-        case TASK_STATUS_RUNNING:
-          return 'Running';
-        case TASK_STATUS_FINISHED:
-          return 'Finished';
-        case TASK_STATUS_ERROR:
-          return 'Error';
-        case TASK_STATUS_CANCELLED:
-          return 'Cancelled';
-        case TASK_STATUS_ABNORMAL:
-          return 'Abnormal';
-        default:
-          return 'Unknown';
-      }
-    });
-
-    const icon = computed<string[]>(() => {
-      const {status} = props;
-      switch (status) {
-        case TASK_STATUS_PENDING:
-          return ['fa', 'hourglass-start'];
-        case TASK_STATUS_RUNNING:
-          return ['fa', 'spinner'];
-        case TASK_STATUS_FINISHED:
-          return ['fa', 'check'];
-        case TASK_STATUS_ERROR:
-          return ['fa', 'times'];
-        case TASK_STATUS_CANCELLED:
-          return ['fa', 'ban'];
-        case TASK_STATUS_ABNORMAL:
-          return ['fa', 'exclamation'];
-        default:
-          return ['fa', 'question'];
-      }
-    });
-
-    const tooltip = computed<string>(() => {
-      const {status} = props;
-      switch (status) {
-        case TASK_STATUS_PENDING:
-          return 'Task is pending in the queue';
-        case TASK_STATUS_RUNNING:
-          return 'Task is currently running';
-        case TASK_STATUS_FINISHED:
-          return 'Task finished successfully';
-        case TASK_STATUS_ERROR:
-          return 'Task ended with an error';
-        case TASK_STATUS_CANCELLED:
-          return 'Task has been cancelled';
-        case TASK_STATUS_ABNORMAL:
-          return 'Task ended abnormally';
-        default:
-          return 'Unknown task status';
-      }
-    });
-
-    const spinning = computed<boolean>(() => {
-      const {status} = props;
-      return status === TASK_STATUS_RUNNING;
     });
 
     return {
-      type,
-      label,
-      icon,
-      tooltip,
-      spinning,
+      data,
     };
   },
 });

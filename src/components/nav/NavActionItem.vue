@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-action-item">
+  <div :class="[isLabel ? 'is-label' : '']" class="nav-action-item">
     <slot></slot>
   </div>
 </template>
@@ -9,6 +9,12 @@ import {defineComponent} from 'vue';
 
 export default defineComponent({
   name: 'NavActionItem',
+  props: {
+    isLabel: {
+      type: Boolean,
+      default: false,
+    }
+  },
   setup() {
     return {};
   },
@@ -26,7 +32,11 @@ export default defineComponent({
   color: $navActionsItemColor;
 
   & + .nav-action-item {
-    margin-left: 10px;
+    //margin-left: 10px;
+  }
+
+  &.is-label {
+    margin-right: 10px;
   }
 }
 </style>

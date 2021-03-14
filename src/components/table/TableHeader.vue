@@ -1,6 +1,9 @@
 <template>
   <div class="table-header">
     <span class="label">
+      <span v-if="column.icon" class="label-icon">
+        <Icon :icon="column.icon"/>
+      </span>
       {{ column.label }}
     </span>
 
@@ -40,10 +43,12 @@ import {conditionTypesMap} from '@/components/filter/FilterCondition.vue';
 import {ASCENDING, DESCENDING} from '@/constants/sort';
 import variables from '@/styles/variables.scss';
 import {FILTER_CONDITION_TYPE_NOT_SET} from '@/constants/filter';
+import Icon from '@/components/icon/Icon.vue';
 
 export default defineComponent({
   name: 'TableHeader',
   components: {
+    Icon,
     TableHeaderAction,
     TableHeaderDialog,
   },
@@ -210,6 +215,17 @@ export default defineComponent({
 .table-header {
   display: flex;
   position: relative;
+
+  .label {
+    display: flex;
+    align-items: center;
+
+    .label-icon {
+      color: $infoMediumLightColor;
+      font-size: 8px;
+      margin-right: 5px;
+    }
+  }
 
   .actions {
     position: absolute;

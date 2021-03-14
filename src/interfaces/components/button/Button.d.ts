@@ -7,4 +7,5 @@ interface ButtonProps {
   plain?: boolean;
   disabled?: boolean;
   isIcon?: boolean;
+  onClick?: () => void;
 }

@@ -63,35 +63,41 @@ export default defineComponent({
       {
         key: 'name',
         label: 'Name',
+        icon: ['fa', 'font'],
         width: '150',
         hasFilter: true,
       },
       {
         key: 'ip',
         label: 'Ip',
+        icon: ['fa', 'map-marker-alt'],
         width: '120',
         hasFilter: true,
       },
       {
         key: 'mac',
         label: 'MAC',
+        icon: ['fa', 'hdd'],
         width: '150',
         hasFilter: true,
       },
       {
         key: 'hostname',
         label: 'Hostname',
+        icon: ['fa', 'location-arrow'],
         width: '150',
         hasFilter: true,
       },
       {
         key: 'description',
         label: 'Description',
+        icon: ['fa', 'comment-alt'],
         width: '200',
       },
       {
         key: 'type',
         label: 'Type',
+        icon: ['fa', 'list'],
         width: '120',
         value: (row: Node, column: TableColumn<Node>) => {
           return h(NodeType, {isMaster: row.is_master});
@@ -101,6 +107,7 @@ export default defineComponent({
       {
         key: 'active',
         label: 'Active',
+        icon: ['fa', 'signal'],
         width: '80',
         value: (row: Node, column: TableColumn<Node>) => {
           return h(NodeActive, {active: row.active});
@@ -110,6 +117,7 @@ export default defineComponent({
       {
         key: 'enabled',
         label: 'Enabled',
+        icon: ['fa', 'toggle-on'],
         width: '80',
         value: (row: Node, column: TableColumn<Node>) => {
           return h(Switch, {value: row.enabled});
@@ -119,6 +127,7 @@ export default defineComponent({
       {
         key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
+        icon: ['fa', 'tools'],
         fixed: 'right',
         width: '200',
         buttons: [

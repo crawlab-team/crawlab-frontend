@@ -17,6 +17,7 @@ declare global {
   interface TableColumn<T = any> {
     key: string;
     label: string;
+    icon?: string | string[];
     width?: number | string;
     minWidth?: number | string;
     index?: number;
@@ -57,8 +58,8 @@ declare global {
     onClick?: TableButtonOnClickFunction;
   }
 
-  type TableValueFunction<T = any> = (row: T, column: TableColumn<T>) => VNode;
-  type TableButtonOnClickFunction<T = any> = (row: T, column: TableColumn<T>) => void;
+  type TableValueFunction<T = any> = (row: T, column?: TableColumn<T>) => VNode;
+  type TableButtonOnClickFunction<T = any> = (row: T, column?: TableColumn<T>) => void;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
 
   interface TableStore extends Store {

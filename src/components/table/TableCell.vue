@@ -33,12 +33,15 @@ export default defineComponent({
       // buttons
       if (column.buttons !== undefined && column.buttons?.length > 0) {
         return column.buttons.map(btn => {
-          const {tooltip, type, size, icon} = btn;
+          const {tooltip, type, size, icon, onClick} = btn;
           const props = {
             tooltip,
             type,
             size,
             icon,
+            onClick: () => {
+              onClick?.(row);
+            },
           } as FaIconButtonProps;
           return h(FaIconButton, props);
         });

@@ -54,16 +54,19 @@ export default defineComponent({
       {
         key: 'name',
         label: 'Name',
+        icon: ['fa', 'font'],
         width: '150',
       },
       {
         key: 'description',
         label: 'Description',
+        icon: ['fa', 'comment-alt'],
         width: '200',
       },
       {
         key: 'tags',
         label: 'Tags',
+        icon: ['fa', 'hashtag'],
         value: (row: Project) => {
           if (!row.tags) return [];
           const tags = row.tags.map(tag => h(ProjectTag, {

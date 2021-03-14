@@ -24,68 +24,9 @@
         </template>
       </NavTabs>
       <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
-        <NavActionGroup>
-          <NavActionItem>
-            <el-tooltip content="Spider Actions">
-              <font-awesome-icon :icon="['fa', 'spider']" class="title"/>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem>
-            <el-tooltip content="Run">
-              <el-button icon="fa fa-play" size="small" type="success"/>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem>
-            <el-tooltip content="Clone">
-              <el-button icon="fa fa-clone" size="small" type="info"/>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem>
-            <el-tooltip content="Favourite">
-              <el-button icon="fa fa-star-o" plain size="small" type="info"/>
-            </el-tooltip>
-          </NavActionItem>
-        </NavActionGroup>
-        <NavActionGroup v-if="activeTabName === 'files'">
-          <NavActionItem>
-            <el-tooltip content="File Editor Actions">
-              <font-awesome-icon :icon="['fa', 'laptop-code']" class="title"/>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem>
-            <el-tooltip content="Upload File">
-              <el-button size="small" type="primary">
-                <font-awesome-icon :icon="['fa', 'upload']" class="icon"/>
-              </el-button>
-            </el-tooltip>
-            <el-tooltip content="File Editor Settings">
-              <el-button size="small" type="info" @click="onOpenFilesSettings">
-                <font-awesome-icon :icon="['fa', 'cog']" class="icon"/>
-              </el-button>
-            </el-tooltip>
-          </NavActionItem>
-        </NavActionGroup>
-        <NavActionGroup v-if="activeTabName === 'files'">
-          <NavActionItem>
-            <el-tooltip content="Git">
-              <font-awesome-icon :icon="['fab', 'git-alt']" class="title"/>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem @click="() => {}">
-            <el-tooltip content="Update Project">
-              <el-button size="small" type="primary">
-                <font-awesome-icon :icon="['fa', 'code-branch']" class="icon"/>
-              </el-button>
-            </el-tooltip>
-          </NavActionItem>
-          <NavActionItem @click="() => {}">
-            <el-tooltip content="Commit">
-              <el-button size="small" type="warning">
-                <font-awesome-icon :icon="['fa', 'paper-plane']" class="icon"/>
-              </el-button>
-            </el-tooltip>
-          </NavActionItem>
-        </NavActionGroup>
+        <SpiderDetailActionsCommon/>
+        <SpiderDetailActionsOverview v-if="activeTabName === 'overview'"/>
+        <SpiderDetailActionsFiles v-if="activeTabName === 'files'"/>
       </NavActions>
       <div :style="contentContainerStyle" class="content-container">
         <router-view/>
@@ -102,14 +43,16 @@ import {useStore} from 'vuex';
 import {plainClone} from '@/utils/object';
 import variables from '@/styles/variables.scss';
 import NavActionsComp from '@/components/nav/NavActions.vue';
-import NavActionItem from '@/components/nav/NavActionItem.vue';
-import NavActionGroup from '@/components/nav/NavActionGroup.vue';
+import SpiderDetailActionsFiles from '@/views/spider/detail/actions/SpiderDetailActionsFiles.vue';
+import SpiderDetailActionsCommon from '@/views/spider/detail/actions/SpiderDetailActionsCommon.vue';
+import SpiderDetailActionsOverview from '@/views/spider/detail/actions/SpiderDetailActionsOverview.vue';
 
 export default defineComponent({
   name: 'SpiderDetail',
   components: {
-    NavActionGroup,
-    NavActionItem,
+    SpiderDetailActionsOverview,
+    SpiderDetailActionsCommon,
+    SpiderDetailActionsFiles,
     NavActions: NavActionsComp,
     NavSidebar: NavSidebarComp,
     NavTabs: NavTabsComp,
@@ -119,7 +62,6 @@ export default defineComponent({
     const route = useRoute();
 
     const storeNamespace = 'spider';
-    const storeNamespaceFile = 'file';
     const store = useStore();
     const {spider} = store.state as RootStoreState;
 
@@ -203,10 +145,6 @@ export default defineComponent({
       router.push(`/spiders/${activeSpiderId.value}/${tabName}`);
     };
 
-    const onOpenFilesSettings = () => {
-      store.commit(`${storeNamespaceFile}/setEditorSettingsDialogVisible`, true);
-    };
-
     onMounted(() => {
       if (!navSidebar.value) return;
       navSidebar.value.scroll(activeSpiderId.value);
@@ -228,7 +166,6 @@ export default defineComponent({
       onNavSidebarToggle,
       onActionsToggle,
       onNavTabsSelect,
-      onOpenFilesSettings,
     };
   },
 });

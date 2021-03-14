@@ -26,7 +26,7 @@ export default defineComponent({
   box-sizing: border-box;
 
   & + .nav-action-group {
-    padding-left: 10px;
+    //padding-left: 10px;
     margin-left: 10px;
 
     .border {
@@ -36,5 +36,11 @@ export default defineComponent({
       height: calc(100% - 20px);
     }
   }
+}
+</style>
+
+<style scoped>
+.nav-action-group >>> .nav-action-item:last-child {
+  margin-right: 0;
 }
 </style>
