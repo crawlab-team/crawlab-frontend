@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, h, ref} from 'vue';
 import Table from '@/components/table/Table.vue';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
@@ -50,6 +50,15 @@ import Button from '@/components/button/Button.vue';
 import FaIconButton from '@/components/button/FaIconButton.vue';
 import CreateSpiderDialog from '@/components/spider/CreateSpiderDialog.vue';
 import {useStore} from 'vuex';
+import TaskStatus from '@/components/task/TaskStatus.vue';
+import {
+  TASK_STATUS_ABNORMAL,
+  TASK_STATUS_CANCELLED,
+  TASK_STATUS_ERROR,
+  TASK_STATUS_FINISHED,
+  TASK_STATUS_PENDING,
+  TASK_STATUS_RUNNING
+} from '@/constants/task';
 
 export default defineComponent({
   name: 'SpiderList',
@@ -75,7 +84,14 @@ export default defineComponent({
     // TODO: dummy data
     const spiderTypes = ['Customized', 'Configurable'];
     const projectNames = ['Project 1', 'Project 2', 'Project 3'];
-    const statuses = ['Pending', 'Running', 'Finished', 'Error', 'Cancelled'];
+    const statuses = [
+      TASK_STATUS_PENDING,
+      TASK_STATUS_RUNNING,
+      TASK_STATUS_FINISHED,
+      TASK_STATUS_ERROR,
+      TASK_STATUS_CANCELLED,
+      TASK_STATUS_ABNORMAL,
+    ];
 
     // table data
     const tableData: Spider[] = (() => {
@@ -88,8 +104,8 @@ export default defineComponent({
         const project_name = projectNames[Math.floor(Math.random() * projectNames.length)];
         const last_status = statuses[Math.floor(Math.random() * statuses.length)];
         const last_run_ts = '10s';
-        const update_ts = new Date().toLocaleString();
-        const create_ts = new Date().toLocaleString();
+        const update_ts = '3/11/2021, 10:20:29 PM';
+        const create_ts = '3/11/2021, 10:20:29 PM';
         const create_username = 'admin';
         data.push({
           _id,
@@ -125,6 +141,9 @@ export default defineComponent({
           {label: 'Configurable', value: 'configurable'},
         ],
         hasFilter: true,
+        // value: (row: Spider) => {
+        //   return h()
+        // }
       },
       {
         key: 'project_name',
@@ -154,21 +173,25 @@ export default defineComponent({
         key: 'last_status',
         label: 'Last Status',
         width: '120',
+        hasFilter: true,
+        value: (row: Spider) => {
+          return h(TaskStatus, {status: row.last_status});
+        }
       },
       {
         key: 'last_run_ts',
         label: 'Last Run',
-        width: '150',
+        width: '160',
       },
       {
         key: 'update_ts',
         label: 'Updated At',
-        width: '150',
+        width: '160',
       },
       {
         key: 'create_ts',
         label: 'Created At',
-        width: '150',
+        width: '160',
       },
       {
         key: 'create_username',
