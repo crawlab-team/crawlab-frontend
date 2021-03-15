@@ -17,6 +17,7 @@ import Switch from '@/components/switch/Switch.vue';
 import {TASK_MODE_RANDOM, TASK_MODE_SELECTED_NODES} from '@/constants/task';
 import Table from '@/components/table/Table.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import TaskMode from '@/components/task/TaskMode.vue';
 
 export default defineComponent({
   name: 'ScheduleList',
@@ -55,41 +56,53 @@ export default defineComponent({
       {
         key: 'name',
         label: 'Name',
+        icon: ['fa', 'font'],
         width: '150',
       },
       {
         key: 'description',
         label: 'Description',
+        icon: ['fa', 'comment-alt'],
         width: '200',
       },
       {
         key: 'spider_name',
         label: 'Spider',
+        icon: ['fa', 'spider'],
         width: '150',
       },
       {
         key: 'cron',
         label: 'Cron Expression',
-        width: '120',
+        icon: ['fa', 'clock'],
+        width: '150',
       },
       {
         key: 'param',
         label: 'Params',
+        icon: ['fa', 'bars'],
         width: '120',
       },
       {
         key: 'mode',
         label: 'Mode',
-        width: '120',
+        icon: ['fa', 'list-ul'],
+        width: '100',
+        hasFilter: true,
+        value: (row: Task) => {
+          return h(TaskMode, {mode: row.mode});
+        }
       },
       {
         key: 'node_names',
         label: 'Nodes',
+        icon: ['fa', 'server'],
         width: '150',
       },
       {
         key: 'enabled',
         label: 'Enabled',
+        icon: ['fa', 'toggle-on'],
         width: '80',
         value: (row: Schedule) => {
           return h(Switch, {value: row.enabled});
@@ -98,6 +111,7 @@ export default defineComponent({
       {
         key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
+        icon: ['fa', 'tools'],
         fixed: 'right',
         width: '200',
         buttons: [

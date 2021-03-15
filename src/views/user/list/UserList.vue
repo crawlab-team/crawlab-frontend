@@ -44,21 +44,25 @@ export default defineComponent({
       {
         key: 'username',
         label: 'Username',
+        icon: ['fa', 'font'],
         width: '200',
       },
       {
         key: 'role',
         label: 'Role',
+        icon: ['fa', 'user-tag'],
         width: '200',
       },
       {
         key: 'email',
         label: 'email',
+        icon: ['fa', 'at'],
         width: '200',
       },
       {
         key: COLUMN_NAME_ACTIONS,
         label: 'Actions',
+        icon: ['fa', 'tools'],
         fixed: 'right',
         width: '200',
         buttons: [
