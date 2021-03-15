@@ -1,10 +1,11 @@
 <template>
-  <el-tooltip :content="tooltip">
+  <el-tooltip :content="tooltip" :disabled="!tooltip">
     <el-tag
         :class="[clickable ? 'clickable' : '']"
         :size="size"
         :style="style"
         :type="type"
+        :effect="effect"
         class="tag"
         @click="onClick"
     >
@@ -18,45 +19,46 @@
 import {computed, defineComponent, PropType} from 'vue';
 import Icon from '@/components/icon/Icon.vue';
 
+export const tagProps = {
+  label: {
+    type: String,
+  },
+  tooltip: {
+    type: String,
+  },
+  type: {
+    type: String as PropType<BasicType>,
+    default: 'primary',
+  },
+  icon: {
+    type: [String, Array] as PropType<string | string[]>,
+  },
+  size: {
+    type: String,
+    default: 'mini',
+  },
+  spinning: {
+    type: Boolean,
+    default: false,
+  },
+  width: {
+    type: String,
+  },
+  clickable: {
+    type: Boolean,
+    default: false,
+  },
+  effect: {
+    type: String as PropType<BasicEffect>,
+  }
+};
+
 export default defineComponent({
   name: 'Tag',
   components: {Icon},
-  props: {
-    label: {
-      type: String,
-    },
-    tooltip: {
-      type: String,
-    },
-    type: {
-      type: String as PropType<BasicType>,
-      default: 'primary',
-    },
-    icon: {
-      type: [String, Array] as PropType<string | string[]>,
-      default: () => {
-        return ['fa', 'circle'];
-      }
-    },
-    size: {
-      type: String,
-      default: 'mini',
-    },
-    spinning: {
-      type: Boolean,
-      default: false,
-    },
-    width: {
-      type: String,
-    },
-    clickable: {
-      type: Boolean,
-      default: false,
-    }
-  },
+  props: tagProps,
   emits: ['click'],
   setup(props: TagProps, {emit}) {
-
     const style = computed<Partial<CSSStyleDeclaration>>(() => {
       const {width} = props;
       return {

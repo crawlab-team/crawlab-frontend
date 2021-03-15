@@ -38,6 +38,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    labelWidth: {
+      type: String,
+      required: false,
+    },
     size: {
       type: String,
       required: false,
@@ -51,6 +55,10 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 1,
+    },
+    isPlaceholder: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props: FormItemProps, {emit}) {

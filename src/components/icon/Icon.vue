@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, PropType} from 'vue';
+import useIcon from '@/components/icon/icon';
 
 export default defineComponent({
   name: 'Icon',
@@ -20,13 +21,11 @@ export default defineComponent({
     }
   },
   setup(props: IconProps, {emit}) {
+    const {isFaIcon: _isFaIcon} = useIcon();
     const isFaIcon = computed<boolean>(() => {
       const {icon} = props;
-      if (Array.isArray(icon)) {
-        return icon.length > 0 && icon[0].substr(0, 2) === 'fa';
-      } else {
-        return icon?.substr(0, 2) === 'fa';
-      }
+      if (!icon) return false;
+      return _isFaIcon(icon);
     });
 
     return {

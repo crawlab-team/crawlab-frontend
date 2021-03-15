@@ -1,4 +1,5 @@
 import router from '@/router';
+import {TASK_MODE_ALL} from '@/constants/task';
 
 export default {
   namespaced: true,
@@ -17,7 +18,10 @@ export default {
       clone: false,
       run: false,
     },
-    spiderForm: undefined,
+    spiderForm: {
+      name: 'Spider 1',
+      mode: TASK_MODE_ALL,
+    },
   },
   getters: {
     // tab name for spider detail

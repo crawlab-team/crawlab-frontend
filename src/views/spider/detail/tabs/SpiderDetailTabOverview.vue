@@ -1,40 +1,150 @@
 <template>
   <div class="spider-detail-tab-overview">
-    <Form :grid="4" label-width="150px">
-      <FormItem :span="2" label="Name" required>
-        <el-input placeholder="Name"/>
+    <Form v-if="spiderForm" :grid="4" :model="spiderForm" label-width="150px">
+      <!-- Row 1 -->
+      <FormItem :span="2" label="Name" prop="name" required>
+        <el-input v-model="spiderForm.name" placeholder="Name"/>
       </FormItem>
-      <FormItem :span="2" label="Display Name" required>
-        <el-input placeholder="Display Name"/>
+      <FormItem :span="2" label="Display Name" prop="display_name" required>
+        <el-input v-model="spiderForm.display_name" placeholder="Display Name"/>
       </FormItem>
-      <FormItem :span="2" label="Command" required>
-        <el-input placeholder="Command"/>
+
+      <!-- Row 2 -->
+      <FormItem :span="2" label="Command" prop="cmd" required>
+        <InputWithButton
+            v-model="spiderForm.cmd"
+            :button-icon="['fa', 'edit']"
+            button-label="Edit"
+            placeholder="Command"
+        />
       </FormItem>
-      <FormItem :span="4" label="Remark">
-        <el-input placeholder="Remark" type="textarea"/>
+      <FormItem :span="2" label="Param" prop="param" required>
+        <InputWithButton
+            v-model="spiderForm.param"
+            :button-icon="['fa', 'edit']"
+            button-label="Edit"
+            placeholder="Params"
+        />
+      </FormItem>
+
+      <!-- Row 3 -->
+      <FormItem :span="2" label="Default Mode" prop="mode" required>
+        <el-select v-model="spiderForm.mode">
+          <el-option
+              v-for="op in modeOptions"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+          />
+        </el-select>
+      </FormItem>
+      <FormItem :span="2" is-placeholder/>
+
+      <!-- Row 4 -->
+      <FormItem :span="4">
+        <CheckTag
+            v-for="n in allNodeSelectOptions"
+            :key="{v:n.value,c:checkedMap[n.value]}"
+            v-model="checkedMap[n.value]"
+            :label="n.label"
+            style="margin-right: 10px"
+        />
+      </FormItem>
+
+      <FormItem
+          v-if="spiderForm.mode === TASK_MODE_SELECTED_NODES"
+          :span="1"
+          label="Selected Nodes"
+          prop="node_ids"
+          required
+      >
+        <el-select v-model="spiderForm.node_ids" multiple>
+          <el-option
+              v-for="op in allNodeSelectOptions"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+          />
+        </el-select>
+      </FormItem>
+      <FormItem
+          v-else-if="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
+          :span="2"
+          label="Selected Tags"
+          prop="node_tags"
+          required
+      >
+        <el-select v-model="spiderForm.node_tags" multiple>
+          <el-option
+              v-for="tag in allNodeTags"
+              :key="tag"
+              :label="tag"
+              :value="tag"
+          />
+        </el-select>
+      </FormItem>
+      <FormItem :span="4" label="Description" prop="description">
+        <el-input v-model="spiderForm.description" placeholder="Description" type="textarea"/>
       </FormItem>
     </Form>
   </div>
 </template>
 <script lang="ts">
-import {computed, defineComponent} from 'vue';
-import {useRoute} from 'vue-router';
+import {defineComponent, onMounted, reactive} from 'vue';
 import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
+import InputWithButton from '@/components/input/InputWithButton.vue';
+import useSpider from '@/components/spider/spider';
+import {useStore} from 'vuex';
+import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
+import useNode from '@/components/node/node';
+import CheckTag from '@/components/tag/CheckTag.vue';
 
 export default defineComponent({
   name: 'SpiderDetailTabOverview',
   components: {
+    CheckTag,
+    InputWithButton,
     Form,
     FormItem,
   },
   setup() {
-    const route = useRoute();
+    // store
+    const store = useStore();
 
-    const id = computed(() => route.params.id);
+    const checkedMap = reactive<any>({});
+
+    // use spider
+    const {
+      id: currentSpiderId,
+      modeOptions,
+      spiderForm,
+      resetSpiderForm,
+    } = useSpider(store);
+
+    // use node
+    const {
+      allNodeSelectOptions,
+      setAllNodeSelectOptions,
+      allNodeTags,
+      setAllNodeTags,
+    } = useNode(store);
+
+    onMounted(() => {
+      resetSpiderForm();
+    });
 
     return {
-      id,
+      TASK_MODE_SELECTED_NODES,
+      TASK_MODE_SELECTED_NODE_TAGS,
+      currentSpiderId,
+      modeOptions,
+      spiderForm,
+      allNodeSelectOptions,
+      setAllNodeSelectOptions,
+      allNodeTags,
+      setAllNodeTags,
+      checkedMap,
     };
   },
 });

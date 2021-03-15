@@ -2,13 +2,25 @@
   <NavActionGroup>
     <NavActionFaIcon :icon="['fa', 'tools']" tooltip="Spider Actions"/>
     <NavActionItem>
+      <FaIconButton :icon="['fa', 'save']" tooltip="Save" type="primary"/>
+    </NavActionItem>
+    <NavActionItem>
       <FaIconButton :icon="['fa', 'play']" tooltip="Run" type="success"/>
     </NavActionItem>
     <NavActionItem>
       <FaIconButton :icon="['fa', 'clone']" tooltip="Clone" type="info"/>
     </NavActionItem>
     <NavActionItem>
-      <FaIconButton :icon="['far', 'star']" plain tooltip="Favorite" type="info"/>
+      <FaIconButton :icon="['far', 'star']" plain tooltip="Favorite" type="warning"/>
+    </NavActionItem>
+  </NavActionGroup>
+  <NavActionGroup>
+    <NavActionFaIcon :icon="['fab', 'git-alt']" tooltip="Git"/>
+    <NavActionItem>
+      <FaIconButton :icon="['fa', 'upload']" tooltip="Upload File" type="primary"/>
+    </NavActionItem>
+    <NavActionItem>
+      <FaIconButton :icon="['fa', 'paper-plane']" tooltip="Commit" type="success"/>
     </NavActionItem>
   </NavActionGroup>
 </template>

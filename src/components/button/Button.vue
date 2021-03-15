@@ -1,9 +1,9 @@
 <template>
   <el-tooltip :content="tooltip" :disabled="!tooltip">
-    <span class="button-wrapper">
+    <span :class="[noMargin ? 'no-margin' : '']" class="button-wrapper">
       <el-button
           :circle="circle"
-          :class="isIcon ? 'icon-button' : ''"
+          :class="[isIcon ? 'icon-button' : '']"
           :disabled="disabled"
           :plain="plain"
           :round="round"
@@ -62,6 +62,11 @@ export const buttonProps = {
     type: Boolean,
     required: false,
     default: false,
+  },
+  noMargin: {
+    type: Boolean,
+    required: false,
+    default: false,
   }
 };
 
@@ -80,7 +85,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .button-wrapper {
   margin-right: 10px;
-  border-collapse: collapse;
+
+  &.no-margin {
+    margin-right: 0;
+  }
 }
 </style>
 

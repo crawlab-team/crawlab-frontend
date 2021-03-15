@@ -25,7 +25,7 @@
       </NavTabs>
       <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
         <SpiderDetailActionsCommon/>
-        <SpiderDetailActionsOverview v-if="activeTabName === 'overview'"/>
+<!--        <SpiderDetailActionsOverview v-if="activeTabName === 'overview'"/>-->
         <SpiderDetailActionsFiles v-if="activeTabName === 'files'"/>
       </NavActions>
       <div :style="contentContainerStyle" class="content-container">
@@ -45,12 +45,12 @@ import variables from '@/styles/variables.scss';
 import NavActionsComp from '@/components/nav/NavActions.vue';
 import SpiderDetailActionsFiles from '@/views/spider/detail/actions/SpiderDetailActionsFiles.vue';
 import SpiderDetailActionsCommon from '@/views/spider/detail/actions/SpiderDetailActionsCommon.vue';
-import SpiderDetailActionsOverview from '@/views/spider/detail/actions/SpiderDetailActionsOverview.vue';
+// import SpiderDetailActionsOverview from '@/views/spider/detail/actions/SpiderDetailActionsOverview.vue';
 
 export default defineComponent({
   name: 'SpiderDetail',
   components: {
-    SpiderDetailActionsOverview,
+    // SpiderDetailActionsOverview,
     SpiderDetailActionsCommon,
     SpiderDetailActionsFiles,
     NavActions: NavActionsComp,
