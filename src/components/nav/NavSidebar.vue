@@ -33,18 +33,21 @@
         </span>
       </el-menu-item>
     </el-menu>
-    <div v-else class="nav-menu empty">
-      No Items
-    </div>
+    <Empty
+        v-else
+        description="No Items"
+    />
   </div>
 </template>
 <script lang="ts">
 import {computed, defineComponent, ref} from 'vue';
 import {ElMenu} from 'element-plus';
 import variables from '@/styles/variables.scss';
+import Empty from '@/components/empty/Empty.vue';
 
 export default defineComponent({
   name: 'NavSidebar',
+  components: {Empty},
   props: {
     items: Array,
     activeKey: String,
@@ -131,7 +134,7 @@ export default defineComponent({
   width: $navSidebarWidth;
   border-right: 1px solid $navSidebarBorderColor;
   background-color: $navSidebarBg;
-  height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
+  height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight} - 1px);
   transition: width $navSidebarCollapseTransitionDuration;
 
   &.collapsed {

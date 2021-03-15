@@ -198,7 +198,6 @@ export default defineComponent({
     //margin: 10px;
     flex: 1;
     background-color: $containerWhiteBg;
-    //border: 1px solid $containerBorderColor;
     display: flex;
     flex-direction: column;
     max-width: calc(100% - #{$navSidebarWidth});
