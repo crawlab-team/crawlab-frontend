@@ -127,11 +127,11 @@ export default defineComponent({
 
 .nav-sidebar {
   position: relative;
-  margin: 10px;
+  //margin: 10px;
   width: $navSidebarWidth;
-  border: 1px solid $navSidebarBorderColor;
+  border-right: 1px solid $navSidebarBorderColor;
   background-color: $navSidebarBg;
-  height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight} - 20px);
+  height: calc(100vh - #{$headerHeight} - #{$tabsViewHeight});
   transition: width $navSidebarCollapseTransitionDuration;
 
   &.collapsed {

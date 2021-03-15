@@ -195,13 +195,13 @@ export default defineComponent({
   }
 
   .content {
-    margin: 10px;
+    //margin: 10px;
     flex: 1;
     background-color: $containerWhiteBg;
-    border: 1px solid $containerBorderColor;
+    //border: 1px solid $containerBorderColor;
     display: flex;
     flex-direction: column;
-    max-width: calc(100% - #{$navSidebarWidth} - 20px - 20px);
+    max-width: calc(100% - #{$navSidebarWidth});
 
     .nav-tabs {
       height: calc(#{$navTabsHeight} + 1px);
