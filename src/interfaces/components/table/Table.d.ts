@@ -52,7 +52,7 @@ declare global {
   interface TableColumnButton {
     type?: string;
     size?: string;
-    icon?: string | string[];
+    icon?: Icon | TableValueFunction;
     tooltip?: string;
     isHtml?: boolean;
     onClick?: TableButtonOnClickFunction;

@@ -1,13 +1,15 @@
 <template>
   <el-tooltip :content="tooltip" :disabled="!tooltip">
     <el-tag
-        :class="[clickable ? 'clickable' : '']"
+        :class="cls"
         :size="size"
         :style="style"
         :type="type"
         :effect="effect"
         class="tag"
         @click="onClick"
+        @mouseenter="$emit('mouseenter')"
+        @mouseleave="$emit('mouseleave')"
     >
       <Icon :icon="icon" :spinning="spinning"/>
       <span>{{ label }}</span>
@@ -57,7 +59,11 @@ export default defineComponent({
   name: 'Tag',
   components: {Icon},
   props: tagProps,
-  emits: ['click'],
+  emits: [
+    'click',
+    'mouseenter',
+    'mouseleave',
+  ],
   setup(props: TagProps, {emit}) {
     const style = computed<Partial<CSSStyleDeclaration>>(() => {
       const {width} = props;
@@ -73,9 +79,17 @@ export default defineComponent({
       }
     };
 
+    const cls = computed<string[]>(() => {
+      const {clickable} = props;
+      const cls = [] as string[];
+      if (clickable) cls.push('clickable');
+      return cls;
+    });
+
     return {
       style,
       onClick,
+      cls,
     };
   },
 });

@@ -7,15 +7,20 @@ const useNode = (store: Store<RootStoreState>) => {
   const {node: state} = store.state as RootStoreState;
 
   // all node select options
-  const allNodeSelectOptions = computed(() => state.allNodeSelectOptions);
+  const allNodeSelectOptions = computed<SelectOption[]>(() => state.allNodeSelectOptions);
   const setAllNodeSelectOptions = (options: SelectOption[]) => {
     store.commit(`${storeNamespace}/setAllNodeSelectOptions`, options);
   };
 
   // all node tags
-  const allNodeTags = computed(() => state.allNodeTags);
-  const setAllNodeTags = (options: SelectOption[]) => {
-    store.commit(`${storeNamespace}/setAllNodeSelectOptions`, options);
+  const allNodeTags = computed<SelectOption[]>(() => state.allNodeTags.map(tag => {
+    return {
+      label: tag,
+      value: tag,
+    };
+  }));
+  const setAllNodeTags = (tags: string[]) => {
+    store.commit(`${storeNamespace}/setAllNodeTags`, tags);
   };
 
   return {

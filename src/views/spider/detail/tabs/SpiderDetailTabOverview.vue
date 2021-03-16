@@ -41,48 +41,33 @@
       <FormItem :span="2" is-placeholder/>
 
       <!-- Row 4 -->
-      <FormItem :span="4">
-        <CheckTag
-            v-for="n in allNodeSelectOptions"
-            :key="{v:n.value,c:checkedMap[n.value]}"
-            v-model="checkedMap[n.value]"
-            :label="n.label"
-            style="margin-right: 10px"
-        />
-      </FormItem>
-
       <FormItem
-          v-if="spiderForm.mode === TASK_MODE_SELECTED_NODES"
-          :span="1"
-          label="Selected Nodes"
-          prop="node_ids"
-          required
-      >
-        <el-select v-model="spiderForm.node_ids" multiple>
-          <el-option
-              v-for="op in allNodeSelectOptions"
-              :key="op.value"
-              :label="op.label"
-              :value="op.value"
-          />
-        </el-select>
-      </FormItem>
-      <FormItem
-          v-else-if="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
+          v-if="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
           :span="2"
           label="Selected Tags"
           prop="node_tags"
           required
       >
-        <el-select v-model="spiderForm.node_tags" multiple>
-          <el-option
-              v-for="tag in allNodeTags"
-              :key="tag"
-              :label="tag"
-              :value="tag"
-          />
-        </el-select>
+        <CheckTagGroup
+            v-model="spiderForm.node_tags"
+            :options="allNodeTags"
+        />
       </FormItem>
+
+      <!-- Row 5 -->
+      <FormItem
+          v-if="[TASK_MODE_SELECTED_NODES, TASK_MODE_SELECTED_NODE_TAGS].includes(spiderForm.mode)"
+          :span="4"
+          label="Selected Nodes"
+          required
+      >
+        <CheckTagGroup
+            v-model="spiderForm.node_ids"
+            :disabled="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
+            :options="allNodeSelectOptions"
+        />
+      </FormItem>
+
       <FormItem :span="4" label="Description" prop="description">
         <el-input v-model="spiderForm.description" placeholder="Description" type="textarea"/>
       </FormItem>
@@ -90,7 +75,7 @@
   </div>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, reactive} from 'vue';
+import {defineComponent, onMounted} from 'vue';
 import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
 import InputWithButton from '@/components/input/InputWithButton.vue';
@@ -98,12 +83,12 @@ import useSpider from '@/components/spider/spider';
 import {useStore} from 'vuex';
 import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
 import useNode from '@/components/node/node';
-import CheckTag from '@/components/tag/CheckTag.vue';
+import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
 
 export default defineComponent({
   name: 'SpiderDetailTabOverview',
   components: {
-    CheckTag,
+    CheckTagGroup,
     InputWithButton,
     Form,
     FormItem,
@@ -111,8 +96,6 @@ export default defineComponent({
   setup() {
     // store
     const store = useStore();
-
-    const checkedMap = reactive<any>({});
 
     // use spider
     const {
@@ -144,7 +127,6 @@ export default defineComponent({
       setAllNodeSelectOptions,
       allNodeTags,
       setAllNodeTags,
-      checkedMap,
     };
   },
 });
