@@ -2,6 +2,7 @@ interface RootStoreState {
   login: LoginStoreState;
   layout: LayoutStoreState;
   node: NodeStoreState;
+  project: ProjectStoreState;
   spider: SpiderStoreState;
   file: FileStoreState;
 }

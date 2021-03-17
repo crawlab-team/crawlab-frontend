@@ -8,6 +8,7 @@ interface Spider {
   mode?: TaskMode;
   node_ids?: string[];
   node_tags?: string[];
+  project_id?: string;
   project_name?: string;
   description?: string;
   last_status?: string;

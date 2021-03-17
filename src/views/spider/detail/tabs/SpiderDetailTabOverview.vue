@@ -1,15 +1,16 @@
 <template>
   <div class="spider-detail-tab-overview">
     <Form v-if="spiderForm" :grid="4" :model="spiderForm" label-width="150px">
-      <!-- Row 1 -->
+      <!-- Row -->
       <FormItem :span="2" label="Name" prop="name" required>
         <el-input v-model="spiderForm.name" placeholder="Name"/>
       </FormItem>
       <FormItem :span="2" label="Display Name" prop="display_name" required>
         <el-input v-model="spiderForm.display_name" placeholder="Display Name"/>
       </FormItem>
+      <!-- ./Row -->
 
-      <!-- Row 2 -->
+      <!-- Row -->
       <FormItem :span="2" label="Command" prop="cmd" required>
         <InputWithButton
             v-model="spiderForm.cmd"
@@ -26,8 +27,9 @@
             placeholder="Params"
         />
       </FormItem>
+      <!-- ./Row -->
 
-      <!-- Row 3 -->
+      <!-- Row -->
       <FormItem :span="2" label="Default Mode" prop="mode" required>
         <el-select v-model="spiderForm.mode">
           <el-option
@@ -38,12 +40,21 @@
           />
         </el-select>
       </FormItem>
-      <FormItem :span="2" is-placeholder/>
+      <FormItem :span="2" label="Project" prop="project_id" required>
+        <el-select v-model="spiderForm.project_id">
+          <el-option
+              v-for="op in allProjectSelectOptions"
+              :key="op.value"
+              :label="op.label"
+              :value="op.value"
+          />
+        </el-select>
+      </FormItem>
+      <!-- ./Row -->
 
-      <!-- Row 4 -->
       <FormItem
           v-if="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
-          :span="2"
+          :span="4"
           label="Selected Tags"
           prop="node_tags"
           required
@@ -54,7 +65,6 @@
         />
       </FormItem>
 
-      <!-- Row 5 -->
       <FormItem
           v-if="[TASK_MODE_SELECTED_NODES, TASK_MODE_SELECTED_NODE_TAGS].includes(spiderForm.mode)"
           :span="4"
@@ -84,6 +94,7 @@ import {useStore} from 'vuex';
 import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
 import useNode from '@/components/node/node';
 import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
+import useProject from '@/components/project/project';
 
 export default defineComponent({
   name: 'SpiderDetailTabOverview',
@@ -108,10 +119,13 @@ export default defineComponent({
     // use node
     const {
       allNodeSelectOptions,
-      setAllNodeSelectOptions,
       allNodeTags,
-      setAllNodeTags,
     } = useNode(store);
+
+    // use project
+    const {
+      allProjectSelectOptions,
+    } = useProject(store);
 
     onMounted(() => {
       resetSpiderForm();
@@ -124,9 +138,8 @@ export default defineComponent({
       modeOptions,
       spiderForm,
       allNodeSelectOptions,
-      setAllNodeSelectOptions,
       allNodeTags,
-      setAllNodeTags,
+      allProjectSelectOptions,
     };
   },
 });

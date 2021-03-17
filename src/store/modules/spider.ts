@@ -19,8 +19,12 @@ export default {
       run: false,
     },
     spiderForm: {
-      name: 'Spider 1',
+      name: 'spider-1',
+      display_name: 'Spider 1',
+      cmd: 'python main.py',
+      param: '--level=DEBUG',
       mode: TASK_MODE_ALL,
+      project_id: '1',
     },
   },
   getters: {
