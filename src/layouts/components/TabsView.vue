@@ -9,6 +9,7 @@
         <Tab :tab="item"/>
       </template>
     </DraggableList>
+    <!-- IconTab Placeholder -->
   </div>
 </template>
 <script lang="ts">
