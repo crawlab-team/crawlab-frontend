@@ -17,6 +17,7 @@ import {useStore} from 'vuex';
 import TabComp from '@/layouts/components/Tab.vue';
 import {useRoute} from 'vue-router';
 import DraggableList from '@/components/drag/DraggableList.vue';
+import {plainClone} from '@/utils/object';
 
 export default defineComponent({
   name: 'TabsView',
@@ -25,16 +26,25 @@ export default defineComponent({
     Tab: TabComp,
   },
   setup() {
+    // store
     const storeNameSpace = 'layout';
     const store = useStore<RootStoreState>();
-    const {layout} = store.state as RootStoreState;
+
+    // route
     const route = useRoute();
+
+    // current path
     const currentPath = computed(() => route.path);
 
+    // tabs
     const tabs = computed<Tab[]>(() => store.getters[`${storeNameSpace}/tabs`]);
 
     const addTab = (tab: Tab) => {
       store.commit(`${storeNameSpace}/addTab`, tab);
+    };
+
+    const setActiveTab = (tab: Tab) => {
+      store.commit(`${storeNameSpace}/setActiveTabId`, tab.id);
     };
 
     const onDragDrop = (tabs: Tab[]) => {
@@ -42,19 +52,33 @@ export default defineComponent({
     };
 
     watch(currentPath, (path) => {
-      const {tabs} = layout;
-      if (tabs.map(t => t.path).includes(path)) return;
-      addTab({path});
+      console.log(path);
+      // active tab
+      const activeTab = store.getters[`${storeNameSpace}/activeTab`] as Tab | undefined;
+      console.log(activeTab);
+
+      // skip if active tab is undefined
+      if (!activeTab) return;
+
+      // set path to active tab
+      activeTab.path = path;
+
+      // update path of active tab
+      store.commit(`${storeNameSpace}/updateTab`, plainClone(activeTab));
     });
 
     onMounted(() => {
-      const {tabs, menuItems} = layout;
-      if (tabs.length === 0) {
-        for (const item of menuItems) {
-          addTab({
-            path: item.path,
-          });
-        }
+      // add current page to tabs if no tab exists
+      if (tabs.value.length === 0) {
+        // add tab
+        addTab({path: currentPath.value});
+
+        // new tab
+        const newTab = tabs.value[0];
+        if (!newTab) return;
+
+        // set active tab id
+        setActiveTab(newTab);
       }
     });
 

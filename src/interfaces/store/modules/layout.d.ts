@@ -14,6 +14,7 @@ declare global {
     // tabs view
     maxTabId: number;
     tabs: Tab[];
+    activeTabId?: number;
     draggingTab?: Tab;
     targetTab?: Tab;
     isTabsDragging: boolean;
@@ -21,12 +22,15 @@ declare global {
 
   interface LayoutStoreGetters extends GetterTree<LayoutStoreState, RootStoreState> {
     tabs: StoreGetter<LayoutStoreState, RootStoreState, Tab[]>;
+    activeTab: StoreGetter<LayoutStoreState, RootStoreState, Tab | undefined>;
   }
 
   interface LayoutStoreMutations extends MutationTree<LayoutStoreState> {
     setSideBarCollapsed: StoreMutation<LayoutStoreState, boolean>;
     setTabs: StoreMutation<LayoutStoreState, Tab[]>;
+    setActiveTabId: StoreMutation<LayoutStoreState, number>;
     addTab: StoreMutation<LayoutStoreState, Tab>;
+    updateTab: StoreMutation<LayoutStoreState, Tab>;
     removeTab: StoreMutation<LayoutStoreState, Tab>;
     removeAllTabs: StoreMutation<LayoutStoreState>;
     setDraggingTab: StoreMutation<LayoutStoreState, Tab>;

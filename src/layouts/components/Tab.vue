@@ -22,7 +22,7 @@ import MenuItemIcon from '@/layouts/components/MenuItemIcon.vue';
 import {useStore} from 'vuex';
 import {getPrimaryPath} from '@/utils/path';
 import {useI18n} from 'vue-i18n';
-import {useRoute, useRouter} from 'vue-router';
+import {useRouter} from 'vue-router';
 
 interface TabProps {
   tab: Tab;
@@ -38,16 +38,15 @@ export default defineComponent({
   },
   setup(props) {
     const {tm} = useI18n();
-    const route = useRoute();
     const router = useRouter();
     const storeNamespace = 'layout';
     const store = useStore();
-    const {layout} = store.state as RootStoreState;
+    const {layout: state} = store.state as RootStoreState;
 
     const item = computed(() => {
       const {tab} = props as TabProps;
       if (!tab) return;
-      const {menuItems} = layout;
+      const {menuItems} = state;
       for (const _item of menuItems) {
         const primaryPath = getPrimaryPath(tab.path);
         if (primaryPath === _item.path) {
@@ -64,7 +63,8 @@ export default defineComponent({
 
     const active = computed(() => {
       const {tab} = props as TabProps;
-      return route.path === tab.path;
+      const {activeTabId} = state;
+      return tab.id === activeTabId;
     });
 
     const dragging = computed(() => {
@@ -72,7 +72,7 @@ export default defineComponent({
       return !!tab.dragging;
     });
 
-    const isTabsDragging = computed<boolean>(() => layout.isTabsDragging);
+    const isTabsDragging = computed<boolean>(() => state.isTabsDragging);
 
     const classes = computed(() => {
       const cls = [];
@@ -84,12 +84,13 @@ export default defineComponent({
 
     const onClick = () => {
       const {tab} = props as TabProps;
+      store.commit(`${storeNamespace}/setActiveTabId`, tab.id);
       router.push(tab.path);
     };
 
     const onClose = () => {
       const {tab} = props as TabProps;
-      const {tabs} = layout;
+      const {tabs} = state;
       const idx = tabs.map(t => t.id).indexOf(tab.id);
       store.commit(`${storeNamespace}/removeTab`, tab);
       if (active.value) {

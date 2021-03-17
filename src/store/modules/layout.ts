@@ -16,6 +16,7 @@ export default {
     ],
 
     // tabs view
+    activeTabId: undefined,
     maxTabId: 0,
     tabs: [] as Tab[],
     draggingTab: undefined,
@@ -34,6 +35,11 @@ export default {
       orderedTabs.splice(targetIdx, 0, draggingTab);
       return orderedTabs;
     },
+    activeTab: state => {
+      const {tabs, activeTabId} = state;
+      if (activeTabId === undefined) return;
+      return tabs.find(d => d.id === activeTabId);
+    }
   },
   mutations: {
     setSideBarCollapsed(state: LayoutStoreState, value: boolean) {
@@ -42,9 +48,20 @@ export default {
     setTabs(state: LayoutStoreState, tabs: Tab[]) {
       state.tabs = tabs;
     },
+    setActiveTabId(state: LayoutStoreState, id: number) {
+      state.activeTabId = id;
+    },
     addTab(state: LayoutStoreState, tab: Tab) {
       if (tab.id === undefined) tab.id = ++state.maxTabId;
       state.tabs.push(tab);
+    },
+    updateTab(state: LayoutStoreState, tab: Tab) {
+      console.log(tab);
+      const {tabs} = state;
+      const idx = tabs.findIndex(d => d.id === tab.id);
+      if (idx !== -1) {
+        state.tabs[idx] = tab;
+      }
     },
     removeAllTabs(state: LayoutStoreState) {
       state.tabs = [];
