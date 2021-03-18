@@ -5,7 +5,7 @@
       class="tab"
       @click="onClick"
   >
-    <span class="icon">
+    <span :key="item?.icon || icon" class="icon">
       <MenuItemIcon v-if="!icon" :item="item" size="10px"/>
       <Icon v-else :icon="icon" size="10px"/>
     </span>
