@@ -14,32 +14,28 @@
   </template>
 </template>
 <script lang="ts">
-import {computed, defineComponent} from 'vue';
-
-interface MenuItemIconProps {
-  item?: MenuItem;
-  size?: 'small' | 'normal' | 'large' | string;
-}
+import {computed, defineComponent, PropType} from 'vue';
+import useIcon from '@/components/icon/icon';
 
 export default defineComponent({
   name: 'MenuItemIcon',
   props: {
-    item: Object,
-    size: String,
+    item: {
+      type: Object as PropType<MenuItem>,
+    },
+    size: {
+      type: String as PropType<IconSize>,
+      default: 'mini',
+    }
   },
-  setup(props) {
+  setup(props: MenuItemIconProps) {
+    const {
+      getFontSize,
+    } = useIcon();
+
     const fontSize = computed(() => {
       const {size} = props as MenuItemIconProps;
-      switch (size) {
-        case 'large':
-          return '24px';
-        case 'normal':
-          return '16px';
-        case 'small':
-          return '12px';
-        default:
-          return size || '16px';
-      }
+      return getFontSize(size);
     });
 
     return {

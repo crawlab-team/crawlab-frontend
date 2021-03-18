@@ -48,7 +48,7 @@ import {useStore} from 'vuex';
 import {useRoute, useRouter} from 'vue-router';
 import variables from '@/styles/variables.scss';
 import logo from '@/assets/logo.svg';
-import MenuItemIcon from '@/layouts/components/MenuItemIcon.vue';
+import MenuItemIcon from '@/components/icon/MenuItemIcon.vue';
 import {getPrimaryPath} from '@/utils/path';
 
 export default defineComponent({

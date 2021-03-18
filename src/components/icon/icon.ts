@@ -8,9 +8,25 @@ const useIcon = () => {
     }
   };
 
+  const getFontSize = (size: IconSize) => {
+    switch (size) {
+      case 'large':
+        return '24px';
+      case 'normal':
+        return '16px';
+      case 'small':
+        return '12px';
+      case 'mini':
+        return '10px';
+      default:
+        return size || '16px';
+    }
+  };
+
   return {
     // public variables and methods
     isFaIcon,
+    getFontSize,
   };
 };
 

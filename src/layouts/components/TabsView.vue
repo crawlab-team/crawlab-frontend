@@ -1,6 +1,7 @@
 <template>
   <div class="tabs-view">
     <DraggableList
+        class="tab-list"
         :items="tabs"
         item-key="id"
         @d-end="onDragDrop"
@@ -9,20 +10,25 @@
         <Tab :tab="item"/>
       </template>
     </DraggableList>
-    <!-- IconTab Placeholder -->
+
+    <!-- Add Tab -->
+    <ActionTab :icon="['fa', 'plus']" class="add-tab" @click="onAddTab"/>
+    <!-- ./Add Tab -->
   </div>
 </template>
 <script lang="ts">
 import {computed, defineComponent, onMounted, watch} from 'vue';
 import {useStore} from 'vuex';
-import TabComp from '@/layouts/components/Tab.vue';
-import {useRoute} from 'vue-router';
+import TabComp from '@/components/tab/Tab.vue';
+import {useRoute, useRouter} from 'vue-router';
 import DraggableList from '@/components/drag/DraggableList.vue';
 import {plainClone} from '@/utils/object';
+import ActionTab from '@/components/tab/ActionTab.vue';
 
 export default defineComponent({
   name: 'TabsView',
   components: {
+    ActionTab,
     DraggableList,
     Tab: TabComp,
   },
@@ -33,6 +39,9 @@ export default defineComponent({
 
     // route
     const route = useRoute();
+
+    // router
+    const router = useRouter();
 
     // current path
     const currentPath = computed(() => route.path);
@@ -48,15 +57,20 @@ export default defineComponent({
       store.commit(`${storeNameSpace}/setActiveTabId`, tab.id);
     };
 
+    const onAddTab = () => {
+      addTab({path: '/'});
+      const newTab = tabs.value[tabs.value.length - 1];
+      setActiveTab(newTab);
+      router.push(newTab.path);
+    };
+
     const onDragDrop = (tabs: Tab[]) => {
       store.commit(`${storeNameSpace}/setTabs`, tabs);
     };
 
     watch(currentPath, (path) => {
-      console.log(path);
       // active tab
       const activeTab = store.getters[`${storeNameSpace}/activeTab`] as Tab | undefined;
-      console.log(activeTab);
 
       // skip if active tab is undefined
       if (!activeTab) return;
@@ -85,6 +99,7 @@ export default defineComponent({
 
     return {
       tabs,
+      onAddTab,
       currentPath,
       onDragDrop,
     };
@@ -92,12 +107,13 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@import "../../styles/variables.scss";
+@import "../../styles/variables";
 
 .tabs-view {
   padding: 10px 0;
   border-bottom: 1px solid $tabsViewBorderColor;
   background-color: $tabsViewBg;
+  display: flex;
 }
 </style>
 <style scoped>

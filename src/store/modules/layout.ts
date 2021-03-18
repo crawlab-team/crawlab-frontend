@@ -56,7 +56,6 @@ export default {
       state.tabs.push(tab);
     },
     updateTab(state: LayoutStoreState, tab: Tab) {
-      console.log(tab);
       const {tabs} = state;
       const idx = tabs.findIndex(d => d.id === tab.id);
       if (idx !== -1) {
@@ -68,9 +67,14 @@ export default {
     },
     removeTab(state: LayoutStoreState, tab: Tab) {
       if (tab.id === undefined) return;
-      const idx = state.tabs.map(t => t.id).indexOf(tab.id);
+      const idx = state.tabs.findIndex(d => d.id === tab.id);
       if (idx === -1) return;
       state.tabs.splice(idx, 1);
+
+      // set active tab
+      // if (idx > state.tabs.length - 1) {
+      //
+      // }
     },
     setDraggingTab(state: LayoutStoreState, tab: Tab) {
       state.draggingTab = tab;
