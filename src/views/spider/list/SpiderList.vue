@@ -4,10 +4,14 @@
       <NavActions ref="navActions" class="nav-actions">
         <NavActionGroup>
           <NavActionItem>
-            <Button size="mini" tooltip="New Spider" type="success" @click="onClickCreate">
-              <font-awesome-icon :icon="['fa' ,'plus']"/>
-              New Spider
-            </Button>
+            <LabelButton
+                :icon="['fa', 'plus']"
+                label="New Spider"
+                size="mini"
+                tooltip="New Spider"
+                type="success"
+                @click="onClickCreate"
+            />
           </NavActionItem>
         </NavActionGroup>
       </NavActions>
@@ -46,7 +50,6 @@ import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import {useRouter} from 'vue-router';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
-import Button from '@/components/button/Button.vue';
 import FaIconButton from '@/components/button/FaIconButton.vue';
 import CreateSpiderDialog from '@/components/spider/CreateSpiderDialog.vue';
 import {useStore} from 'vuex';
@@ -61,12 +64,13 @@ import {
 } from '@/constants/task';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import {SPIDER_TYPE_CONFIGURABLE, SPIDER_TYPE_CUSTOMIZED} from '@/constants/spider';
+import LabelButton from '@/components/button/LabelButton.vue';
 
 export default defineComponent({
   name: 'SpiderList',
   components: {
+    LabelButton,
     CreateSpiderDialog,
-    Button,
     FaIconButton,
     NavActions,
     NavActionItem,

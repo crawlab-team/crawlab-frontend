@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, PropType} from 'vue';
 import {buttonProps} from './Button.vue';
 import Button from '@/components/button/Button.vue';
 
 export const faIconButtonProps = {
   icon: {
-    type: [Array, String],
+    type: [Array, String] as PropType<Icon>,
     required: true,
   },
   ...buttonProps,
@@ -35,7 +35,7 @@ export default defineComponent({
   emits: [
     'click',
   ],
-  setup(props) {
+  setup(props: FaIconButtonProps) {
     return {};
   },
 });

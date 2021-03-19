@@ -1,5 +1,14 @@
 <template>
   <div class="project-list">
+    <NavActions
+        class="nav-actions"
+    >
+      <NavActionGroup>
+        <NavActionItem>
+
+        </NavActionItem>
+      </NavActionGroup>
+    </NavActions>
     <div class="content">
       <Table
           :columns="tableColumns"
@@ -16,10 +25,16 @@ import {computed, defineComponent, h} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
 import Table from '@/components/table/Table.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import NavActions from '@/components/nav/NavActions.vue';
+import NavActionGroup from '@/components/nav/NavActionGroup.vue';
+import NavActionItem from '@/components/nav/NavActionItem.vue';
 
 export default defineComponent({
   name: 'ProjectList',
   components: {
+    NavActionItem,
+    NavActionGroup,
+    NavActions,
     Table,
   },
   setup(props, {emit}) {
