@@ -14,7 +14,7 @@ const useSpider = (store: Store<RootStoreState>) => {
     spider: spiderState,
   } = store.state;
 
-  // implementation
+  // route
   const route = useRoute();
 
   // spider id

@@ -18,7 +18,8 @@ export default {
       create: false,
       clone: false,
       edit: false,
-    }
+    },
+    projectForm: {},
   },
   mutations: {
     setAllProjectSelectOptions: (state: ProjectStoreState, options: SelectOption[]) => {

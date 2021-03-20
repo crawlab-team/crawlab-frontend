@@ -1,19 +1,30 @@
-import {computed} from 'vue';
+import {computed, ref} from 'vue';
 import {Store} from 'vuex';
 
 const useProject = (store: Store<RootStoreState>) => {
-  // implementation
+  // store
   const storeNamespace = 'project';
-  const {project: state} = store.state as RootStoreState;
+  const {project: projectState} = store.state as RootStoreState;
+
+  // internal project form
+  const projectForm = ref<Project>();
+
+  // store spider form
+  const storeProjectForm = computed(() => projectState.projectForm);
+
+  // reset spider form
+  const resetProjectForm = () => {
+    projectForm.value = storeProjectForm.value;
+  };
 
   // all project select options
-  const allProjectSelectOptions = computed<SelectOption[]>(() => state.allProjectSelectOptions);
+  const allProjectSelectOptions = computed<SelectOption[]>(() => projectState.allProjectSelectOptions);
   const setAllProjectSelectOptions = (options: SelectOption[]) => {
     store.commit(`${storeNamespace}/setAllProjectSelectOptions`, options);
   };
 
   // all project tags
-  const allProjectTags = computed<SelectOption[]>(() => state.allProjectTags.map(tag => {
+  const allProjectTags = computed<SelectOption[]>(() => projectState.allProjectTags.map(tag => {
     return {
       label: tag,
       value: tag,
@@ -24,11 +35,12 @@ const useProject = (store: Store<RootStoreState>) => {
   };
 
   return {
-    // public variables and methods
+    projectForm,
     allProjectSelectOptions,
     allProjectTags,
     setAllProjectSelectOptions,
     setAllProjectTags,
+    resetProjectForm,
   };
 };
 

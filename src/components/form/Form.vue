@@ -36,7 +36,7 @@ export default defineComponent({
     },
     grid: {
       type: Number,
-      default: 3,
+      default: 4,
     },
   },
   setup(props: FormProps, {emit}) {

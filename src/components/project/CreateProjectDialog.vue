@@ -1,8 +1,7 @@
 <template>
-  <CreateDialog
-      v-model="dialogVisible.create"
-  >
+  <CreateDialog v-model="dialogVisible.create">
     <template #single>
+      <ProjectForm/>
     </template>
   </CreateDialog>
 </template>
@@ -11,10 +10,14 @@
 import {defineComponent} from 'vue';
 import CreateDialog from '@/components/dialog/CreateDialog.vue';
 import {useStore} from 'vuex';
+import ProjectForm from '@/components/project/ProjectForm.vue';
 
 export default defineComponent({
   name: 'CreateProjectDialog',
-  components: {CreateDialog},
+  components: {
+    CreateDialog,
+    ProjectForm,
+  },
   setup(props, {emit}) {
     // store
     const storeNamespace = 'project';

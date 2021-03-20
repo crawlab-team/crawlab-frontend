@@ -1,5 +1,5 @@
 <template>
-  <Form v-if="spiderForm" :grid="4" :model="spiderForm" label-width="150px">
+  <Form v-if="spiderForm" :model="spiderForm">
     <!-- Row -->
     <FormItem :span="2" label="Name" prop="name" required>
       <el-input v-model="spiderForm.name" placeholder="Name"/>
@@ -133,7 +133,10 @@ export default defineComponent({
     } = useProject(store);
 
     onMounted(() => {
-      resetSpiderForm();
+      const {isCreate} = props;
+      if (!isCreate) {
+        resetSpiderForm();
+      }
     });
 
     return {
