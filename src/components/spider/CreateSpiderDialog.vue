@@ -1,39 +1,23 @@
 <template>
-  <Dialog
-      :visible="dialogVisible.create"
-      title="Create Spider"
-      width="960px"
-      @close="onClose"
-      @confirm="onConfirm"
-  >
-    <el-tabs v-model="tabName">
-      <el-tab-pane label="Single" name="single">
-        <CreateSpiderDialogContentSingle/>
-      </el-tab-pane>
-      <el-tab-pane label="Batch" name="batch">
-        <CreateSpiderDialogContentBatch/>
-      </el-tab-pane>
-    </el-tabs>
-  </Dialog>
+  <CreateDialog v-model="dialogVisible.create">
+    <template #single>
+      <SpiderForm is-create/>
+    </template>
+  </CreateDialog>
 </template>
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
-import Dialog from '@/components/dialog/Dialog.vue';
 import {useStore} from 'vuex';
-import CreateSpiderDialogContentSingle from '@/components/spider/CreateSpiderDialogContentSingle.vue';
-import CreateSpiderDialogContentBatch from '@/components/spider/CreateSpiderDialogContentBatch.vue';
+import CreateDialog from '@/components/dialog/CreateDialog.vue';
+import SpiderForm from '@/components/spider/SpiderForm.vue';
 
 export default defineComponent({
   name: 'CreateSpiderDialog',
   components: {
-    CreateSpiderDialogContentSingle,
-    CreateSpiderDialogContentBatch,
-    Dialog,
+    SpiderForm,
+    CreateDialog,
   },
-  emits: [
-    'close',
-  ],
   setup() {
     const tabName = ref<string>('single');
 

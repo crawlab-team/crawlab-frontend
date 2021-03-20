@@ -17,7 +17,7 @@ export default defineComponent({
   emits: [
     'click',
   ],
-  setup(props) {
+  setup: function (props) {
     const getChildren = () => {
       const {row, column} = props as TableCellProps;
 
@@ -42,8 +42,8 @@ export default defineComponent({
             onClick: () => {
               onClick?.(row);
             },
-          } as FaIconButtonProps;
-          return h(FaIconButton, props);
+          };
+          return h(FaIconButton, props as any);
         });
       }
 

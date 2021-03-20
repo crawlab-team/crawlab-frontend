@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, PropType} from 'vue';
 
 export const buttonProps = {
   tooltip: {
@@ -29,12 +29,12 @@ export const buttonProps = {
     default: '',
   },
   type: {
-    type: String,
+    type: String as PropType<BasicType>,
     required: false,
     default: 'primary',
   },
   size: {
-    type: String,
+    type: String as PropType<BasicSize>,
     required: false,
     default: 'mini',
   },

@@ -14,6 +14,11 @@ export default {
       'ecommerce',
       'news',
     ],
+    dialogVisible: {
+      create: false,
+      clone: false,
+      edit: false,
+    }
   },
   mutations: {
     setAllProjectSelectOptions: (state: ProjectStoreState, options: SelectOption[]) => {
@@ -21,6 +26,17 @@ export default {
     },
     setAllProjectTags: (state: ProjectStoreState, tags: string[]) => {
       state.allProjectTags = tags;
+    },
+    showDialog: (state: ProjectStoreState, key: DialogKey) => {
+      state.dialogVisible[key] = true;
+    },
+    hideDialog: (state: ProjectStoreState, key: DialogKey) => {
+      state.dialogVisible[key] = false;
+    },
+    resetDialogs: (state: ProjectStoreState) => {
+      for (const key in state.dialogVisible) {
+        state.dialogVisible[key as DialogKey] = false;
+      }
     },
   }
 } as ProjectStoreModule;

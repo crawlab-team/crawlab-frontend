@@ -5,4 +5,10 @@ interface DialogProps {
   zIndex?: number;
 }
 
-type DialogKey = 'create' | 'edit' | 'clone' | 'run';
+type DialogKey = 'create' | 'edit' | 'clone';
+
+interface DialogVisible {
+  create: boolean;
+  clone: boolean;
+  edit: boolean;
+}

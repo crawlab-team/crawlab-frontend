@@ -20,10 +20,7 @@ interface Spider {
 
 type SpiderTabName = 'overview' | 'files' | 'tasks' | 'settings';
 
-interface SpiderDialogVisible {
-  create: boolean;
-  clone: boolean;
-  edit: boolean;
+interface SpiderDialogVisible extends DialogVisible {
   run: boolean;
 }
 

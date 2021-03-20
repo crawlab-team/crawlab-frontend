@@ -9,6 +9,7 @@ declare global {
   interface ProjectStoreState {
     allProjectSelectOptions: SelectOption[];
     allProjectTags: string[];
+    dialogVisible: DialogVisible;
   }
 
   // interface ProjectStoreGetters extends GetterTree<ProjectStoreState, RootStoreState> {
@@ -17,5 +18,8 @@ declare global {
   interface ProjectStoreMutations extends MutationTree<ProjectStoreState> {
     setAllProjectSelectOptions: StoreMutation<ProjectStoreState, SelectOption[]>;
     setAllProjectTags: StoreMutation<ProjectStoreState, string[]>;
+    showDialog: StoreMutation<ProjectStoreState, DialogKey>;
+    hideDialog: StoreMutation<ProjectStoreState, DialogKey>;
+    resetDialogs: StoreMutation<ProjectStoreState>;
   }
 }

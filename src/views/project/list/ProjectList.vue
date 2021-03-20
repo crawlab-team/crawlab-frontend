@@ -1,117 +1,47 @@
 <template>
-  <div class="project-list">
-    <NavActions
-        class="nav-actions"
-    >
-      <NavActionGroup>
-        <NavActionItem>
-
-        </NavActionItem>
-      </NavActionGroup>
-    </NavActions>
-    <div class="content">
-      <Table
-          :columns="tableColumns"
-          :data="tableData"
-          :total="tableTotal"
-          selectable
-      />
-    </div>
-  </div>
+  <ListLayout
+      :nav-actions="navActions"
+      :table-columns="tableColumns"
+      :table-data="tableData"
+      :table-total="tableTotal"
+      class="project-list"
+      @select="onSelect"
+  >
+    <template #extra>
+      <!-- Dialogs (handled by store) -->
+      <CreateProjectDialog/>
+      <!-- ./Dialogs -->
+    </template>
+  </ListLayout>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, h} from 'vue';
-import ProjectTag from '@/components/project/ProjectTag.vue';
-import Table from '@/components/table/Table.vue';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
-import NavActions from '@/components/nav/NavActions.vue';
-import NavActionGroup from '@/components/nav/NavActionGroup.vue';
-import NavActionItem from '@/components/nav/NavActionItem.vue';
+import {defineComponent} from 'vue';
+import ListLayout from '@/layouts/ListLayout.vue';
+import useProjectList from './projectList';
+import CreateProjectDialog from '@/components/project/CreateProjectDialog.vue';
 
 export default defineComponent({
   name: 'ProjectList',
   components: {
-    NavActionItem,
-    NavActionGroup,
-    NavActions,
-    Table,
+    ListLayout,
+    CreateProjectDialog,
   },
-  setup(props, {emit}) {
-    // TODO: implement with real data
-    const types = [
-      'primary',
-      'success',
-      'warning',
-      'danger',
-      'info',
-    ];
-
-    // table data
-    const tableData: TableData<Project> = [
-      {
-        name: 'Alpha',
-        description: 'Alpha Project',
-        tags: ['test', 'dev'],
-      },
-      {
-        name: 'Beta',
-        description: 'Beta Project',
-        tags: ['release', 'test'],
-      },
-    ];
-
-    // TODO: implement with real data
-    const tableTotal = computed(() => tableData.length);
-
-    // table columns
-    const tableColumns: TableColumns<Project> = [
-      {
-        key: 'name',
-        label: 'Name',
-        icon: ['fa', 'font'],
-        width: '150',
-      },
-      {
-        key: 'description',
-        label: 'Description',
-        icon: ['fa', 'comment-alt'],
-        width: '200',
-      },
-      {
-        key: 'tags',
-        label: 'Tags',
-        icon: ['fa', 'hashtag'],
-        value: (row: Project) => {
-          if (!row.tags) return [];
-          const tags = row.tags.map(tag => h(ProjectTag, {
-            label: tag,
-            type: types[Math.floor(Math.random() * types.length)],
-          }));
-          return h('div', tags);
-        },
-        width: '200',
-      },
-      {
-        key: COLUMN_NAME_ACTIONS,
-        label: 'Actions',
-        fixed: 'right',
-        width: '200',
-        buttons: [
-          {
-            type: 'primary',
-            icon: ['fa', 'search'],
-            tooltip: 'View',
-          },
-        ],
-        disableTransfer: true,
-      }
-    ];
-
-    return {
+  setup() {
+    const {
+      navActions,
       tableData,
       tableTotal,
       tableColumns,
+      onSelect,
+    } = useProjectList();
+
+    return {
+      navActions,
+      tableData,
+      tableTotal,
+      tableColumns,
+      onSelect,
     };
   },
 });

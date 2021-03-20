@@ -26,9 +26,9 @@
           :align="c.align"
           :fixed="c.fixed ? c.fixed : false"
           :label="c.label"
-          :min-width="c.minWidth"
-          :sortable="c.sortable"
           :width="c.width"
+          :min-width="c.minWidth || c.width"
+          :sortable="c.sortable"
           :index="c.index"
           :resizable="c.resizable === undefined ? true : c.resizable"
       >

@@ -32,6 +32,9 @@ export default defineComponent({
     },
     ...buttonProps
   },
+  emits: [
+    'click',
+  ],
   setup(props: LabelButtonProps, {emit}) {
     return {};
   },
