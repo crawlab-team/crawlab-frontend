@@ -54,7 +54,7 @@ const useProjectList = () => {
         const tags = row.tags.map(tag => h(ProjectTag, {
           label: tag,
           type: types[Math.floor(Math.random() * types.length)],
-        }));
+        } as ProjectTagProps));
         return h('div', tags);
       },
       width: '200',

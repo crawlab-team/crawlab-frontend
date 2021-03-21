@@ -43,6 +43,7 @@ export default defineComponent({
               onClick?.(row);
             },
           };
+          // FIXME: use "as any" to fix type errors temporarily
           return h(FaIconButton, props as any);
         });
       }

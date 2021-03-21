@@ -21,8 +21,8 @@ declare global {
   }
 
   interface LayoutStoreGetters extends GetterTree<LayoutStoreState, RootStoreState> {
-    tabs: StoreGetter<LayoutStoreState, RootStoreState, Tab[]>;
-    activeTab: StoreGetter<LayoutStoreState, RootStoreState, Tab | undefined>;
+    tabs: StoreGetter<LayoutStoreState, Tab[]>;
+    activeTab: StoreGetter<LayoutStoreState, Tab | undefined>;
   }
 
   interface LayoutStoreMutations extends MutationTree<LayoutStoreState> {

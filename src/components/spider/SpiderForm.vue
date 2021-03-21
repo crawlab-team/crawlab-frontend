@@ -134,9 +134,7 @@ export default defineComponent({
 
     onMounted(() => {
       const {isCreate} = props;
-      if (!isCreate) {
-        resetSpiderForm();
-      }
+      resetSpiderForm(isCreate);
     });
 
     return {

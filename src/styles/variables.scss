@@ -1,14 +1,16 @@
+@import "./color.scss";
+
 // color
-$white: #ffffff;
+$white: $white;
 
 // basic
-$primaryColor: #409EFF;
+$primaryColor: $blue;
 $primaryPlainColor: rgb(217, 236, 255);
-$successColor: #67C23A;
+$successColor: $green;
 $successPlainColor: rgb(225, 243, 216);
-$warningColor: #E6A23C;
+$warningColor: $orange;
 $warningPlainColor: rgb(250, 236, 216);
-$dangerColor: #F56C6C;
+$dangerColor: $red;
 $dangerPlainColor: rgb(253, 226, 226);
 $infoColor: #303133;
 $infoMediumColor: #909399;

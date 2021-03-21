@@ -15,7 +15,7 @@ declare global {
   }
 
   interface SpiderStoreGetters extends GetterTree<SpiderStoreState, RootStoreState> {
-    tabName: StoreGetter<SpiderStoreState, RootStoreState, SpiderTabName>;
+    tabName: StoreGetter<SpiderStoreState, SpiderTabName>;
   }
 
   interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {

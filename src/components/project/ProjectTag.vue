@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, PropType} from 'vue';
 
 export default defineComponent({
   name: 'ProjectTag',
@@ -14,13 +14,13 @@ export default defineComponent({
       type: String,
     },
     type: {
-      type: String,
+      type: String as PropType<BasicType>,
     },
     color: {
       type: String,
     }
   },
-  setup(props, {emit}) {
+  setup(props: ProjectTagProps, {emit}) {
     return {};
   },
 });

@@ -1,13 +1,16 @@
 <template>
   <el-tooltip :content="tooltip" :disabled="!tooltip">
     <el-tag
+        :closable="closable"
         :class="cls"
         :size="size"
         :style="style"
         :type="type"
+        :color="color"
         :effect="effect"
         class="tag"
-        @click="onClick"
+        @click="onClick($event)"
+        @close="onClose($event)"
         @mouseenter="$emit('mouseenter')"
         @mouseleave="$emit('mouseleave')"
     >
@@ -32,6 +35,9 @@ export const tagProps = {
     type: String as PropType<BasicType>,
     default: 'primary',
   },
+  color: {
+    type: String as PropType<string>,
+  },
   icon: {
     type: [String, Array] as PropType<string | string[]>,
   },
@@ -46,12 +52,16 @@ export const tagProps = {
   width: {
     type: String,
   },
+  effect: {
+    type: String as PropType<BasicEffect>,
+  },
   clickable: {
     type: Boolean,
     default: false,
   },
-  effect: {
-    type: String as PropType<BasicEffect>,
+  closable: {
+    type: Boolean,
+    default: false,
   }
 };
 
@@ -61,6 +71,7 @@ export default defineComponent({
   props: tagProps,
   emits: [
     'click',
+    'close',
     'mouseenter',
     'mouseleave',
   ],
@@ -72,10 +83,19 @@ export default defineComponent({
       };
     });
 
-    const onClick = () => {
+    const onClick = (ev?: Event) => {
+      ev?.stopPropagation();
       const {clickable} = props;
       if (clickable) {
         emit('click');
+      }
+    };
+
+    const onClose = (ev?: Event) => {
+      ev?.stopPropagation();
+      const {closable} = props;
+      if (closable) {
+        emit('close');
       }
     };
 
@@ -89,6 +109,7 @@ export default defineComponent({
     return {
       style,
       onClick,
+      onClose,
       cls,
     };
   },

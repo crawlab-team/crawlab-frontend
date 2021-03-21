@@ -20,6 +20,7 @@ export default {
       edit: false,
     },
     projectForm: {},
+    projectFormRef: undefined,
   },
   mutations: {
     setAllProjectSelectOptions: (state: ProjectStoreState, options: SelectOption[]) => {
@@ -39,5 +40,11 @@ export default {
         state.dialogVisible[key as DialogKey] = false;
       }
     },
-  }
+    setProjectForm: (state: ProjectStoreState, form: Project) => {
+      state.projectForm = form;
+    }
+    // setProjectFormRef: (state: ProjectStoreState, formRef: typeof ElForm | undefined) => {
+    //   state.projectFormRef = formRef;
+    // }
+  },
 } as ProjectStoreModule;

@@ -24,6 +24,7 @@
         </template>
       </NavTabs>
       <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
+        <NavActionBack @click="onBack"/>
         <SpiderDetailActionsCommon/>
 <!--        <SpiderDetailActionsOverview v-if="activeTabName === 'overview'"/>-->
         <SpiderDetailActionsFiles v-if="activeTabName === 'files'"/>
@@ -45,11 +46,13 @@ import variables from '@/styles/variables.scss';
 import NavActionsComp from '@/components/nav/NavActions.vue';
 import SpiderDetailActionsFiles from '@/views/spider/detail/actions/SpiderDetailActionsFiles.vue';
 import SpiderDetailActionsCommon from '@/views/spider/detail/actions/SpiderDetailActionsCommon.vue';
+import NavActionBack from '@/components/nav/NavActionBack.vue';
 // import SpiderDetailActionsOverview from '@/views/spider/detail/actions/SpiderDetailActionsOverview.vue';
 
 export default defineComponent({
   name: 'SpiderDetail',
   components: {
+    NavActionBack,
     // SpiderDetailActionsOverview,
     SpiderDetailActionsCommon,
     SpiderDetailActionsFiles,
@@ -145,6 +148,10 @@ export default defineComponent({
       router.push(`/spiders/${activeSpiderId.value}/${tabName}`);
     };
 
+    const onBack = () => {
+      router.push('/spiders');
+    };
+
     onMounted(() => {
       if (!navSidebar.value) return;
       navSidebar.value.scroll(activeSpiderId.value);
@@ -166,6 +173,7 @@ export default defineComponent({
       onNavSidebarToggle,
       onActionsToggle,
       onNavTabsSelect,
+      onBack,
     };
   },
 });

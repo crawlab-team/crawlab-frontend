@@ -5,6 +5,7 @@
         :label="label"
         :required="required || form?.required"
         :size="size || form?.size"
+        :rules="rules"
     >
       <template #label>
         <el-tooltip :content="labelTooltip" :disabled="!labelTooltip">
@@ -21,7 +22,8 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, inject, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onMounted, PropType, ref} from 'vue';
+import {RuleItem} from 'async-validator';
 
 export default defineComponent({
   name: 'FormItem',
@@ -60,6 +62,9 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    rules: {
+      type: [Object, Array] as PropType<RuleItem | RuleItem[]>,
+    }
   },
   setup(props: FormItemProps, {emit}) {
     const formItem = ref<HTMLDivElement>();
@@ -72,6 +77,10 @@ export default defineComponent({
         flexBasis: `calc(100% / ${form.grid} * ${span})`,
       };
     });
+
+    const onValidate = () => {
+      console.log('onValidate');
+    };
 
     onMounted(() => {
       if (formItem.value) {
@@ -87,6 +96,7 @@ export default defineComponent({
       formItem,
       form,
       style,
+      onValidate,
     };
   },
 });

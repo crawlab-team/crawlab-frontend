@@ -1,17 +1,21 @@
 <template>
   <el-form
+      ref="formRef"
       :inline="inline"
       :label-width="labelWidth"
       :size="size"
       :model="model"
       class="form"
+      :rules="rules"
+      @validate="$emit('validate')"
   >
     <slot></slot>
   </el-form>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, PropType, provide, reactive} from 'vue';
+import {computed, defineComponent, PropType, provide, reactive, ref} from 'vue';
+import {ElForm} from 'element-plus';
 
 export default defineComponent({
   name: 'Form',
@@ -38,7 +42,13 @@ export default defineComponent({
       type: Number,
       default: 4,
     },
+    rules: {
+      type: Object as PropType<FormRules>,
+    }
   },
+  emits: [
+    'validate',
+  ],
   setup(props: FormProps, {emit}) {
     const form = computed<FormContext>(() => {
       const {labelWidth, size, grid} = props;
@@ -47,7 +57,16 @@ export default defineComponent({
 
     provide('form', reactive<FormContext>(form.value));
 
-    return {};
+    const formRef = ref<typeof ElForm>();
+
+    const validate = async () => {
+      return await formRef.value?.validate();
+    };
+
+    return {
+      formRef,
+      validate,
+    };
   },
 });
 </script>

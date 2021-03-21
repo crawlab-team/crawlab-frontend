@@ -26,9 +26,18 @@ const useSpider = (store: Store<RootStoreState>) => {
   // store spider form
   const storeSpiderForm = computed(() => spiderState.spiderForm);
 
+  // get new spider
+  const getNewSpider = () => {
+    return {};
+  };
+
   // reset spider form
-  const resetSpiderForm = () => {
-    spiderForm.value = storeSpiderForm.value;
+  const resetSpiderForm = (isCreate: boolean) => {
+    if (isCreate) {
+      spiderForm.value = getNewSpider();
+    } else {
+      spiderForm.value = storeSpiderForm.value;
+    }
   };
 
   // options for default mode
@@ -44,6 +53,7 @@ const useSpider = (store: Store<RootStoreState>) => {
     id,
     modeOptions,
     spiderForm,
+    getNewSpider,
     resetSpiderForm,
   };
 };

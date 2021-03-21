@@ -1,7 +1,11 @@
 <template>
-  <CreateDialog v-model="dialogVisible.create">
+  <CreateDialog
+      v-model="dialogVisible.create"
+      title="Create Project"
+      @confirm="onConfirm"
+  >
     <template #single>
-      <ProjectForm/>
+      <ProjectForm is-create/>
     </template>
   </CreateDialog>
 </template>
@@ -11,6 +15,7 @@ import {defineComponent} from 'vue';
 import CreateDialog from '@/components/dialog/CreateDialog.vue';
 import {useStore} from 'vuex';
 import ProjectForm from '@/components/project/ProjectForm.vue';
+import useProject from '@/components/project/project';
 
 export default defineComponent({
   name: 'CreateProjectDialog',
@@ -18,15 +23,35 @@ export default defineComponent({
     CreateDialog,
     ProjectForm,
   },
-  setup(props, {emit}) {
+  setup() {
     // store
     const storeNamespace = 'project';
     const store = useStore();
     const {project: state} = store.state as RootStoreState;
     const {dialogVisible} = state;
 
+    //
+    const {
+      validateProjectForm,
+    } = useProject(store);
+
+    // confirm
+    const onConfirm = async () => {
+      let valid = false;
+      try {
+        valid = await validateProjectForm();
+      } catch (ex) {
+        console.error(ex);
+        return;
+      }
+      if (valid) {
+        store.commit(`${storeNamespace}/hideDialog`, 'create');
+      }
+    };
+
     return {
       dialogVisible,
+      onConfirm,
     };
   },
 });

@@ -97,7 +97,7 @@ const useSpiderList = () => {
       width: '120',
       hasFilter: true,
       value: (row: Spider) => {
-        return h(TaskStatus, {status: row.last_status});
+        return h(TaskStatus, {status: row.last_status} as TaskStatusProps);
       }
     },
     {

@@ -32,7 +32,10 @@ export default defineComponent({
   name: 'FaIconButton',
   components: {Button},
   props: faIconButtonProps,
-  setup(props: FaIconButtonProps, {emit}) {
+  emits: [
+    'click',
+  ],
+  setup() {
     return {};
   },
 });
