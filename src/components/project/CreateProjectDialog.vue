@@ -16,6 +16,7 @@ import CreateDialog from '@/components/dialog/CreateDialog.vue';
 import {useStore} from 'vuex';
 import ProjectForm from '@/components/project/ProjectForm.vue';
 import useProject from '@/components/project/project';
+import useProjectService from '@/services/project/projectService';
 
 export default defineComponent({
   name: 'CreateProjectDialog',
@@ -30,10 +31,14 @@ export default defineComponent({
     const {project: state} = store.state as RootStoreState;
     const {dialogVisible} = state;
 
-    //
+    // methods
     const {
+      projectForm,
       validateProjectForm,
     } = useProject(store);
+
+    // services
+    const {} = useProjectService(store);
 
     // confirm
     const onConfirm = async () => {

@@ -1,5 +1,3 @@
-declare global {
-  interface ProjectFormProps {
-    isCreate: boolean;
-  }
+interface ProjectFormProps {
+  isCreate: boolean;
 }
