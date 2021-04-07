@@ -41,6 +41,11 @@ declare global {
 
   type TableData<T = TableAnyRowData> = T[];
 
+  interface TableDataWithTotal<T = TableAnyRowData> {
+    data: TableData<T>;
+    total: number;
+  }
+
   interface TableColumnsMap<T = any> {
     [key: string]: TableColumn<T>;
   }
@@ -73,5 +78,10 @@ declare global {
   interface TableStoreStates {
     _data: Ref<AnyObject[]>;
     _columns: Ref<TableColumnCtx[]>;
+  }
+
+  interface TablePagination {
+    page: number;
+    size: number;
   }
 }

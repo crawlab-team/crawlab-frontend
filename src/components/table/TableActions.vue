@@ -29,7 +29,7 @@
         size="mini"
         tooltip="Delete"
         type="danger"
-        @click="onEdit"
+        @click="onDelete"
     />
     <FaIconButton
         v-if="showButton(TABLE_ACTION_EXPORT)"
@@ -100,7 +100,7 @@ export default defineComponent({
       emit('edit');
     };
 
-    const onDelete = () => {
+    const onDelete = async () => {
       emit('delete');
     };
 

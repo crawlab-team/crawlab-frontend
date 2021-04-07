@@ -3,4 +3,5 @@ interface CreateDialogProps {
   title: string;
   width: string;
   batchTableColumns: TableColumns;
+  confirmLoading?: boolean;
 }

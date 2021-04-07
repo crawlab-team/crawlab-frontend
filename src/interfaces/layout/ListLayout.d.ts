@@ -2,9 +2,10 @@ interface ListLayoutProps {
   navActions: ListActionGroup[];
   tableColumns: TableColumns;
   tableData: TableData;
-  tableTotal: number;
   tableActionsPrefix: ListActionButton[];
   tableActionsSuffix: ListActionButton[];
+  pagination: TablePagination;
+  actionFunctions: ListLayoutActionFunctions;
 }
 
 interface ListActionGroup {
@@ -21,4 +22,10 @@ interface ListActionButton {
   type?: BasicType;
   disabled?: boolean;
   onClick?: () => void;
+}
+
+interface ListLayoutActionFunctions {
+  getList: () => void;
+  editList: () => void;
+  deleteList: (ids: string[]) => void;
 }

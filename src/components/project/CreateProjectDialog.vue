@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import CreateDialog from '@/components/dialog/CreateDialog.vue';
 import {useStore} from 'vuex';
 import ProjectForm from '@/components/project/ProjectForm.vue';
@@ -31,17 +31,24 @@ export default defineComponent({
     const {project: state} = store.state as RootStoreState;
     const {dialogVisible} = state;
 
+    // loading status of confirm button
+    const confirmLoading = ref<boolean>(false);
+
     // methods
     const {
       projectForm,
       validateProjectForm,
+      dispatchGetProjectList,
     } = useProject(store);
 
     // services
-    const {} = useProjectService(store);
+    const {
+      createProject,
+    } = useProjectService(store);
 
     // confirm
     const onConfirm = async () => {
+      // validate
       let valid = false;
       try {
         valid = await validateProjectForm();
@@ -49,13 +56,32 @@ export default defineComponent({
         console.error(ex);
         return;
       }
+      if (!projectForm.value) {
+        console.error(new Error('project form is undefined'));
+        return;
+      }
+
+      // start loading
+      confirmLoading.value = true;
+
+      // request
+      const res = await createProject(projectForm.value);
+
+      // stop loading
+      confirmLoading.value = false;
+
+      // hide
       if (valid) {
         store.commit(`${storeNamespace}/hideDialog`, 'create');
       }
+
+      // request list
+      await dispatchGetProjectList();
     };
 
     return {
       dialogVisible,
+      confirmLoading,
       onConfirm,
     };
   },

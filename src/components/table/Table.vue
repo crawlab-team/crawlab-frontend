@@ -64,6 +64,8 @@
           :total="total"
           class="pagination"
           layout="total, sizes, prev, pager, next"
+          @current-change="onCurrentChange"
+          @size-change="onSizeChange"
       />
     </div>
     <!-- ./Table Footer-->
@@ -81,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, PropType, ref, SetupContext} from 'vue';
+import {defineComponent, inject, onBeforeMount, PropType, ref, SetupContext} from 'vue';
 import {Table} from 'element-plus/lib/el-table/src/table.type';
 import TableCell from '@/components/table/TableCell.vue';
 import TableHeader from '@/components/table/TableHeader.vue';
@@ -89,9 +91,9 @@ import TableColumnsTransfer from '@/components/table/TableColumnsTransfer.vue';
 import useColumn from '@/components/table/column';
 import useHeader from '@/components/table/header';
 import useData from '@/components/table/data';
-import useSelection from '@/components/table/selection';
 import TableActions from '@/components/table/TableActions.vue';
 import useAction from '@/components/table/action';
+import usePagination from '@/components/table/pagination';
 
 export default defineComponent({
   name: 'Table',
@@ -149,7 +151,7 @@ export default defineComponent({
       default: () => {
         return [];
       }
-    }
+    },
   },
   emits: [
     'edit',
@@ -180,17 +182,22 @@ export default defineComponent({
       onHeaderChange,
     } = useHeader(props, ctx);
 
+    // inject action functions
+    const actionFunctions = inject<ListLayoutActionFunctions>('action-functions');
+
     const {
       selection: internalSelection,
       onSelectionChange,
-    } = useSelection(props, ctx);
-
-    const {
       onAdd,
       onEdit,
       onDelete,
       onExport,
-    } = useAction(props, ctx);
+    } = useAction(props, ctx, table, actionFunctions as ListLayoutActionFunctions);
+
+    const {
+      onCurrentChange,
+      onSizeChange,
+    } = usePagination(props, ctx);
 
     onBeforeMount(() => {
       initColumns();
@@ -212,6 +219,8 @@ export default defineComponent({
       onAdd,
       onEdit,
       onDelete,
+      onCurrentChange,
+      onSizeChange,
     };
   },
 });

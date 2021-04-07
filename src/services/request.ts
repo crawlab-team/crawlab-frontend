@@ -1,29 +1,37 @@
 import axios, {AxiosRequestConfig} from 'axios';
 
+// TODO: request interception
+
+// TODO: response interception
+
 const useRequest = () => {
   // implementation
   const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8000';
 
-  const request = async <T = any>(opts: AxiosRequestConfig): Promise<T> => {
+  const request = async <R = any>(opts: AxiosRequestConfig): Promise<R> => {
     const baseURL = baseUrl;
 
-    return await axios.request({
+    // axios response
+    const res = await axios.request({
       ...opts,
       baseURL,
     });
+
+    // response data
+    return res.data;
   };
 
-  const get = async <P = any, T = any>(url: string, params?: P, opts?: AxiosRequestConfig): Promise<T> => {
+  const get = async <T = any, R = ResponseWithData<T>, PM = any>(url: string, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     opts = {
       ...opts,
       method: 'GET',
       url,
       params,
     };
-    return await request<T>(opts);
+    return await request<R>(opts);
   };
 
-  const post = async <P = any, T = any, PM = any>(url: string, data?: P, params?: PM, opts?: AxiosRequestConfig): Promise<T> => {
+  const post = async <T = any, R = ResponseWithData<T>, PM = any>(url: string, data?: T, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     opts = {
       ...opts,
       method: 'POST',
@@ -31,10 +39,10 @@ const useRequest = () => {
       data,
       params,
     };
-    return await request<T>(opts);
+    return await request<R>(opts);
   };
 
-  const put = async <P = any, T = any, PM = any>(url: string, data?: P, params?: PM, opts?: AxiosRequestConfig): Promise<T> => {
+  const put = async <T = any, R = ResponseWithData<T>, PM = any>(url: string, data?: T, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     opts = {
       ...opts,
       method: 'PUT',
@@ -42,10 +50,10 @@ const useRequest = () => {
       data,
       params,
     };
-    return await request<T>(opts);
+    return await request<R>(opts);
   };
 
-  const del = async <P = any, T = any, PM = any>(url: string, data?: P, params?: PM, opts?: AxiosRequestConfig): Promise<T> => {
+  const del = async <T = any, R = ResponseWithData<T>, PM = any>(url: string, data?: T, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     opts = {
       ...opts,
       method: 'DELETE',
@@ -53,7 +61,31 @@ const useRequest = () => {
       data,
       params,
     };
-    return await request<T>(opts);
+    return await request<R>(opts);
+  };
+
+  const getList = async <T = any>(url: string, params?: ListRequestParams, opts?: AxiosRequestConfig) => {
+    // get request
+    const res = await get<T, ListResponseWithData<T>, ListRequestParams>(url, params, opts);
+
+    // normalize array data
+    if (!res.data) {
+      res.data = [];
+    }
+
+    return res;
+  };
+
+  const postList = async <T = any, R = Response, PM = any>(url: string, data?: BatchRequestPayloadWithData<T>, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
+    return await post<BatchRequestPayloadWithData<T>, R, PM>(url, data, params, opts);
+  };
+
+  const putList = async <T = any, R = ListResponseWithData, PM = any>(url: string, data?: T[], params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
+    return await put<T[], R, PM>(url, data, params, opts);
+  };
+
+  const delList = async <T = any, R = Response, PM = any>(url: string, data?: BatchRequestPayload, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
+    return await del<BatchRequestPayload, R, PM>(url, data, params, opts);
   };
 
   return {
@@ -64,6 +96,10 @@ const useRequest = () => {
     post,
     put,
     del,
+    getList,
+    postList,
+    putList,
+    delList,
   };
 };
 

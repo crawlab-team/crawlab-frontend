@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, PropType, ref} from 'vue';
+import {computed, defineComponent, PropType, ref, watch} from 'vue';
 import Tag from '@/components/tag/Tag.vue';
 import Tab from '@/components/tab/Tab.vue';
 import {ElInput} from 'element-plus';
@@ -117,7 +117,7 @@ export default defineComponent({
       setTimeout(() => input.value?.focus(), 0);
     };
 
-    onMounted(() => {
+    watch(() => props.modelValue, () => {
       const {modelValue} = props;
       selectedValue.value = modelValue.map(tag => {
         return {

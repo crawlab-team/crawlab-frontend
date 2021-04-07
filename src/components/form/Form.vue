@@ -63,9 +63,19 @@ export default defineComponent({
       return await formRef.value?.validate();
     };
 
+    const resetFields = () => {
+      return formRef.value?.resetFields();
+    };
+
+    const clearValidate = () => {
+      return formRef.value?.clearValidate();
+    };
+
     return {
       formRef,
       validate,
+      resetFields,
+      clearValidate,
     };
   },
 });

@@ -3,6 +3,7 @@
       :title="title"
       :visible="modelValue"
       :width="width"
+      :confirm-loading="confirmLoading"
       @close="onClose"
       @confirm="onConfirm"
   >
@@ -48,6 +49,10 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    confirmLoading: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: [

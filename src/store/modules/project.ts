@@ -1,3 +1,6 @@
+import {getDefaultPagination} from '@/utils/pagination';
+import {getDefaultTableDataWithTotal} from '@/utils/table';
+
 export default {
   namespaced: true,
   state: {
@@ -18,9 +21,13 @@ export default {
       create: false,
       clone: false,
       edit: false,
+      delete: false,
     },
     projectForm: {},
     projectFormRef: undefined,
+    projectList: [],
+    projectListTotal: 0,
+    projectListPagination: getDefaultPagination(),
   },
   mutations: {
     setAllProjectSelectOptions: (state: ProjectStoreState, options: SelectOption[]) => {
@@ -42,9 +49,22 @@ export default {
     },
     setProjectForm: (state: ProjectStoreState, form: Project) => {
       state.projectForm = form;
-    }
+    },
     // setProjectFormRef: (state: ProjectStoreState, formRef: typeof ElForm | undefined) => {
     //   state.projectFormRef = formRef;
     // }
+    setProjectList: (state: ProjectStoreState, payload: TableDataWithTotal<Project>) => {
+      if (!payload) payload = getDefaultTableDataWithTotal();
+      state.projectList = payload.data;
+      state.projectListTotal = payload.total;
+    },
+    resetProjectList: (state: ProjectStoreState) => {
+      const payload = getDefaultTableDataWithTotal();
+      state.projectList = payload.data;
+      state.projectListTotal = payload.total;
+    },
+    setProjectPaginationData: (state: ProjectStoreState, data: TablePagination) => {
+      state.projectListPagination = data;
+    },
   },
 } as ProjectStoreModule;

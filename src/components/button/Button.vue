@@ -10,6 +10,7 @@
           :size="size"
           :title="tooltip"
           :type="type"
+          :loading="loading"
           class="button"
           @click="() => $emit('click')"
       >
@@ -64,6 +65,11 @@ export const buttonProps = {
     default: false,
   },
   noMargin: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  loading: {
     type: Boolean,
     required: false,
     default: false,

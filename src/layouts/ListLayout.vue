@@ -31,8 +31,13 @@
           :columns="tableColumns"
           :data="tableData"
           :total="tableTotal"
+          :page="pagination.page"
+          :page-size="pagination.size"
           selectable
           @selection-change="onSelect"
+          @delete="onDelete"
+          @edit="onEdit"
+          @pagination-change="onPaginationChange"
       >
         <template #actions-prefix>
           <NavActionButton
@@ -71,12 +76,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue';
+import {defineComponent, onBeforeMount, PropType, provide, SetupContext, toRefs, watch} from 'vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import Table from '@/components/table/Table.vue';
 import NavActionButton from '@/components/nav/NavActionButton.vue';
 import NavActions from '@/components/nav/NavActions.vue';
+import {voidFunc} from '@/utils/func';
 
 export default defineComponent({
   name: 'ListLayout',
@@ -121,18 +127,68 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    pagination: {
+      type: Object as PropType<TablePagination>,
+      default: () => {
+        return {
+          page: 1,
+          size: 10,
+        };
+      }
+    },
+    actionFunctions: {
+      type: Object as PropType<ListLayoutActionFunctions>,
+      default: () => {
+        return {
+          getList: voidFunc,
+        };
+      }
     }
   },
   emits: [
     'select',
+    'edit',
+    'delete',
   ],
-  setup(props: ListLayoutProps, {emit}) {
+  setup(props: ListLayoutProps, {emit}: SetupContext) {
+    const {
+      actionFunctions,
+    } = toRefs(props);
+
+    const {
+      getList,
+    } = actionFunctions.value;
+
     const onSelect = (value: TableData) => {
       emit('select', value);
     };
 
+    const onEdit = (value: TableData) => {
+      emit('edit', value);
+    };
+
+    const onDelete = (value: TableData) => {
+      emit('delete', value);
+    };
+
+    const onPaginationChange = (value: TablePagination) => {
+      emit('pagination-change', value);
+    };
+
+    watch(() => props.pagination, getList);
+
+    onBeforeMount(() => {
+      getList();
+    });
+
+    provide<ListLayoutActionFunctions>('action-functions', actionFunctions.value);
+
     return {
       onSelect,
+      onPaginationChange,
+      onEdit,
+      onDelete,
     };
   },
 });

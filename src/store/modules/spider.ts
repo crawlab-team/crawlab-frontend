@@ -17,6 +17,7 @@ export default {
       edit: false,
       clone: false,
       run: false,
+      delete: false,
     },
     // TODO: dummy data
     spiderForm: {

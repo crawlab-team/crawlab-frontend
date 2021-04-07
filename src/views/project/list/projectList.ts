@@ -1,7 +1,10 @@
-import {computed, h, readonly, ref} from 'vue';
+import {h, readonly, ref} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
+import useProject from '@/components/project/project';
+import {ElMessageBox} from 'element-plus';
+import {voidFunc} from '@/utils/func';
 
 const useProjectList = () => {
   // TODO: dummy data
@@ -17,6 +20,17 @@ const useProjectList = () => {
   const storeNamespace = 'project';
   const store = useStore<RootStoreState>();
   const {commit} = store;
+
+  // project
+  const {
+    projectList: tableData,
+    projectListTotal: tableTotal,
+    projectListPagination: paginationData,
+    setProjectListPagination,
+    dispatchGetProjectList,
+    deleteProject,
+    deleteProjectList,
+  } = useProject(store);
 
   // nav actions
   const navActions = readonly<ListActionGroup[]>([
@@ -76,28 +90,32 @@ const useProjectList = () => {
           icon: ['fa', 'search'],
           tooltip: 'View',
         },
+        {
+          type: 'info',
+          size: 'mini',
+          icon: ['fa', 'clone'],
+          tooltip: 'Clone',
+          onClick: (row) => {
+            console.log('clone', row);
+          }
+        },
+        {
+          type: 'danger',
+          size: 'mini',
+          icon: ['fa', 'trash-alt'],
+          tooltip: 'Delete',
+          onClick: async (row: Project) => {
+            const res = await ElMessageBox.confirm('Are you sure to delete?', 'Delete');
+            if (res) {
+              await deleteProject(row._id as string);
+            }
+            await dispatchGetProjectList();
+          },
+        },
       ],
       disableTransfer: true,
     }
   ]);
-
-  // table data
-  const tableData = ref<TableData<Project>>([
-    {
-      name: 'Alpha',
-      description: 'Alpha Project',
-      tags: ['test', 'dev'],
-    },
-    {
-      name: 'Beta',
-      description: 'Beta Project',
-      tags: ['release', 'test'],
-    },
-  ]);
-
-  // table total
-  // TODO: dummy data
-  const tableTotal = computed(() => tableData.value.length);
 
   // selection
   const selection = ref<TableData<Project>>([]);
@@ -105,12 +123,27 @@ const useProjectList = () => {
     selection.value = value;
   };
 
+  // action functions
+  const actionFunctions: ListLayoutActionFunctions = {
+    getList: dispatchGetProjectList,
+    editList: voidFunc,
+    deleteList: deleteProjectList,
+  };
+
+  // pagination
+  const onPaginationChange = (value: TablePagination) => {
+    setProjectListPagination(value);
+  };
+
   return {
     navActions,
     tableData,
     tableTotal,
     tableColumns,
+    paginationData,
+    actionFunctions,
     onSelect,
+    onPaginationChange,
   };
 };
 

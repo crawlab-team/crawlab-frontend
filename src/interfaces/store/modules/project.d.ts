@@ -11,6 +11,9 @@ declare global {
     allProjectTags: string[];
     dialogVisible: DialogVisible;
     projectForm: Project;
+    projectList: Project[];
+    projectListTotal: number;
+    projectListPagination: TablePagination;
   }
 
   // interface ProjectStoreGetters extends GetterTree<ProjectStoreState, RootStoreState> {
@@ -23,5 +26,8 @@ declare global {
     hideDialog: StoreMutation<ProjectStoreState, DialogKey>;
     resetDialogs: StoreMutation<ProjectStoreState>;
     setProjectForm: StoreMutation<ProjectStoreState, Project>;
+    setProjectList: StoreMutation<ProjectStoreState, TableDataWithTotal<Project>>;
+    resetProjectList: StoreMutation<ProjectStoreState>;
+    setProjectPaginationData: StoreMutation<ProjectStoreState, TablePagination>;
   }
 }
