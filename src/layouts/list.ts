@@ -1,4 +1,4 @@
-import {computed, readonly} from 'vue';
+import {computed, readonly, watch} from 'vue';
 import {Store} from 'vuex';
 import {voidFunc} from '@/utils/func';
 
@@ -20,6 +20,8 @@ const useList = <S, T = any>(ns: StoreListNamespace, store: Store<RootStoreState
     editList: async () => voidFunc(),
     deleteList: (ids: string[]) => store.dispatch(`${ns}/deleteList`, ids),
   });
+
+  watch(() => tablePagination.value, actionFunctions.getList);
 
   return {
     actionFunctions,
