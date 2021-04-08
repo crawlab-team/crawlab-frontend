@@ -34,6 +34,7 @@ declare global {
   interface BaseStoreState<T = any> {
     dialogVisible: DialogVisible;
     form: T;
+    confirmLoading: boolean;
     tableData: TableData<T>;
     tableTotal: number;
     tablePagination: TablePagination;
@@ -45,11 +46,12 @@ declare global {
     showDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
     hideDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
     resetDialogs: StoreMutation<BaseStoreState<T>>;
-    setForm: StoreMutation<BaseStoreState, T>;
-    resetForm: StoreMutation<BaseStoreState>;
-    setTableData: StoreMutation<BaseStoreState, TableDataWithTotal<T>>;
-    resetTableData: StoreMutation<BaseStoreState>;
-    setTablePagination: StoreMutation<BaseStoreState, TablePagination>;
+    setForm: StoreMutation<BaseStoreState<T>, T>;
+    resetForm: StoreMutation<BaseStoreState<T>>;
+    setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;
+    setTableData: StoreMutation<BaseStoreState<T>, TableDataWithTotal<T>>;
+    resetTableData: StoreMutation<BaseStoreState<T>>;
+    setTablePagination: StoreMutation<BaseStoreState<T>, TablePagination>;
   }
 
   interface BaseStoreActions<T = any> extends ActionTree<BaseStoreState<T>, RootStoreState> {

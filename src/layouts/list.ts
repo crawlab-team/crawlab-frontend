@@ -1,11 +1,11 @@
-import {computed} from 'vue';
+import {computed, readonly} from 'vue';
 import {Store} from 'vuex';
+import {voidFunc} from '@/utils/func';
 
 const useList = <S, T = any>(ns: StoreListNamespace, store: Store<RootStoreState>, opts: UseListOptions<T>): ListLayoutComponentData => {
   const {
     tableColumns,
     navActions,
-    actionFunctions,
   } = opts;
 
   const state = store.state[ns];
@@ -13,6 +13,13 @@ const useList = <S, T = any>(ns: StoreListNamespace, store: Store<RootStoreState
   const tableData = computed<TableData<T>>(() => state.tableData as TableData<T>);
   const tableTotal = computed<number>(() => state.tableTotal);
   const tablePagination = computed<TablePagination>(() => state.tablePagination);
+
+  const actionFunctions = readonly<ListLayoutActionFunctions>({
+    setPagination: (pagination: TablePagination) => store.commit(`${ns}/setTablePagination`, pagination),
+    getList: () => store.dispatch(`${ns}/getList`),
+    editList: async () => voidFunc(),
+    deleteList: (ids: string[]) => store.dispatch(`${ns}/deleteList`, ids),
+  });
 
   return {
     actionFunctions,

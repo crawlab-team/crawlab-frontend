@@ -1,5 +1,5 @@
 import router from '@/router';
-import {getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
+import {getDefaultStoreActions, getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
 
 const state = {
   ...getDefaultStoreState<Spider>(),
@@ -52,10 +52,14 @@ const mutations = {
   },
 } as SpiderStoreMutations;
 
+const actions = {
+  ...getDefaultStoreActions<Spider>('/spiders'),
+} as SpiderStoreActions;
+
 export default {
   namespaced: true,
   state,
   getters,
   mutations,
-  actions: {}
+  actions,
 } as SpiderStoreModule;

@@ -1,8 +1,9 @@
-import {computed, readonly, ref} from 'vue';
+import {computed, readonly} from 'vue';
 import {Store} from 'vuex';
 import {isDuplicated} from '@/utils/array';
 import useForm from '@/components/form/form';
 import useProjectService from '@/services/project/projectService';
+import {getDefaultFormComponentData} from '@/utils/form';
 
 // get new project
 const getNewProject = (): Project => {
@@ -11,8 +12,8 @@ const getNewProject = (): Project => {
   };
 };
 
-// form ref
-const formRef = ref();
+// form component data
+const formComponentData = getDefaultFormComponentData<Project>(getNewProject);
 
 const useProject = (store: Store<RootStoreState>) => {
   // store
@@ -54,7 +55,7 @@ const useProject = (store: Store<RootStoreState>) => {
   };
 
   return {
-    ...useForm<Project>(getNewProject(), 'project', store, useProjectService(store), formRef),
+    ...useForm<Project>('project', store, useProjectService(store), formComponentData),
     projectFormRules,
     allProjectSelectOptions,
     allProjectTags,

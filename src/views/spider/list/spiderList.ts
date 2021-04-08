@@ -1,9 +1,11 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
-import {computed, h, readonly, ref} from 'vue';
+import {computed, h, readonly} from 'vue';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import useList from '@/layouts/list';
+import Table from '@/components/table/Table.vue';
 
 const useSpiderList = () => {
   // router
@@ -13,7 +15,6 @@ const useSpiderList = () => {
   const storeNamespace = 'spider';
   const store = useStore<RootStoreState>();
   const {commit} = store;
-  const {dialogVisible} = store.state.spider as SpiderStoreState;
 
   // nav actions
   const navActions = readonly<ListActionGroup[]>([
@@ -36,9 +37,6 @@ const useSpiderList = () => {
 
   // TODO: dummy data
   const projectNames = ['Project 1', 'Project 2', 'Project 3'];
-
-  // table data
-  const tableData = ref<TableData<Spider>>([]);
 
   // table columns
   const tableColumns = readonly<TableColumns<Spider>>([
@@ -179,16 +177,6 @@ const useSpiderList = () => {
     },
   ]);
 
-  // table total
-  // TODO: dummy data
-  const tableTotal = 100;
-
-  // selection
-  const selection = ref<TableData<Spider>>([]);
-  const onSelect = (value: TableData<Spider>) => {
-    selection.value = value;
-  };
-
   // table actions prefix
   const tableActionsPrefix = computed<ListActionButton[]>(() => {
     return [
@@ -198,7 +186,9 @@ const useSpiderList = () => {
         size: 'mini',
         icon: ['fa', 'play'],
         type: 'success',
-        disabled: selection.value.length === 0,
+        disabled: (table: typeof Table) => {
+          return !table?.internalSelection?.length;
+        },
       }
     ];
   });
@@ -215,20 +205,19 @@ const useSpiderList = () => {
   //   commit(`${storeNamespace}/showDialog`, 'clone');
   // };
 
-  const onClickRun = () => {
-    commit(`${storeNamespace}/showDialog`, 'run');
-  };
+  // const onClickRun = () => {
+  //   commit(`${storeNamespace}/showDialog`, 'run');
+  // };
 
-  return {
-    dialogVisible,
+  // options
+  const opts = {
     navActions,
     tableColumns,
-    tableData,
-    tableTotal,
+  } as UseListOptions<Spider>;
+
+  return {
+    ...useList<Spider>(storeNamespace, store, opts),
     tableActionsPrefix,
-    selection,
-    onSelect,
-    onClickRun,
   };
 };
 

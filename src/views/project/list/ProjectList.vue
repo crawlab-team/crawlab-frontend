@@ -31,8 +31,8 @@ export default defineComponent({
   setup() {
     const {
       navActions,
-      tableData,
       tableColumns,
+      tableData,
       tableTotal,
       tablePagination,
       actionFunctions,
@@ -40,9 +40,9 @@ export default defineComponent({
 
     return {
       navActions,
+      tableColumns,
       tableData,
       tableTotal,
-      tableColumns,
       tablePagination,
       actionFunctions,
     };

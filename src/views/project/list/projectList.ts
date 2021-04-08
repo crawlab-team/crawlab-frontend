@@ -1,13 +1,10 @@
-import {h, readonly} from 'vue';
+import {h} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
 import {ElMessageBox} from 'element-plus';
-import {voidFunc} from '@/utils/func';
 import useList from '@/layouts/list';
 import useProjectService from '@/services/project/projectService';
-
-const serviceEndpoint = '/projects';
 
 const useProjectList = () => {
   // TODO: dummy data
@@ -115,23 +112,15 @@ const useProjectList = () => {
     }
   ];
 
-  // action functions
-  const actionFunctions = readonly<ListLayoutActionFunctions>({
-    setPagination: (pagination: TablePagination) => store.commit(`${storeNamespace}/setTablePagination`, pagination),
-    getList: () => store.dispatch(`${storeNamespace}/getList`),
-    editList: async () => voidFunc(),
-    deleteList: (ids: string[]) => store.dispatch(`${storeNamespace}/deleteList`, ids),
-  });
-
   // options
   const opts = {
-    serviceEndpoint,
     navActions,
     tableColumns,
-    actionFunctions,
-  };
+  } as UseListOptions<Project>;
 
-  return useList<Project>(storeNamespace, store, opts);
+  return {
+    ...useList<Project>(storeNamespace, store, opts),
+  };
 };
 
 export default useProjectList;

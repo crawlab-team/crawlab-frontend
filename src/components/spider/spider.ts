@@ -1,5 +1,5 @@
 import {useRoute} from 'vue-router';
-import {computed, readonly, ref} from 'vue';
+import {computed, readonly} from 'vue';
 import {
   TASK_MODE_ALL,
   TASK_MODE_RANDOM,
@@ -8,15 +8,16 @@ import {
 } from '@/constants/task';
 import {Store} from 'vuex';
 import useForm from '@/components/form/form';
-import useProjectService from '@/services/project/projectService';
+import useSpiderService from '@/services/spider/spiderService';
+import {getDefaultFormComponentData} from '@/utils/form';
 
 // get new spider
 const getNewSpider = () => {
   return {};
 };
 
-// form ref
-const formRef = ref();
+// form component data
+const formComponentData = getDefaultFormComponentData<Spider>(getNewSpider);
 
 const useSpider = (store: Store<RootStoreState>) => {
   // route
@@ -34,7 +35,7 @@ const useSpider = (store: Store<RootStoreState>) => {
   ]);
 
   return {
-    ...useForm<Spider>(getNewSpider(), 'spider', store, useProjectService(store), formRef),
+    ...useForm<Spider>('spider', store, useSpiderService(store), formComponentData),
     id,
     modeOptions,
   };

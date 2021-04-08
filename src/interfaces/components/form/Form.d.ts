@@ -1,5 +1,6 @@
 import {RuleItem} from 'async-validator';
 import {ElForm} from 'element-plus';
+import {Ref} from 'vue';
 
 declare global {
   interface FormProps {
@@ -30,4 +31,11 @@ declare global {
   }
 
   type FormValidateCallback = (valid: boolean) => void;
+
+  interface FormComponentData<T> {
+    form: Ref<T>;
+    formRef: Ref;
+  }
+
+  type DefaultFormFunc<T> = () => T;
 }

@@ -1,17 +1,17 @@
 import useRequest from '@/services/request';
 
-export const useService = <T = any>(endpoint: string) => {
-  const {
-    get,
-    put,
-    post,
-    del,
-    getList,
-    putList,
-    postList,
-    delList,
-  } = useRequest();
+const {
+  get,
+  put,
+  post,
+  del,
+  getList,
+  putList,
+  postList,
+  delList,
+} = useRequest();
 
+export const useService = <T = any>(endpoint: string) => {
   return {
     get: async (id: string) => {
       return await get<T>(`${endpoint}/${id}`);

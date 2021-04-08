@@ -1,25 +1,26 @@
-import {Ref, ref, UnwrapRef, watch} from 'vue';
+import {computed, watch} from 'vue';
 import {Store} from 'vuex';
 
-const useForm = <T>(defaultForm: T, ns: StoreListNamespace, store: Store<RootStoreState>, services: Services<T>, formRef: Ref) => {
+const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, services: Services<T>, data: FormComponentData<T>) => {
+  const {
+    form,
+    formRef,
+  } = data;
+
   const getNewForm = () => {
-    return {...defaultForm} as T;
+    return {...form.value} as T;
   };
 
   // store state
   const state = store.state[ns];
 
-  // form
-  const form = ref<T>(getNewForm());
-
   const validateForm = async () => {
-    console.log(1);
     return await formRef.value?.validate();
   };
 
   const resetForm = (isCreate: boolean) => {
     if (isCreate) {
-      form.value = getNewForm() as UnwrapRef<T>;
+      form.value = getNewForm() as T;
     } else {
       form.value = state.form.value;
       formRef.value?.clearValidate();
@@ -32,8 +33,9 @@ const useForm = <T>(defaultForm: T, ns: StoreListNamespace, store: Store<RootSto
     getList,
   } = services;
 
-  const confirmLoading = ref<boolean>(false);
-
+  // confirm loading
+  const confirmLoading = computed(() => state.confirmLoading);
+  const setConfirmLoading = (value: boolean) => store.commit(`${ns}/setConfirmLoading`, value);
   const onConfirm = async () => {
     // validate
     try {
@@ -48,19 +50,32 @@ const useForm = <T>(defaultForm: T, ns: StoreListNamespace, store: Store<RootSto
       return;
     }
 
+    // flag of request finished
+    let isRequestFinished = false;
+
     // start loading
-    confirmLoading.value = true;
+    setTimeout(() => {
+      if (isRequestFinished) return;
+      setConfirmLoading(true);
+    }, 50);
 
     // request
-    const res = await create(form.value as T);
+    try {
+      const res = await create(form.value as T);
+      if (res.error) {
+        console.error(res.error);
+        return;
+      }
+    } finally {
+      // flag request finished as true
+      isRequestFinished = true;
 
-    // stop loading
-    confirmLoading.value = false;
-
-    // hide
-    if (!res.error) {
-      close();
+      // stop loading
+      setConfirmLoading(false);
     }
+
+    // close
+    store.commit(`${ns}/resetDialogs`);
 
     // request list
     await getList();
@@ -76,6 +91,7 @@ const useForm = <T>(defaultForm: T, ns: StoreListNamespace, store: Store<RootSto
     validateForm,
     resetForm,
     confirmLoading,
+    setConfirmLoading,
     onConfirm,
   };
 };

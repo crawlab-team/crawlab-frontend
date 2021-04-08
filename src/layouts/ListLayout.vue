@@ -28,6 +28,7 @@
 
       <!-- Table -->
       <Table
+          ref="tableRef"
           :columns="tableColumns"
           :data="tableData"
           :total="tableTotal"
@@ -44,7 +45,7 @@
               v-for="(btn, $index) in tableActionsPrefix"
               :key="$index"
               :button-type="btn.buttonType"
-              :disabled="btn.disabled"
+              :disabled="getNavActionButtonDisabled(btn)"
               :icon="btn.icon"
               :label="btn.label"
               :size="btn.size"
@@ -76,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, PropType, provide, SetupContext, toRefs, watch} from 'vue';
+import {computed, defineComponent, onBeforeMount, PropType, provide, ref, SetupContext, toRefs, watch} from 'vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import Table from '@/components/table/Table.vue';
@@ -137,7 +138,6 @@ export default defineComponent({
         return [];
       }
     },
-
     actionFunctions: {
       type: Object as PropType<ListLayoutActionFunctions>,
       default: () => {
@@ -161,6 +161,10 @@ export default defineComponent({
       setPagination,
       getList,
     } = actionFunctions.value;
+
+    const tableRef = ref();
+
+    const computedTableRef = computed<typeof Table>(() => tableRef.value);
 
     const onSelect = (value: TableData) => {
       emit('select', value);
@@ -186,11 +190,23 @@ export default defineComponent({
 
     provide<ListLayoutActionFunctions>('action-functions', actionFunctions.value);
 
+    const getNavActionButtonDisabled = (btn: ListActionButton) => {
+      if (typeof btn.disabled === 'boolean') {
+        return btn.disabled;
+      } else if (typeof btn.disabled === 'function') {
+        return btn.disabled(computedTableRef.value);
+      } else {
+        return false;
+      }
+    };
+
     return {
+      tableRef,
       onSelect,
       onPaginationChange,
       onEdit,
       onDelete,
+      getNavActionButtonDisabled,
     };
   },
 });

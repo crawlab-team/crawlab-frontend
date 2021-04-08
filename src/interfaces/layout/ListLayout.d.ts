@@ -1,4 +1,5 @@
 import {Ref} from 'vue';
+import Table from '@/components/table/Table.vue';
 
 declare global {
   interface ListLayoutProps {
@@ -21,10 +22,8 @@ declare global {
   }
 
   interface UseListOptions<T> {
-    serviceEndpoint: string;
     navActions: ListActionGroup[];
     tableColumns: TableColumns<T>;
-    actionFunctions: ListLayoutActionFunctions;
   }
 
   interface ListActionGroup {
@@ -39,7 +38,7 @@ declare global {
     size?: BasicSize;
     icon?: Icon;
     type?: BasicType;
-    disabled?: boolean;
+    disabled?: boolean | ListActionButtonDisabledFunc;
     onClick?: () => void;
   }
 
@@ -49,4 +48,6 @@ declare global {
     editList: () => Promise<void>;
     deleteList: (ids: string[]) => Promise<Response>;
   }
+
+  type ListActionButtonDisabledFunc = (table: typeof Table) => boolean;
 }
