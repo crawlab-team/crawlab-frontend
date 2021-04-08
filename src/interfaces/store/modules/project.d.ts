@@ -5,8 +5,7 @@ interface ProjectStoreState extends BaseStoreState<Project> {
   allProjectTags: string[];
 }
 
-// interface ProjectStoreGetters extends GetterTree<ProjectStoreState, RootStoreState> {
-// }
+type ProjectStoreGetters = BaseStoreGetters<Project>;
 
 interface ProjectStoreMutations extends BaseStoreMutations<Project> {
   setAllProjectSelectOptions: StoreMutation<ProjectStoreState, SelectOption[]>;

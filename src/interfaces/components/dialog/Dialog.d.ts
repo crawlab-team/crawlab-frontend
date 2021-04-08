@@ -9,8 +9,7 @@ interface DialogProps {
 type DialogKey = 'create' | 'edit' | 'clone' | 'delete';
 
 interface DialogVisible {
-  create: boolean;
+  createEdit: boolean;
   clone: boolean;
-  edit: boolean;
   delete: boolean;
 }

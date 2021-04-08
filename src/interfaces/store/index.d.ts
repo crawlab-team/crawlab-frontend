@@ -32,7 +32,7 @@ declare global {
   }
 
   interface BaseStoreState<T = any> {
-    dialogVisible: DialogVisible;
+    activeDialogKey: DialogKey | undefined;
     form: T;
     confirmLoading: boolean;
     tableData: TableData<T>;
@@ -40,12 +40,13 @@ declare global {
     tablePagination: TablePagination;
   }
 
-  type BaseStoreGetters<S> = GetterTree<S, RootStoreState>;
+  interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
+    dialogVisible: StoreGetter<BaseStoreState<T>, boolean>;
+  }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {
     showDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
-    hideDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
-    resetDialogs: StoreMutation<BaseStoreState<T>>;
+    hideDialog: StoreMutation<BaseStoreState<T>>;
     setForm: StoreMutation<BaseStoreState<T>, T>;
     resetForm: StoreMutation<BaseStoreState<T>>;
     setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;

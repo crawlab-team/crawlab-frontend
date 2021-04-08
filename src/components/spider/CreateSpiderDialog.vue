@@ -13,7 +13,7 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
 import {useStore} from 'vuex';
-import CreateDialog from '@/components/dialog/CreateDialog.vue';
+import CreateDialog from '@/components/dialog/CreateEditDialog.vue';
 import SpiderForm from '@/components/spider/SpiderForm.vue';
 import useSpider from '@/components/spider/spider';
 

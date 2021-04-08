@@ -33,8 +33,8 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     getList,
   } = services;
 
-  // confirm loading
-  const confirmLoading = computed(() => state.confirmLoading);
+  // dialog confirm
+  const confirmLoading = computed<boolean>(() => state.confirmLoading);
   const setConfirmLoading = (value: boolean) => store.commit(`${ns}/setConfirmLoading`, value);
   const onConfirm = async () => {
     // validate
@@ -75,13 +75,18 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     }
 
     // close
-    store.commit(`${ns}/resetDialogs`);
+    store.commit(`${ns}/hideDialog`);
 
     // request list
     await getList();
   };
 
-  watch(() => state.dialogVisible.create, () => {
+  // dialog close
+  const onClose = () => {
+    store.commit(`${ns}/hideDialog`);
+  };
+
+  watch(() => state.activeDialogKey, () => {
     resetForm(true);
   });
 
@@ -93,6 +98,7 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     confirmLoading,
     setConfirmLoading,
     onConfirm,
+    onClose,
   };
 };
 

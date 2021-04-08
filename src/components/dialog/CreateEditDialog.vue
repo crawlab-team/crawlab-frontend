@@ -1,7 +1,6 @@
 <template>
   <Dialog
-      :title="title"
-      :visible="modelValue"
+      :visible="visible"
       :width="width"
       :confirm-loading="confirmLoading"
       @close="onClose"
@@ -11,7 +10,7 @@
       <el-tab-pane label="Single" name="single">
         <slot name="single"/>
       </el-tab-pane>
-      <el-tab-pane label="Batch" name="batch">
+      <el-tab-pane v-if="type === 'create'" label="Batch" name="batch">
         <CreateDialogContentBatch
             :columns="batchTableColumns"
         />
@@ -26,19 +25,19 @@ import CreateDialogContentBatch from '@/components/dialog/CreateDialogContentBat
 import Dialog from '@/components/dialog/Dialog.vue';
 
 export default defineComponent({
-  name: 'CreateDialog',
+  name: 'CreateEditDialog',
   components: {
     Dialog,
     CreateDialogContentBatch,
   },
   props: {
-    modelValue: {
+    visible: {
       type: Boolean,
       default: false,
     },
-    title: {
-      type: String,
-      default: 'Create',
+    type: {
+      type: String as PropType<CreateEditDialogType>,
+      default: 'create',
     },
     width: {
       type: String,
@@ -56,15 +55,13 @@ export default defineComponent({
     }
   },
   emits: [
-    'update:model-value',
     'close',
     'confirm',
   ],
-  setup(props: CreateDialogProps, {emit}) {
+  setup(props: CreateEditDialogProps, {emit}) {
     const tabName = ref<string>('single');
 
     const onClose = () => {
-      emit('update:model-value', false);
       emit('close');
     };
 

@@ -3,12 +3,7 @@ import {useService} from '@/services';
 
 export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   return {
-    dialogVisible: {
-      create: false,
-      edit: false,
-      delete: false,
-      clone: false,
-    },
+    activeDialogKey: undefined,
     form: {} as T,
     confirmLoading: false,
     tableData: [],
@@ -17,18 +12,21 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   };
 };
 
+export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
+  return {
+    dialogVisible: (state: BaseStoreState<T>) => {
+      return state.activeDialogKey !== undefined;
+    },
+  };
+};
+
 export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
   return {
     showDialog: (state: BaseStoreState<T>, key: DialogKey) => {
-      state.dialogVisible[key] = true;
+      state.activeDialogKey = key;
     },
-    hideDialog: (state: BaseStoreState<T>, key: DialogKey) => {
-      state.dialogVisible[key] = false;
-    },
-    resetDialogs: (state: BaseStoreState<T>) => {
-      for (const key in state.dialogVisible) {
-        state.dialogVisible[key as DialogKey] = false;
-      }
+    hideDialog: (state: BaseStoreState<T>) => {
+      state.activeDialogKey = undefined;
     },
     setForm: (state: BaseStoreState<T>, value: T) => {
       state.form = value;

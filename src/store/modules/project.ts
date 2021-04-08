@@ -1,6 +1,11 @@
-import {getDefaultStoreActions, getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
+import {
+  getDefaultStoreActions,
+  getDefaultStoreGetters,
+  getDefaultStoreMutations,
+  getDefaultStoreState
+} from '@/utils/store';
 
-const state: ProjectStoreState = {
+const state = {
   ...getDefaultStoreState<Project>(),
   // TODO: dummy data
   allProjectSelectOptions: [
@@ -15,7 +20,11 @@ const state: ProjectStoreState = {
     'ecommerce',
     'news',
   ],
-};
+} as ProjectStoreState;
+
+const getters = {
+  ...getDefaultStoreGetters<Project>(),
+} as ProjectStoreGetters;
 
 const mutations = {
   ...getDefaultStoreMutations<Project>(),
@@ -40,6 +49,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions,
 } as ProjectStoreModule;

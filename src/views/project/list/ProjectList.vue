@@ -10,7 +10,7 @@
   >
     <template #extra>
       <!-- Dialogs (handled by store) -->
-      <CreateProjectDialog/>
+      <CreateEditProjectDialog/>
       <!-- ./Dialogs -->
     </template>
   </ListLayout>
@@ -20,13 +20,13 @@
 import {defineComponent} from 'vue';
 import ListLayout from '@/layouts/ListLayout.vue';
 import useProjectList from './projectList';
-import CreateProjectDialog from '@/components/project/CreateProjectDialog.vue';
+import CreateEditProjectDialog from '@/components/project/CreateEditProjectDialog.vue';
 
 export default defineComponent({
   name: 'ProjectList',
   components: {
     ListLayout,
-    CreateProjectDialog,
+    CreateEditProjectDialog,
   },
   setup() {
     const {

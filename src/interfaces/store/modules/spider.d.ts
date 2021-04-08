@@ -7,7 +7,7 @@ interface SpiderStoreState extends BaseStoreState<Spider> {
   dialogVisible: SpiderDialogVisible;
 }
 
-interface SpiderStoreGetters extends BaseStoreGetters<SpiderStoreState> {
+interface SpiderStoreGetters extends BaseStoreGetters<Spider> {
   tabName: StoreGetter<SpiderStoreState, SpiderTabName>;
 }
 

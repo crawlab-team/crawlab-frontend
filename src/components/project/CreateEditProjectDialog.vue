@@ -1,33 +1,43 @@
 <template>
-  <CreateDialog
-      v-model="dialogVisible.create"
-      title="Create Project"
+  <CreateEditDialog
+      :type="isCreate ? 'create' : 'edit'"
+      :visible="activeDialogKey === 'createEdit'"
       @confirm="onConfirm"
+      @close="onClose"
   >
     <template #single>
-      <ProjectForm is-create/>
+      <ProjectForm :is-create="isCreate"/>
     </template>
-  </CreateDialog>
+  </CreateEditDialog>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import CreateDialog from '@/components/dialog/CreateDialog.vue';
+import CreateEditDialog from '@/components/dialog/CreateEditDialog.vue';
 import {useStore} from 'vuex';
 import ProjectForm from '@/components/project/ProjectForm.vue';
 import useProject from '@/components/project/project';
 
 export default defineComponent({
-  name: 'CreateProjectDialog',
+  name: 'CreateEditProjectDialog',
   components: {
-    CreateDialog,
+    CreateEditDialog,
     ProjectForm,
+  },
+  props: {
+    isCreate: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     // store
     const store = useStore();
     const {project: state} = store.state as RootStoreState;
-    const {dialogVisible} = state;
+
+    const {
+      activeDialogKey,
+    } = state;
 
     // methods
     const {
@@ -35,7 +45,7 @@ export default defineComponent({
     } = useProject(store);
 
     return {
-      dialogVisible,
+      activeDialogKey,
       onConfirm,
     };
   },

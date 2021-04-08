@@ -28,7 +28,7 @@ const useSpiderList = () => {
           icon: ['fa', 'plus'],
           type: 'success',
           onClick: () => {
-            commit(`${storeNamespace}/showDialog`, 'create');
+            commit(`${storeNamespace}/showDialog`, 'createEdit');
           }
         }
       ]

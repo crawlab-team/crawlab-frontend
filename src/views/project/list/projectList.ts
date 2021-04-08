@@ -39,7 +39,7 @@ const useProjectList = () => {
           icon: ['fa', 'plus'],
           type: 'success',
           onClick: () => {
-            commit(`${storeNamespace}/showDialog`, 'create');
+            commit(`${storeNamespace}/showDialog`, 'createEdit');
           }
         }
       ]
@@ -84,6 +84,14 @@ const useProjectList = () => {
           type: 'primary',
           icon: ['fa', 'search'],
           tooltip: 'View',
+        },
+        {
+          type: 'warning',
+          icon: ['fa', 'edit'],
+          tooltip: 'Edit',
+          onClick: (row) => {
+            store.commit('');
+          },
         },
         {
           type: 'info',

@@ -1,5 +1,10 @@
 import router from '@/router';
-import {getDefaultStoreActions, getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
+import {
+  getDefaultStoreActions,
+  getDefaultStoreGetters,
+  getDefaultStoreMutations,
+  getDefaultStoreState
+} from '@/utils/store';
 
 const state = {
   ...getDefaultStoreState<Spider>(),
@@ -12,17 +17,16 @@ const state = {
     {id: 'settings', title: 'Settings'},
   ],
   dialogVisible: {
-    create: false,
-    edit: false,
+    createEdit: false,
     clone: false,
     run: false,
     delete: false,
   },
-  // TODO: dummy data
   form: {},
 } as SpiderStoreState;
 
 const getters = {
+  ...getDefaultStoreGetters<Spider>(),
   // tab name for spider detail
   tabName: () => {
     const arr = router.currentRoute.value.path.split('/');
