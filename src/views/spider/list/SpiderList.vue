@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import CreateSpiderDialog from '@/components/spider/CreateSpiderDialog.vue';
+import CreateSpiderDialog from '@/components/spider/CreateEditSpiderDialog.vue';
 import ListLayout from '@/layouts/ListLayout.vue';
 import useSpiderList from '@/views/spider/list/spiderList';
 

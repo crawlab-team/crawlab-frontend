@@ -39,7 +39,7 @@ const useProjectList = () => {
           icon: ['fa', 'plus'],
           type: 'success',
           onClick: () => {
-            commit(`${storeNamespace}/showDialog`, 'createEdit');
+            commit(`${storeNamespace}/showDialog`, 'create');
           }
         }
       ]

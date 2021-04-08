@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted} from 'vue';
+import {defineComponent, onBeforeMount} from 'vue';
 import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
 import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
@@ -103,13 +103,7 @@ export default defineComponent({
     InputWithButton,
     CheckTagGroup,
   },
-  props: {
-    isCreate: {
-      type: Boolean,
-      default: false,
-    }
-  },
-  setup(props: SpiderFormProps, {emit}) {
+  setup() {
     // store
     const store = useStore();
 
@@ -133,9 +127,8 @@ export default defineComponent({
       allProjectSelectOptions,
     } = useProject(store);
 
-    onMounted(() => {
-      const {isCreate} = props;
-      resetForm(isCreate);
+    onBeforeMount(() => {
+      resetForm();
     });
 
     return {

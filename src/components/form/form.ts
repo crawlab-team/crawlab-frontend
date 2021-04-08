@@ -18,10 +18,11 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     return await formRef.value?.validate();
   };
 
-  const resetForm = (isCreate: boolean) => {
-    if (isCreate) {
+  const resetForm = () => {
+    const {activeDialogKey} = state;
+    if (activeDialogKey === 'create') {
       form.value = getNewForm() as T;
-    } else {
+    } else if (activeDialogKey === 'edit') {
       form.value = state.form.value;
       formRef.value?.clearValidate();
     }
@@ -32,6 +33,13 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     create,
     getList,
   } = services;
+
+  // dialog create edit
+  const createEditDialogVisible = computed<boolean>(() => {
+    const {activeDialogKey} = state;
+    if (!activeDialogKey) return false;
+    return ['create', 'edit'].includes(activeDialogKey);
+  });
 
   // dialog confirm
   const confirmLoading = computed<boolean>(() => state.confirmLoading);
@@ -87,7 +95,7 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
   };
 
   watch(() => state.activeDialogKey, () => {
-    resetForm(true);
+    resetForm();
   });
 
   return {
@@ -95,6 +103,7 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
     formRef,
     validateForm,
     resetForm,
+    createEditDialogVisible,
     confirmLoading,
     setConfirmLoading,
     onConfirm,

@@ -43,17 +43,6 @@ const mutations = {
   setActionsCollapsed: (state: SpiderStoreState, value: boolean) => {
     state.actionsCollapsed = value;
   },
-  showDialog: (state: SpiderStoreState, key: SpiderDialogKey) => {
-    state.dialogVisible[key] = true;
-  },
-  hideDialog: (state: SpiderStoreState, key: SpiderDialogKey) => {
-    state.dialogVisible[key] = false;
-  },
-  resetDialogs: (state: SpiderStoreState) => {
-    for (const key in state.dialogVisible) {
-      state.dialogVisible[key as SpiderDialogKey] = false;
-    }
-  },
 } as SpiderStoreMutations;
 
 const actions = {

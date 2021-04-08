@@ -1,12 +1,12 @@
 <template>
   <CreateEditDialog
-      :type="isCreate ? 'create' : 'edit'"
-      :visible="activeDialogKey === 'createEdit'"
+      :type="activeDialogKey"
+      :visible="createEditDialogVisible"
       @confirm="onConfirm"
       @close="onClose"
   >
     <template #single>
-      <ProjectForm :is-create="isCreate"/>
+      <ProjectForm :is-create="activeDialogKey === 'create'"/>
     </template>
   </CreateEditDialog>
 </template>
@@ -41,12 +41,16 @@ export default defineComponent({
 
     // methods
     const {
+      createEditDialogVisible,
       onConfirm,
+      onClose,
     } = useProject(store);
 
     return {
       activeDialogKey,
+      createEditDialogVisible,
       onConfirm,
+      onClose,
     };
   },
 });

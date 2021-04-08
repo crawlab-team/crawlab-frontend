@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted} from 'vue';
+import {defineComponent, onBeforeMount} from 'vue';
 import Form from '@/components/form/Form.vue';
 import {useStore} from 'vuex';
 import useProject from '@/components/project/project';
@@ -28,15 +28,15 @@ import TagInput from '@/components/input/TagInput.vue';
 export default defineComponent({
   name: 'ProjectForm',
   components: {TagInput, FormItem, Form},
-  props: {
-    isCreate: {
-      type: Boolean,
-      default: false,
-    }
-  },
-  setup(props: ProjectFormProps) {
+  setup() {
     // store
     const store = useStore();
+    const {project: state} = store.state as RootStoreState;
+
+    // state
+    const {
+      activeDialogKey,
+    } = state;
 
     const {
       projectFormRules,
@@ -45,12 +45,12 @@ export default defineComponent({
       resetForm,
     } = useProject(store);
 
-    onMounted(() => {
-      const {isCreate} = props;
-      resetForm(isCreate);
+    onBeforeMount(() => {
+      resetForm();
     });
 
     return {
+      activeDialogKey,
       form,
       formRef,
       projectFormRules,

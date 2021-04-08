@@ -1,3 +1,0 @@
-interface ProjectFormProps {
-  isCreate: boolean;
-}

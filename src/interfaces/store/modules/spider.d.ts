@@ -14,9 +14,6 @@ interface SpiderStoreGetters extends BaseStoreGetters<Spider> {
 interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
   setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
   setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
-  showDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
-  hideDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
-  resetDialogs: StoreMutation<SpiderStoreState>;
 }
 
 interface SpiderStoreActions extends BaseStoreActions<Spider> {
