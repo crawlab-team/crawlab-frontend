@@ -4,11 +4,9 @@
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
+      :pagination="tablePagination"
       :action-functions="actionFunctions"
-      :pagination="paginationData"
       class="project-list"
-      @select="onSelect"
-      @pagination-change="onPaginationChange"
   >
     <template #extra>
       <!-- Dialogs (handled by store) -->
@@ -36,10 +34,8 @@ export default defineComponent({
       tableData,
       tableColumns,
       tableTotal,
-      paginationData,
+      tablePagination,
       actionFunctions,
-      onSelect,
-      onPaginationChange,
     } = useProjectList();
 
     return {
@@ -47,10 +43,8 @@ export default defineComponent({
       tableData,
       tableTotal,
       tableColumns,
-      paginationData,
+      tablePagination,
       actionFunctions,
-      onSelect,
-      onPaginationChange,
     };
   },
 });

@@ -1,21 +1,17 @@
-import {Module, MutationTree} from 'vuex';
+interface NodeStoreModule extends BaseModule<NodeStoreState> {
+  // getters: NodeStoreGetters;
+  mutations: NodeStoreMutations;
+}
 
-declare global {
-  interface NodeStoreModule extends Module<NodeStoreState, RootStoreState> {
-    // getters: NodeStoreGetters;
-    mutations: NodeStoreMutations;
-  }
+interface NodeStoreState extends BaseStoreState {
+  allNodeSelectOptions: SelectOption[];
+  allNodeTags: string[];
+}
 
-  interface NodeStoreState {
-    allNodeSelectOptions: SelectOption[];
-    allNodeTags: string[];
-  }
+// interface NodeStoreGetters extends GetterTree<NodeStoreState, RootStoreState> {
+// }
 
-  // interface NodeStoreGetters extends GetterTree<NodeStoreState, RootStoreState> {
-  // }
-
-  interface NodeStoreMutations extends MutationTree<NodeStoreState> {
-    setAllNodeSelectOptions: StoreMutation<NodeStoreState, SelectOption[]>;
-    setAllNodeTags: StoreMutation<NodeStoreState, string[]>;
-  }
+interface NodeStoreMutations extends BaseStoreMutations<Node> {
+  setAllNodeSelectOptions: StoreMutation<NodeStoreState, SelectOption[]>;
+  setAllNodeTags: StoreMutation<NodeStoreState, string[]>;
 }

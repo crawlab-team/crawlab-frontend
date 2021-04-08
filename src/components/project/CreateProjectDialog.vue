@@ -38,12 +38,12 @@ export default defineComponent({
     const {
       projectForm,
       validateProjectForm,
-      dispatchGetProjectList,
     } = useProject(store);
 
     // services
     const {
-      createProject,
+      create,
+      getList,
     } = useProjectService(store);
 
     // confirm
@@ -65,7 +65,7 @@ export default defineComponent({
       confirmLoading.value = true;
 
       // request
-      const res = await createProject(projectForm.value);
+      const res = await create(projectForm.value);
 
       // stop loading
       confirmLoading.value = false;
@@ -76,7 +76,7 @@ export default defineComponent({
       }
 
       // request list
-      await dispatchGetProjectList();
+      await getList();
     };
 
     return {

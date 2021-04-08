@@ -1,31 +1,52 @@
-interface ListLayoutProps {
-  navActions: ListActionGroup[];
-  tableColumns: TableColumns;
-  tableData: TableData;
-  tableActionsPrefix: ListActionButton[];
-  tableActionsSuffix: ListActionButton[];
-  pagination: TablePagination;
-  actionFunctions: ListLayoutActionFunctions;
-}
+import {Ref} from 'vue';
 
-interface ListActionGroup {
-  name?: string;
-  children?: ListActionButton[];
-}
+declare global {
+  interface ListLayoutProps {
+    navActions: ListActionGroup[];
+    tableColumns: TableColumns;
+    tableData: TableData;
+    tablePagination: TablePagination;
+    tableActionsPrefix: ListActionButton[];
+    tableActionsSuffix: ListActionButton[];
+    actionFunctions: ListLayoutActionFunctions;
+  }
 
-interface ListActionButton {
-  buttonType: ButtonType;
-  label?: string;
-  tooltip?: string;
-  size?: BasicSize;
-  icon?: Icon;
-  type?: BasicType;
-  disabled?: boolean;
-  onClick?: () => void;
-}
+  interface ListLayoutComponentData<T = any> {
+    navActions: ListActionGroup[];
+    tableColumns: TableColumns<T>;
+    tableData: Ref<TableData<T>>;
+    tableTotal: Ref<number>;
+    tablePagination: Ref<TablePagination>;
+    actionFunctions: ListLayoutActionFunctions;
+  }
 
-interface ListLayoutActionFunctions {
-  getList: () => void;
-  editList: () => void;
-  deleteList: (ids: string[]) => void;
+  interface UseListOptions<T> {
+    serviceEndpoint: string;
+    navActions: ListActionGroup[];
+    tableColumns: TableColumns<T>;
+    actionFunctions: ListLayoutActionFunctions;
+  }
+
+  interface ListActionGroup {
+    name?: string;
+    children?: ListActionButton[];
+  }
+
+  interface ListActionButton {
+    buttonType: ButtonType;
+    label?: string;
+    tooltip?: string;
+    size?: BasicSize;
+    icon?: Icon;
+    type?: BasicType;
+    disabled?: boolean;
+    onClick?: () => void;
+  }
+
+  interface ListLayoutActionFunctions {
+    setPagination: (pagination: TablePagination) => void;
+    getList: () => Promise<void>;
+    editList: () => Promise<void>;
+    deleteList: (ids: string[]) => Promise<Response>;
+  }
 }

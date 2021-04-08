@@ -1,33 +1,19 @@
-import {Module, MutationTree} from 'vuex';
+type ProjectStoreModule = BaseModule<ProjectStoreState, ProjectStoreMutations, any, ProjectStoreActions>;
 
-declare global {
-  interface ProjectStoreModule extends Module<ProjectStoreState, RootStoreState> {
-    // getters: ProjectStoreGetters;
-    mutations: ProjectStoreMutations;
-  }
+interface ProjectStoreState extends BaseStoreState<Project> {
+  allProjectSelectOptions: SelectOption[];
+  allProjectTags: string[];
+}
 
-  interface ProjectStoreState {
-    allProjectSelectOptions: SelectOption[];
-    allProjectTags: string[];
-    dialogVisible: DialogVisible;
-    projectForm: Project;
-    projectList: Project[];
-    projectListTotal: number;
-    projectListPagination: TablePagination;
-  }
+// interface ProjectStoreGetters extends GetterTree<ProjectStoreState, RootStoreState> {
+// }
 
-  // interface ProjectStoreGetters extends GetterTree<ProjectStoreState, RootStoreState> {
-  // }
+interface ProjectStoreMutations extends BaseStoreMutations<Project> {
+  setAllProjectSelectOptions: StoreMutation<ProjectStoreState, SelectOption[]>;
+  setAllProjectTags: StoreMutation<ProjectStoreState, string[]>;
+}
 
-  interface ProjectStoreMutations extends MutationTree<ProjectStoreState> {
-    setAllProjectSelectOptions: StoreMutation<ProjectStoreState, SelectOption[]>;
-    setAllProjectTags: StoreMutation<ProjectStoreState, string[]>;
-    showDialog: StoreMutation<ProjectStoreState, DialogKey>;
-    hideDialog: StoreMutation<ProjectStoreState, DialogKey>;
-    resetDialogs: StoreMutation<ProjectStoreState>;
-    setProjectForm: StoreMutation<ProjectStoreState, Project>;
-    setProjectList: StoreMutation<ProjectStoreState, TableDataWithTotal<Project>>;
-    resetProjectList: StoreMutation<ProjectStoreState>;
-    setProjectPaginationData: StoreMutation<ProjectStoreState, TablePagination>;
-  }
+interface ProjectStoreActions extends BaseStoreActions<Project> {
+  getAllProjectSelectOptions: StoreAction<ProjectStoreState>;
+  getAllProjectTags: StoreAction<ProjectStoreState>;
 }

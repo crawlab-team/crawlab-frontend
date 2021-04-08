@@ -1,10 +1,13 @@
-import {h, readonly, ref} from 'vue';
+import {h, readonly} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
 import {COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
-import useProject from '@/components/project/project';
 import {ElMessageBox} from 'element-plus';
 import {voidFunc} from '@/utils/func';
+import useList from '@/layouts/list';
+import useProjectService from '@/services/project/projectService';
+
+const serviceEndpoint = '/projects';
 
 const useProjectList = () => {
   // TODO: dummy data
@@ -21,19 +24,14 @@ const useProjectList = () => {
   const store = useStore<RootStoreState>();
   const {commit} = store;
 
-  // project
+  // services
   const {
-    projectList: tableData,
-    projectListTotal: tableTotal,
-    projectListPagination: paginationData,
-    setProjectListPagination,
-    dispatchGetProjectList,
-    deleteProject,
-    deleteProjectList,
-  } = useProject(store);
+    deleteById,
+    getList,
+  } = useProjectService(store);
 
   // nav actions
-  const navActions = readonly<ListActionGroup[]>([
+  const navActions: ListActionGroup[] = [
     {
       name: 'common',
       children: [
@@ -49,10 +47,10 @@ const useProjectList = () => {
         }
       ]
     }
-  ]);
+  ];
 
   // table columns
-  const tableColumns = readonly<TableColumns<Project>>([
+  const tableColumns: TableColumns<Project> = [
     {
       key: 'name',
       label: 'Name',
@@ -107,44 +105,33 @@ const useProjectList = () => {
           onClick: async (row: Project) => {
             const res = await ElMessageBox.confirm('Are you sure to delete?', 'Delete');
             if (res) {
-              await deleteProject(row._id as string);
+              await deleteById(row._id as string);
             }
-            await dispatchGetProjectList();
+            await getList();
           },
         },
       ],
       disableTransfer: true,
     }
-  ]);
-
-  // selection
-  const selection = ref<TableData<Project>>([]);
-  const onSelect = (value: TableData<Project>) => {
-    selection.value = value;
-  };
+  ];
 
   // action functions
-  const actionFunctions: ListLayoutActionFunctions = {
-    getList: dispatchGetProjectList,
-    editList: voidFunc,
-    deleteList: deleteProjectList,
-  };
+  const actionFunctions = readonly<ListLayoutActionFunctions>({
+    setPagination: (pagination: TablePagination) => store.commit(`${storeNamespace}/setTablePagination`, pagination),
+    getList: () => store.dispatch(`${storeNamespace}/getList`),
+    editList: async () => voidFunc(),
+    deleteList: (ids: string[]) => store.dispatch(`${storeNamespace}/deleteList`, ids),
+  });
 
-  // pagination
-  const onPaginationChange = (value: TablePagination) => {
-    setProjectListPagination(value);
-  };
-
-  return {
+  // options
+  const opts = {
+    serviceEndpoint,
     navActions,
-    tableData,
-    tableTotal,
     tableColumns,
-    paginationData,
     actionFunctions,
-    onSelect,
-    onPaginationChange,
   };
+
+  return useList<Project>(storeNamespace, store, opts);
 };
 
 export default useProjectList;

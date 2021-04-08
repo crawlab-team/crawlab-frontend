@@ -31,8 +31,8 @@
           :columns="tableColumns"
           :data="tableData"
           :total="tableTotal"
-          :page="pagination.page"
-          :page-size="pagination.size"
+          :page="tablePagination.page"
+          :page-size="tablePagination.size"
           selectable
           @selection-change="onSelect"
           @delete="onDelete"
@@ -116,6 +116,15 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    tablePagination: {
+      type: Object as PropType<TablePagination>,
+      default: () => {
+        return {
+          page: 1,
+          size: 10,
+        };
+      }
+    },
     tableActionsPrefix: {
       type: Array as PropType<ListActionButton[]>,
       default: () => {
@@ -128,15 +137,7 @@ export default defineComponent({
         return [];
       }
     },
-    pagination: {
-      type: Object as PropType<TablePagination>,
-      default: () => {
-        return {
-          page: 1,
-          size: 10,
-        };
-      }
-    },
+
     actionFunctions: {
       type: Object as PropType<ListLayoutActionFunctions>,
       default: () => {
@@ -157,6 +158,7 @@ export default defineComponent({
     } = toRefs(props);
 
     const {
+      setPagination,
       getList,
     } = actionFunctions.value;
 
@@ -173,10 +175,10 @@ export default defineComponent({
     };
 
     const onPaginationChange = (value: TablePagination) => {
-      emit('pagination-change', value);
+      setPagination(value);
     };
 
-    watch(() => props.pagination, getList);
+    watch(() => props.tablePagination, getList);
 
     onBeforeMount(() => {
       getList();

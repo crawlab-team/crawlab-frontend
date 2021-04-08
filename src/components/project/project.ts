@@ -2,7 +2,6 @@ import {computed, readonly, ref, watch} from 'vue';
 import {Store} from 'vuex';
 import {isDuplicated} from '@/utils/array';
 import {ElForm} from 'element-plus';
-import useProjectService from '@/services/project/projectService';
 
 // project form ref
 const projectFormRef = ref<typeof ElForm>();
@@ -21,13 +20,6 @@ const useProject = (store: Store<RootStoreState>) => {
   // store
   const storeNamespace = 'project';
   const {project: projectState} = store.state as RootStoreState;
-
-  // services
-  const {
-    getProjectList,
-    deleteProject,
-    deleteProjectList,
-  } = useProjectService(store);
 
   // project form rules
   const projectFormRules = readonly<FormRules>({
@@ -52,7 +44,7 @@ const useProject = (store: Store<RootStoreState>) => {
   };
 
   // store project form
-  const storeProjectForm = computed(() => projectState.projectForm);
+  const storeProjectForm = computed(() => projectState.form);
 
   // reset project form
   const resetProjectForm = (isCreate: boolean) => {
@@ -87,27 +79,7 @@ const useProject = (store: Store<RootStoreState>) => {
     store.commit(`${storeNamespace}/setAllProjectTags`, tags);
   };
 
-  // project list
-  const projectList = computed<TableData<Project>>(() => projectState.projectList);
-
-  // project list total
-  const projectListTotal = computed<number>(() => projectState.projectListTotal);
-
-  // project list pagination data
-  const projectListPagination = computed<TablePagination>(() => projectState.projectListPagination);
-
-  // dispatch get project list
-  const dispatchGetProjectList = async () => {
-    const {page, size} = projectListPagination.value;
-    const res = await getProjectList({page, size});
-    const {data, total} = res;
-    store.commit(`${storeNamespace}/setProjectList`, {data, total});
-  };
-
   // pagination
-  const setProjectListPagination = (value: TablePagination) => {
-    store.commit(`${storeNamespace}/setProjectPaginationData`, value);
-  };
 
   return {
     projectForm,
@@ -120,13 +92,6 @@ const useProject = (store: Store<RootStoreState>) => {
     setAllProjectTags,
     getNewProject,
     resetProjectForm,
-    projectList,
-    projectListTotal,
-    projectListPagination,
-    dispatchGetProjectList,
-    setProjectListPagination,
-    deleteProject,
-    deleteProjectList,
   };
 };
 
