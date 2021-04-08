@@ -7,38 +7,23 @@ import {
   TASK_MODE_SELECTED_NODES
 } from '@/constants/task';
 import {Store} from 'vuex';
+import useForm from '@/components/form/form';
+import useProjectService from '@/services/project/projectService';
+
+// get new spider
+const getNewSpider = () => {
+  return {};
+};
+
+// form ref
+const formRef = ref();
 
 const useSpider = (store: Store<RootStoreState>) => {
-  // store states
-  const {
-    spider: spiderState,
-  } = store.state;
-
   // route
   const route = useRoute();
 
   // spider id
   const id = computed(() => route.params.id);
-
-  // internal spider form
-  const spiderForm = ref<Spider>();
-
-  // store spider form
-  const storeSpiderForm = computed(() => spiderState.spiderForm);
-
-  // get new spider
-  const getNewSpider = () => {
-    return {};
-  };
-
-  // reset spider form
-  const resetSpiderForm = (isCreate: boolean) => {
-    if (isCreate) {
-      spiderForm.value = getNewSpider();
-    } else {
-      spiderForm.value = storeSpiderForm.value;
-    }
-  };
 
   // options for default mode
   const modeOptions = readonly<SelectOption[]>([
@@ -49,12 +34,9 @@ const useSpider = (store: Store<RootStoreState>) => {
   ]);
 
   return {
-    // public variables and methods
+    ...useForm<Spider>(getNewSpider(), 'spider', store, useProjectService(store), formRef),
     id,
     modeOptions,
-    spiderForm,
-    getNewSpider,
-    resetSpiderForm,
   };
 };
 

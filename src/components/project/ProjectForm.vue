@@ -1,18 +1,18 @@
 <template>
   <Form
-      v-if="projectForm"
-      ref="projectFormRef"
-      :model="projectForm"
+      v-if="form"
+      ref="formRef"
+      :model="form"
       :rules="projectFormRules"
   >
     <FormItem :span="2" label="Name" prop="name" required>
-      <el-input v-model="projectForm.name" placeholder="Name"/>
+      <el-input v-model="form.name" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Tags" prop="tags">
-      <TagInput v-model="projectForm.tags"/>
+      <TagInput v-model="form.tags"/>
     </FormItem>
     <FormItem :span="4" label="Description" prop="description">
-      <el-input v-model="projectForm.description" placeholder="Description" type="textarea"/>
+      <el-input v-model="form.description" placeholder="Description" type="textarea"/>
     </FormItem>
   </Form>
 </template>
@@ -39,20 +39,20 @@ export default defineComponent({
     const store = useStore();
 
     const {
-      projectForm,
-      projectFormRef,
       projectFormRules,
-      resetProjectForm,
+      form,
+      formRef,
+      resetForm,
     } = useProject(store);
 
     onMounted(() => {
       const {isCreate} = props;
-      resetProjectForm(isCreate);
+      resetForm(isCreate);
     });
 
     return {
-      projectForm,
-      projectFormRef,
+      form,
+      formRef,
       projectFormRules,
     };
   },

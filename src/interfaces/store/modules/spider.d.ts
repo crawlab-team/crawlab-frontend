@@ -1,29 +1,24 @@
-import {GetterTree, Module, MutationTree} from 'vuex';
+type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreMutations, SpiderStoreGetters, SpiderStoreActions>;
 
-declare global {
-  interface SpiderStoreModule extends Module<SpiderStoreState, RootStoreState> {
-    getters: SpiderStoreGetters;
-    mutations: SpiderStoreMutations;
-  }
+interface SpiderStoreState extends BaseStoreState<Spider> {
+  sidebarCollapsed: boolean;
+  actionsCollapsed: boolean;
+  tabs: NavItem[];
+  dialogVisible: SpiderDialogVisible;
+}
 
-  interface SpiderStoreState {
-    sidebarCollapsed: boolean;
-    actionsCollapsed: boolean;
-    tabs: NavItem[];
-    dialogVisible: SpiderDialogVisible;
-    spiderForm?: Spider;
-  }
+interface SpiderStoreGetters extends BaseStoreGetters<SpiderStoreState> {
+  tabName: StoreGetter<SpiderStoreState, SpiderTabName>;
+}
 
-  interface SpiderStoreGetters extends GetterTree<SpiderStoreState, RootStoreState> {
-    tabName: StoreGetter<SpiderStoreState, SpiderTabName>;
-  }
+interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
+  setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
+  setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
+  showDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
+  hideDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
+  resetDialogs: StoreMutation<SpiderStoreState>;
+}
 
-  interface SpiderStoreMutations extends MutationTree<SpiderStoreState> {
-    setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
-    setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
-    showDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
-    hideDialog: StoreMutation<SpiderStoreState, SpiderDialogKey>;
-    resetDialogs: StoreMutation<SpiderStoreState>;
-    setSpiderForm: StoreMutation<SpiderStoreState, Spider>;
-  }
+interface SpiderStoreActions extends BaseStoreActions<Spider> {
+  runById: (id: string) => Promise<Response>;
 }

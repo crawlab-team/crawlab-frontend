@@ -1,5 +1,9 @@
 <template>
-  <CreateDialog v-model="dialogVisible.create">
+  <CreateDialog
+      v-model="dialogVisible.create"
+      :confirm-loading="confirmLoading"
+      @confirm="onConfirm"
+  >
     <template #single>
       <SpiderForm is-create/>
     </template>
@@ -11,6 +15,7 @@ import {defineComponent, ref} from 'vue';
 import {useStore} from 'vuex';
 import CreateDialog from '@/components/dialog/CreateDialog.vue';
 import SpiderForm from '@/components/spider/SpiderForm.vue';
+import useSpider from '@/components/spider/spider';
 
 export default defineComponent({
   name: 'CreateSpiderDialog',
@@ -19,12 +24,20 @@ export default defineComponent({
     CreateDialog,
   },
   setup() {
+    // tab name
     const tabName = ref<string>('single');
 
+    // store
     const storeNamespace = 'spider';
     const store = useStore();
     const {commit} = store;
     const {dialogVisible} = store.state.spider as SpiderStoreState;
+
+    // methods
+    const {
+      confirmLoading,
+      onConfirm,
+    } = useSpider(store);
 
     const close = () => {
       commit(`${storeNamespace}/hideDialog`, 'create');
@@ -34,15 +47,11 @@ export default defineComponent({
       close();
     };
 
-    const onConfirm = () => {
-      // TODO: implement
-      close();
-    };
-
     return {
       tabName,
       dialogVisible,
       onClose,
+      confirmLoading,
       onConfirm,
     };
   },

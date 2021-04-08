@@ -1,4 +1,4 @@
-import {ActionContext, ActionTree, Module, MutationTree, Store} from 'vuex';
+import {ActionContext, ActionTree, GetterTree, Module, MutationTree, Store} from 'vuex';
 
 declare global {
   interface RootStoreState {
@@ -39,6 +39,8 @@ declare global {
     tablePagination: TablePagination;
   }
 
+  type BaseStoreGetters<S> = GetterTree<S, RootStoreState>;
+
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {
     showDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
     hideDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
@@ -62,5 +64,5 @@ declare global {
   type StoreActionContext<S = BaseStoreState> = ActionContext<S, RootStoreState>;
 
   type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'file';
-  type StoreListNamespace = 'node' | 'project';
+  type StoreListNamespace = 'node' | 'project' | 'spider';
 }

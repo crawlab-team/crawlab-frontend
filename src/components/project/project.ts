@@ -1,10 +1,8 @@
-import {computed, readonly, ref, watch} from 'vue';
+import {computed, readonly, ref} from 'vue';
 import {Store} from 'vuex';
 import {isDuplicated} from '@/utils/array';
-import {ElForm} from 'element-plus';
-
-// project form ref
-const projectFormRef = ref<typeof ElForm>();
+import useForm from '@/components/form/form';
+import useProjectService from '@/services/project/projectService';
 
 // get new project
 const getNewProject = (): Project => {
@@ -13,13 +11,13 @@ const getNewProject = (): Project => {
   };
 };
 
-// internal project form
-const projectForm = ref<Project>(getNewProject());
+// form ref
+const formRef = ref();
 
 const useProject = (store: Store<RootStoreState>) => {
   // store
   const storeNamespace = 'project';
-  const {project: projectState} = store.state as RootStoreState;
+  const state = store.state.project;
 
   // project form rules
   const projectFormRules = readonly<FormRules>({
@@ -38,38 +36,14 @@ const useProject = (store: Store<RootStoreState>) => {
     },
   });
 
-  // validate project form
-  const validateProjectForm = async () => {
-    return await projectFormRef.value?.validate();
-  };
-
-  // store project form
-  const storeProjectForm = computed(() => projectState.form);
-
-  // reset project form
-  const resetProjectForm = (isCreate: boolean) => {
-    if (isCreate) {
-      projectForm.value = getNewProject();
-    } else {
-      projectForm.value = storeProjectForm.value;
-      projectFormRef.value?.clearValidate();
-    }
-    projectFormRef.value?.resetFields();
-  };
-
-  // reset project form
-  watch(() => projectState.dialogVisible.create, () => {
-    resetProjectForm(true);
-  });
-
   // all project select options
-  const allProjectSelectOptions = computed<SelectOption[]>(() => projectState.allProjectSelectOptions);
+  const allProjectSelectOptions = computed<SelectOption[]>(() => state.allProjectSelectOptions);
   const setAllProjectSelectOptions = (options: SelectOption[]) => {
     store.commit(`${storeNamespace}/setAllProjectSelectOptions`, options);
   };
 
   // all project tags
-  const allProjectTags = computed<SelectOption[]>(() => projectState.allProjectTags.map(tag => {
+  const allProjectTags = computed<SelectOption[]>(() => state.allProjectTags.map(tag => {
     return {
       label: tag,
       value: tag,
@@ -79,19 +53,13 @@ const useProject = (store: Store<RootStoreState>) => {
     store.commit(`${storeNamespace}/setAllProjectTags`, tags);
   };
 
-  // pagination
-
   return {
-    projectForm,
-    projectFormRef,
+    ...useForm<Project>(getNewProject(), 'project', store, useProjectService(store), formRef),
     projectFormRules,
-    validateProjectForm,
     allProjectSelectOptions,
     allProjectTags,
     setAllProjectSelectOptions,
     setAllProjectTags,
-    getNewProject,
-    resetProjectForm,
   };
 };
 

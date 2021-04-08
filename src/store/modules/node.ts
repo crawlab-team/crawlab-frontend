@@ -1,6 +1,7 @@
 import {getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
 
 const state = {
+  ...getDefaultStoreState<Node>(),
   // TODO: dummy data
   allNodeSelectOptions: [
     {label: 'Master', value: 'master'},
@@ -16,17 +17,16 @@ const state = {
     '2c8g',
     '4c16g',
   ],
-  ...getDefaultStoreState<Node>(),
 } as NodeStoreState;
 
 const mutations = {
+  ...getDefaultStoreMutations<Node>(),
   setAllNodeSelectOptions: (state: NodeStoreState, options: SelectOption[]) => {
     state.allNodeSelectOptions = options;
   },
   setAllNodeTags: (state: NodeStoreState, tags: string[]) => {
     state.allNodeTags = tags;
   },
-  ...getDefaultStoreMutations<Node>(),
 } as NodeStoreMutations;
 
 export default {

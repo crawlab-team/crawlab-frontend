@@ -1,18 +1,18 @@
 <template>
-  <Form v-if="spiderForm" :model="spiderForm">
+  <Form v-if="form" ref="formRef" :model="form">
     <!-- Row -->
     <FormItem :span="2" label="Name" prop="name" required>
-      <el-input v-model="spiderForm.name" placeholder="Name"/>
+      <el-input v-model="form.name" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Display Name" prop="display_name" required>
-      <el-input v-model="spiderForm.display_name" placeholder="Display Name"/>
+      <el-input v-model="form.display_name" placeholder="Display Name"/>
     </FormItem>
     <!-- ./Row -->
 
     <!-- Row -->
     <FormItem :span="2" label="Command" prop="cmd" required>
       <InputWithButton
-          v-model="spiderForm.cmd"
+          v-model="form.cmd"
           :button-icon="['fa', 'edit']"
           button-label="Edit"
           placeholder="Command"
@@ -20,7 +20,7 @@
     </FormItem>
     <FormItem :span="2" label="Param" prop="param" required>
       <InputWithButton
-          v-model="spiderForm.param"
+          v-model="form.param"
           :button-icon="['fa', 'edit']"
           button-label="Edit"
           placeholder="Params"
@@ -30,7 +30,7 @@
 
     <!-- Row -->
     <FormItem :span="2" label="Default Mode" prop="mode" required>
-      <el-select v-model="spiderForm.mode">
+      <el-select v-model="form.mode">
         <el-option
             v-for="op in modeOptions"
             :key="op.value"
@@ -40,7 +40,7 @@
       </el-select>
     </FormItem>
     <FormItem :span="2" label="Project" prop="project_id" required>
-      <el-select v-model="spiderForm.project_id">
+      <el-select v-model="form.project_id">
         <el-option
             v-for="op in allProjectSelectOptions"
             :key="op.value"
@@ -52,33 +52,33 @@
     <!-- ./Row -->
 
     <FormItem
-        v-if="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
+        v-if="form.mode === TASK_MODE_SELECTED_NODE_TAGS"
         :span="4"
         label="Selected Tags"
         prop="node_tags"
         required
     >
       <CheckTagGroup
-          v-model="spiderForm.node_tags"
+          v-model="form.node_tags"
           :options="allNodeTags"
       />
     </FormItem>
 
     <FormItem
-        v-if="[TASK_MODE_SELECTED_NODES, TASK_MODE_SELECTED_NODE_TAGS].includes(spiderForm.mode)"
+        v-if="[TASK_MODE_SELECTED_NODES, TASK_MODE_SELECTED_NODE_TAGS].includes(form.mode)"
         :span="4"
         label="Selected Nodes"
         required
     >
       <CheckTagGroup
-          v-model="spiderForm.node_ids"
-          :disabled="spiderForm.mode === TASK_MODE_SELECTED_NODE_TAGS"
+          v-model="form.node_ids"
+          :disabled="form.mode === TASK_MODE_SELECTED_NODE_TAGS"
           :options="allNodeSelectOptions"
       />
     </FormItem>
 
     <FormItem :span="4" label="Description" prop="description">
-      <el-input v-model="spiderForm.description" placeholder="Description" type="textarea"/>
+      <el-input v-model="form.description" placeholder="Description" type="textarea"/>
     </FormItem>
   </Form>
 </template>
@@ -117,8 +117,9 @@ export default defineComponent({
     const {
       id: currentSpiderId,
       modeOptions,
-      spiderForm,
-      resetSpiderForm,
+      form,
+      formRef,
+      resetForm,
     } = useSpider(store);
 
     // use node
@@ -134,7 +135,7 @@ export default defineComponent({
 
     onMounted(() => {
       const {isCreate} = props;
-      resetSpiderForm(isCreate);
+      resetForm(isCreate);
     });
 
     return {
@@ -142,7 +143,8 @@ export default defineComponent({
       TASK_MODE_SELECTED_NODE_TAGS,
       currentSpiderId,
       modeOptions,
-      spiderForm,
+      form,
+      formRef,
       allNodeSelectOptions,
       allNodeTags,
       allProjectSelectOptions,

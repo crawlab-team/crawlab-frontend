@@ -11,6 +11,7 @@ const {
 } = useService<Project>('/projects');
 
 const state: ProjectStoreState = {
+  ...getDefaultStoreState<Project>(),
   // TODO: dummy data
   allProjectSelectOptions: [
     {label: 'Taobao', value: '1'},
@@ -24,17 +25,16 @@ const state: ProjectStoreState = {
     'ecommerce',
     'news',
   ],
-  ...getDefaultStoreState<Project>(),
 };
 
 const mutations = {
+  ...getDefaultStoreMutations<Project>(),
   setAllProjectSelectOptions: (state: ProjectStoreState, options: SelectOption[]) => {
     state.allProjectSelectOptions = options;
   },
   setAllProjectTags: (state: ProjectStoreState, tags: string[]) => {
     state.allProjectTags = tags;
   },
-  ...getDefaultStoreMutations<Project>(),
 } as ProjectStoreMutations;
 
 const actions = {
