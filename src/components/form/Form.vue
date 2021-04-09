@@ -7,6 +7,7 @@
       :model="model"
       class="form"
       :rules="rules"
+      hide-required-asterisk
       @validate="$emit('validate')"
   >
     <slot></slot>
@@ -44,7 +45,7 @@ export default defineComponent({
     },
     rules: {
       type: Object as PropType<FormRules>,
-    }
+    },
   },
   emits: [
     'validate',
@@ -55,7 +56,7 @@ export default defineComponent({
       return {labelWidth, size, grid};
     });
 
-    provide('form', reactive<FormContext>(form.value));
+    provide('form-context', reactive<FormContext>(form.value));
 
     const formRef = ref<typeof ElForm>();
 

@@ -34,6 +34,8 @@ declare global {
   interface BaseStoreState<T = any> {
     activeDialogKey: DialogKey | undefined;
     form: T;
+    isSelectiveForm: boolean;
+    selectedFormFields: string[];
     confirmLoading: boolean;
     tableData: TableData<T>;
     tableTotal: number;
@@ -49,6 +51,9 @@ declare global {
     hideDialog: StoreMutation<BaseStoreState<T>>;
     setForm: StoreMutation<BaseStoreState<T>, T>;
     resetForm: StoreMutation<BaseStoreState<T>>;
+    setIsSelectiveForm: StoreMutation<BaseStoreState<T>, boolean>;
+    setSelectedFormFields: StoreMutation<BaseStoreState<T>, string[]>;
+    resetSelectedFormFields: StoreMutation<BaseStoreState<T>>;
     setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;
     setTableData: StoreMutation<BaseStoreState<T>, TableDataWithTotal<T>>;
     resetTableData: StoreMutation<BaseStoreState<T>>;
@@ -67,5 +72,16 @@ declare global {
   type StoreActionContext<S = BaseStoreState> = ActionContext<S, RootStoreState>;
 
   type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'file';
-  type StoreListNamespace = 'node' | 'project' | 'spider';
+  type ListStoreNamespace = 'node' | 'project' | 'spider';
+
+  interface StoreContext<T> {
+    namespace: StoreNamespace;
+    store: Store<RootStoreState>;
+    state: BaseStoreState<T>;
+  }
+
+  interface ListStoreContext<T> extends StoreContext<T> {
+    namespace: ListStoreNamespace;
+    state: RootStoreState[ListStoreNamespace];
+  }
 }

@@ -7,11 +7,11 @@
       @close="onClose"
       @confirm="onConfirm"
   >
-    <el-tabs v-model="tabName">
+    <el-tabs v-model="tabName" :class="[type, visible ? 'visible' : '']" class="create-edit-dialog-tabs">
       <el-tab-pane label="Single" name="single">
-        <slot name="single"/>
+        <slot/>
       </el-tab-pane>
-      <el-tab-pane v-if="type === 'create'" label="Batch" name="batch">
+      <el-tab-pane label="Batch" name="batch">
         <CreateDialogContentBatch
             :columns="batchTableColumns"
         />
@@ -63,7 +63,8 @@ export default defineComponent({
     const tabName = ref<string>('single');
 
     const title = computed<string>(() => {
-      const {type} = props;
+      const {visible, type} = props;
+      if (!visible) return '';
       switch (type) {
         case 'create':
           return 'Create';
@@ -92,6 +93,13 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss">
+.create-edit-dialog-tabs {
+  &.edit,
+  &:not(.visible) {
+    .el-tabs__header {
+      display: none;
+    }
+  }
+}
 </style>

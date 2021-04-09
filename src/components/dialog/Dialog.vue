@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+      :modal-class="modalClass"
       :before-close="onClose"
       :model-value="visible"
       :title="title"
@@ -11,7 +12,15 @@
     <template #footer>
       <slot name="prefix"/>
       <Button plain size="mini" type="info" @click="onClose">Cancel</Button>
-      <Button :loading="confirmLoading" size="mini" type="primary" @click="onConfirm">Confirm</Button>
+      <Button
+          :disabled="disabled"
+          :loading="confirmLoading"
+          size="mini"
+          type="primary"
+          @click="onConfirm"
+      >
+        Confirm
+      </Button>
       <slot name="suffix"/>
     </template>
   </el-dialog>
@@ -29,6 +38,9 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+    modalClass: {
+      type: String,
     },
     title: {
       type: String,

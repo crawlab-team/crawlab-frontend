@@ -1,5 +1,6 @@
 interface TagInputProps {
   modelValue: string[];
+  disabled: boolean;
 }
 
 interface TagInputOption {

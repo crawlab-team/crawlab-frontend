@@ -5,7 +5,7 @@
       @confirm="onConfirm"
       @close="onClose"
   >
-    <template #single>
+    <template #default>
       <ProjectForm/>
     </template>
   </CreateEditDialog>
@@ -27,14 +27,10 @@ export default defineComponent({
   setup() {
     // store
     const store = useStore();
-    const {project: state} = store.state as RootStoreState;
-
-    const {
-      activeDialogKey,
-    } = state;
 
     // methods
     const {
+      activeDialogKey,
       createEditDialogVisible,
       onConfirm,
       onClose,

@@ -9,6 +9,7 @@ interface TagProps {
   effect?: BasicEffect;
   clickable?: boolean;
   closable?: boolean;
+  disabled?: boolean;
 }
 
 type TagData = TagProps;

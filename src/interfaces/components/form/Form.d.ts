@@ -1,5 +1,4 @@
 import {RuleItem} from 'async-validator';
-import {ElForm} from 'element-plus';
 import {Ref} from 'vue';
 
 declare global {
@@ -9,7 +8,6 @@ declare global {
     size?: string;
     grid: number;
     rules?: FormRuleItem | FormRuleItem[];
-    formRef?: typeof ElForm;
   }
 
   interface FormContext {
@@ -38,4 +36,6 @@ declare global {
   }
 
   type DefaultFormFunc<T> = () => T;
+
+  type FormEditType = 'single' | 'batch';
 }

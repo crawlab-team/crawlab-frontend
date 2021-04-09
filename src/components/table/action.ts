@@ -1,17 +1,23 @@
-import {Ref, ref, SetupContext} from 'vue';
+import {inject, Ref, ref, SetupContext} from 'vue';
 import {Table} from 'element-plus/lib/el-table/src/table.type';
 import {ElMessageBox} from 'element-plus';
 
 const useAction = (props: TableProps, ctx: SetupContext, table: Ref<Table | undefined>, actionFunctions: ListLayoutActionFunctions) => {
   const {emit} = ctx;
 
-  const selection = ref<TableData>([]);
+  // store context
+  const storeContext = inject<ListStoreContext<BaseModel>>('store-context');
+  const ns = storeContext?.namespace;
+  const store = storeContext?.store;
 
+  // table selection
+  const selection = ref<TableData>([]);
   const onSelectionChange = (value: TableData) => {
     selection.value = value;
     emit('selection-change', value);
   };
 
+  // action functions
   const {
     getList,
     deleteList,
@@ -21,8 +27,12 @@ const useAction = (props: TableProps, ctx: SetupContext, table: Ref<Table | unde
     emit('add');
   };
 
-  const onEdit = () => {
+  const onEdit = async () => {
     emit('edit', selection.value);
+    if (storeContext) {
+      store?.commit(`${ns}/showDialog`, 'edit');
+      store?.commit(`${ns}/setIsSelectiveForm`, true);
+    }
   };
 
   const onDelete = async () => {

@@ -1,5 +1,6 @@
 interface DialogProps {
   visible: boolean;
+  modalClass?: string;
   title?: string;
   width?: string;
   zIndex?: number;

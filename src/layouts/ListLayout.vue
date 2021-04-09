@@ -145,7 +145,7 @@ export default defineComponent({
           getList: voidFunc,
         };
       }
-    }
+    },
   },
   emits: [
     'select',

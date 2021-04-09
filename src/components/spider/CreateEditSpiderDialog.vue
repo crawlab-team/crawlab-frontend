@@ -5,8 +5,8 @@
       @confirm="onConfirm"
       @close="onClose"
   >
-    <template #single>
-      <SpiderForm :is-create="isCreate"/>
+    <template #default>
+      <SpiderForm/>
     </template>
   </CreateEditDialog>
 </template>
@@ -30,14 +30,10 @@ export default defineComponent({
 
     // store
     const store = useStore();
-    const {spider: state} = store.state as RootStoreState;
-
-    const {
-      activeDialogKey,
-    } = state;
 
     // methods
     const {
+      activeDialogKey,
       createEditDialogVisible,
       onConfirm,
       onClose,

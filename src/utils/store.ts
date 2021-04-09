@@ -5,6 +5,8 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   return {
     activeDialogKey: undefined,
     form: {} as T,
+    isSelectiveForm: false,
+    selectedFormFields: [],
     confirmLoading: false,
     tableData: [],
     tableTotal: 0,
@@ -21,10 +23,16 @@ export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
 export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
   return {
     showDialog: (state: BaseStoreState<T>, key: DialogKey) => {
-      console.log(key);
       state.activeDialogKey = key;
     },
     hideDialog: (state: BaseStoreState<T>) => {
+      // reset all other state variables
+      state.form = {} as T;
+      state.isSelectiveForm = false;
+      state.selectedFormFields = [];
+      state.confirmLoading = false;
+
+      // set active dialog key as undefined
       state.activeDialogKey = undefined;
     },
     setForm: (state: BaseStoreState<T>, value: T) => {
@@ -32,6 +40,15 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     },
     resetForm: (state: BaseStoreState<T>) => {
       state.form = {} as T;
+    },
+    setIsSelectiveForm: (state: BaseStoreState<T>, value: boolean) => {
+      state.isSelectiveForm = value;
+    },
+    setSelectedFormFields: (state: BaseStoreState<T>, value: string[]) => {
+      state.selectedFormFields = value;
+    },
+    resetSelectedFormFields: (state: BaseStoreState<T>) => {
+      state.selectedFormFields = [];
     },
     setConfirmLoading: (state: BaseStoreState<T>, value: boolean) => {
       state.confirmLoading = value;

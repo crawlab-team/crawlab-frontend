@@ -1,7 +1,8 @@
 import {computed, watch} from 'vue';
 import {Store} from 'vuex';
+import {plainClone} from '@/utils/object';
 
-const useForm = (ns: StoreListNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
+const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
     formRef,
@@ -17,23 +18,39 @@ const useForm = (ns: StoreListNamespace, store: Store<RootStoreState>, services:
   // active dialog key
   const activeDialogKey = computed<DialogKey | undefined>(() => state.activeDialogKey);
 
+  // is selective form
+  const isSelectiveForm = computed<boolean>(() => state.isSelectiveForm);
+
+  // selected form fields
+  const selectedFormFields = computed<string[]>(() => state.selectedFormFields);
+
   const validateForm = async () => {
     return await formRef.value?.validate();
   };
 
   const resetForm = () => {
     const {activeDialogKey} = state;
-    if (activeDialogKey === 'create') {
-      form.value = getNewForm();
-    } else if (activeDialogKey === 'edit') {
-      form.value = state.form;
-      formRef.value?.clearValidate();
+    switch (activeDialogKey) {
+      case 'create':
+        form.value = getNewForm();
+        break;
+      case 'edit':
+        form.value = plainClone(state.form);
+        formRef.value?.clearValidate();
+        break;
     }
     formRef.value?.resetFields();
   };
 
   // reset form when activeDialogKey is changed
   watch(() => state.activeDialogKey, resetForm);
+
+  // whether form item is disabled
+  const isFormItemDisabled = (prop: string) => {
+    if (!isSelectiveForm.value) return false;
+    if (!prop) return false;
+    return !selectedFormFields.value.includes(prop);
+  };
 
   const {
     create,
@@ -115,8 +132,12 @@ const useForm = (ns: StoreListNamespace, store: Store<RootStoreState>, services:
   return {
     form,
     formRef,
+    isSelectiveForm,
+    selectedFormFields,
     validateForm,
     resetForm,
+    isFormItemDisabled,
+    activeDialogKey,
     createEditDialogVisible,
     confirmLoading,
     setConfirmLoading,

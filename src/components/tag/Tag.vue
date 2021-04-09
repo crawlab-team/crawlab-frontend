@@ -62,7 +62,11 @@ export const tagProps = {
   closable: {
     type: Boolean,
     default: false,
-  }
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 };
 
 export default defineComponent({
@@ -100,9 +104,10 @@ export default defineComponent({
     };
 
     const cls = computed<string[]>(() => {
-      const {clickable} = props;
+      const {clickable, disabled} = props;
       const cls = [] as string[];
       if (clickable) cls.push('clickable');
+      if (disabled) cls.push('disabled');
       return cls;
     });
 
@@ -117,11 +122,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../styles/variables";
+
 .tag {
   cursor: default;
 
+  &.disabled {
+    cursor: not-allowed;
+    background-color: $disabledBgColor;
+    border-color: $disabledBorderColor;
+    color: $disabledColor;
+  }
+
   &.clickable {
-    cursor: pointer;
+    &:not(.disabled) {
+      cursor: pointer;
+    }
   }
 
   .icon {

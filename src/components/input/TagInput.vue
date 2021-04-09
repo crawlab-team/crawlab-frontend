@@ -7,6 +7,7 @@
             ref="input"
             v-model="inputValue"
             placeholder="Tag Name"
+            :disabled="disabled"
             @blur="onBlur($index, $event)"
             @focus="onFocus($index, $event)"
             @keyup.enter="onBlur($index, $event)"
@@ -15,7 +16,8 @@
             v-else
             :label="item.value"
             clickable
-            closable
+            :closable="!disabled"
+            :disabled="disabled"
             size="small"
             @click="onEdit($index, $event)"
             @close="onDelete($index, $event)"
@@ -23,12 +25,13 @@
       </div>
     </template>
 
-    <el-tooltip content="Add Tag">
+    <el-tooltip :content="addButtonTooltip" :disabled="!addButtonTooltip">
       <Tab
           :icon="['fa', 'plus']"
           :show-close="false"
           :show-title="false"
           class="add-btn"
+          :class="disabled ? 'disabled' : ''"
           @click="onAdd"
       />
     </el-tooltip>
@@ -50,6 +53,10 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: [
@@ -73,7 +80,14 @@ export default defineComponent({
       emit('update:model-value', value.value);
     };
 
+    const disabled = computed<boolean>(() => props.disabled);
+
+    const addButtonTooltip = computed<string>(() => disabled.value ? '' : 'Add Tag');
+
     const onEdit = (index: number, ev?: Event) => {
+      // check disabled
+      if (disabled.value) return;
+
       ev?.stopPropagation();
       const item = selectedValue.value[index];
       item.isEdit = true;
@@ -81,6 +95,9 @@ export default defineComponent({
     };
 
     const onDelete = (index: number, ev?: Event) => {
+      // check disabled
+      if (disabled.value) return;
+
       ev?.stopPropagation();
       selectedValue.value.splice(index, 1);
       emitValue();
@@ -106,6 +123,9 @@ export default defineComponent({
     };
 
     const onAdd = () => {
+      // check disabled
+      if (disabled.value) return;
+
       // add value to array
       selectedValue.value.push({
         value: '',
@@ -131,6 +151,7 @@ export default defineComponent({
       inputValue,
       input,
       selectedValue,
+      addButtonTooltip,
       onFocus,
       onBlur,
       onAdd,
@@ -163,19 +184,21 @@ export default defineComponent({
   }
 
   .add-btn {
-    background-color: $white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:not(.disabled) {
+      background-color: $white;
+      color: $infoMediumColor;
+    }
   }
 }
 </style>
 
 <style scoped>
 .tag-input >>> .add-btn {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  color: #909399;
 }
 </style>

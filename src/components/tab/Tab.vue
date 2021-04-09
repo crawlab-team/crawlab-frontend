@@ -47,6 +47,10 @@ export default defineComponent({
     showClose: {
       type: Boolean,
       default: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: [
@@ -163,11 +167,18 @@ export default defineComponent({
   user-select: none;
   color: $tabsViewTabColor;
 
-  &:focus {
+  &.disabled {
+    cursor: not-allowed;
+    background-color: $disabledBgColor;
+    border-color: $disabledBorderColor;
+    color: $disabledColor;
+  }
+
+  &:focus:not(.disabled) {
     color: inherit;
   }
 
-  &:hover {
+  &:hover:not(.disabled) {
     &.dragging {
       .title,
       .icon {

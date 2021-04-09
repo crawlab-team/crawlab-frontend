@@ -4,15 +4,21 @@
       ref="formRef"
       :model="form"
       :rules="projectFormRules"
+      :selective="isSelectiveForm"
   >
     <FormItem :span="2" label="Name" prop="name" required>
-      <el-input v-model="form.name" placeholder="Name"/>
+      <el-input v-model="form.name" :disabled="isFormItemDisabled('name')" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Tags" prop="tags">
-      <TagInput v-model="form.tags"/>
+      <TagInput v-model="form.tags" :disabled="isFormItemDisabled('tags')"/>
     </FormItem>
     <FormItem :span="4" label="Description" prop="description">
-      <el-input v-model="form.description" placeholder="Description" type="textarea"/>
+      <el-input
+          v-model="form.description"
+          :disabled="isFormItemDisabled('description')"
+          placeholder="Description"
+          type="textarea"
+      />
     </FormItem>
   </Form>
 </template>
@@ -31,18 +37,16 @@ export default defineComponent({
   setup() {
     // store
     const store = useStore();
-    const {project: state} = store.state as RootStoreState;
 
-    // state
     const {
       activeDialogKey,
-    } = state;
-
-    const {
+      isSelectiveForm,
+      selectedFormFields,
       projectFormRules,
       form,
       formRef,
       resetForm,
+      isFormItemDisabled,
     } = useProject(store);
 
     onBeforeMount(() => {
@@ -51,9 +55,12 @@ export default defineComponent({
 
     return {
       activeDialogKey,
+      isSelectiveForm,
+      selectedFormFields,
       form,
       formRef,
       projectFormRules,
+      isFormItemDisabled,
     };
   },
 });
