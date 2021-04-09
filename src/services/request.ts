@@ -76,8 +76,8 @@ const useRequest = () => {
     return res;
   };
 
-  const postList = async <T = any, R = Response, PM = any>(url: string, data?: BatchRequestPayloadWithData<T>, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
-    return await post<BatchRequestPayloadWithData<T>, R, PM>(url, data, params, opts);
+  const postList = async <T = any, R = Response, PM = any>(url: string, data?: BatchRequestPayloadWithJsonStringData, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
+    return await post<BatchRequestPayloadWithJsonStringData, R, PM>(url, data, params, opts);
   };
 
   const putList = async <T = any, R = ListResponseWithData, PM = any>(url: string, data?: T[], params?: PM, opts?: AxiosRequestConfig): Promise<R> => {

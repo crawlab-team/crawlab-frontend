@@ -9,7 +9,10 @@ interface BatchRequestPayload {
 
 interface BatchRequestPayloadWithData<T = any> extends BatchRequestPayload {
   data: T;
+  fields: string[];
 }
+
+type BatchRequestPayloadWithJsonStringData = BatchRequestPayloadWithData<string>;
 
 interface Response {
   status: string;

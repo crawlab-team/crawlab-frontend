@@ -2,6 +2,8 @@
   <CreateEditDialog
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
+      :confirm-disabled="confirmDisabled"
+      :confirm-loading="confirmLoading"
       @confirm="onConfirm"
       @close="onClose"
   >
@@ -28,19 +30,8 @@ export default defineComponent({
     // store
     const store = useStore();
 
-    // methods
-    const {
-      activeDialogKey,
-      createEditDialogVisible,
-      onConfirm,
-      onClose,
-    } = useProject(store);
-
     return {
-      activeDialogKey,
-      createEditDialogVisible,
-      onConfirm,
-      onClose,
+      ...useProject(store),
     };
   },
 });

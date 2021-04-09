@@ -4,14 +4,14 @@
         :prop="prop"
         :label="label"
         :required="isRequired"
-        :show-message="editable"
+        :show-message="internalEditable"
         :rules="rules"
         :size="size || formContext?.size"
     >
       <template #label>
         <el-tooltip :content="labelTooltip" :disabled="!labelTooltip">
           <span class="form-item-label">
-            <span :class="isRequired ? 'required' : ''" class="form-item-label-text">
+            <span :class="showRequiredAsterisk ? 'required' : ''" class="form-item-label-text">
               {{ label }}
             </span>
             <el-tooltip v-if="isSelectiveForm" :content="editableTooltip">
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, inject, onMounted, PropType, ref} from 'vue';
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
 import {RuleItem} from 'async-validator';
 import {cloneArray} from '@/utils/object';
 
@@ -104,6 +104,7 @@ export default defineComponent({
     });
 
     const internalEditable = ref<boolean>(false);
+    watch(() => state?.activeDialogKey, () => internalEditable.value = false);
 
     const editableTooltip = computed<string>(() => {
       const {notEditable} = props;
@@ -129,6 +130,13 @@ export default defineComponent({
     };
 
     const isRequired = computed<boolean>(() => {
+      if (!internalEditable.value) return false;
+      if (isSelectiveForm.value) return true;
+      const {required} = props;
+      return required;
+    });
+
+    const showRequiredAsterisk = computed<boolean>(() => {
       if (isSelectiveForm.value) return false;
       const {required} = props;
       return required;
@@ -153,6 +161,7 @@ export default defineComponent({
       editableTooltip,
       onEditableChange,
       isRequired,
+      showRequiredAsterisk,
     };
   },
 });

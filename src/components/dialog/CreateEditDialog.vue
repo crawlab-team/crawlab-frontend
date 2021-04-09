@@ -4,6 +4,7 @@
       :visible="visible"
       :width="width"
       :confirm-loading="confirmLoading"
+      :confirm-disabled="confirmDisabled"
       @close="onClose"
       @confirm="onConfirm"
   >
@@ -49,6 +50,10 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    confirmDisabled: {
+      type: Boolean,
+      default: false,
     },
     confirmLoading: {
       type: Boolean,

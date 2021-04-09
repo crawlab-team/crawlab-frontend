@@ -84,10 +84,10 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
 
 export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActions<T> => {
   const {
-    get,
+    getById,
     create,
-    update,
-    del,
+    updateById,
+    deleteById,
     getList,
     createList,
     updateList,
@@ -96,7 +96,7 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
 
   return {
     getById: async ({commit}: StoreActionContext<BaseStoreState<T>>, id: string) => {
-      const res = await get(id);
+      const res = await getById(id);
       commit('setForm', res.data);
       return res;
     },
@@ -105,11 +105,11 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
       return res;
     },
     updateById: async ({commit}: StoreActionContext<BaseStoreState<T>>, {id, form}: { id: string; form: T }) => {
-      const res = await update(id, form);
+      const res = await updateById(id, form);
       return res;
     },
     deleteById: async ({commit}: StoreActionContext<BaseStoreState<T>>, id: string) => {
-      const res = await del(id);
+      const res = await deleteById(id);
       return res;
     },
     getList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>) => {
@@ -124,9 +124,10 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
     },
     updateList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>, {
       ids,
-      data
-    }: BatchRequestPayloadWithData<T>) => {
-      const res = await updateList(ids, data);
+      data,
+      fields,
+    }: BatchRequestPayloadWithData) => {
+      const res = await updateList(ids, data, fields);
       return res;
     },
     deleteList: async ({commit}: StoreActionContext<BaseStoreState<T>>, ids: string[]) => {

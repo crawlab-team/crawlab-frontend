@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount} from 'vue';
-import Form from '@/components/form/Form.vue';
+import {defineComponent} from 'vue';
 import {useStore} from 'vuex';
 import useProject from '@/components/project/project';
+import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
 import TagInput from '@/components/input/TagInput.vue';
 
@@ -38,35 +38,8 @@ export default defineComponent({
     // store
     const store = useStore();
 
-    const {
-      // default
-      activeDialogKey,
-      isSelectiveForm,
-      selectedFormFields,
-      form,
-      formRef,
-      resetForm,
-      isFormItemDisabled,
-
-      // custom
-      projectFormRules,
-    } = useProject(store);
-
-    onBeforeMount(() => {
-      resetForm();
-    });
-
     return {
-      // default
-      activeDialogKey,
-      isSelectiveForm,
-      selectedFormFields,
-      form,
-      formRef,
-      isFormItemDisabled,
-
-      // custom
-      projectFormRules,
+      ...useProject(store),
     };
   },
 });

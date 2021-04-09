@@ -1,6 +1,5 @@
 import {computed, provide, readonly, watch} from 'vue';
 import {Store} from 'vuex';
-import {voidFunc} from '@/utils/func';
 
 const useList = <S, T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts: UseListOptions<T>): ListLayoutComponentData => {
   // options
@@ -21,7 +20,6 @@ const useList = <S, T = any>(ns: ListStoreNamespace, store: Store<RootStoreState
   const actionFunctions = readonly<ListLayoutActionFunctions>({
     setPagination: (pagination: TablePagination) => store.commit(`${ns}/setTablePagination`, pagination),
     getList: () => store.dispatch(`${ns}/getList`),
-    editList: async () => voidFunc(),
     deleteList: (ids: string[]) => store.dispatch(`${ns}/deleteList`, ids),
   });
 

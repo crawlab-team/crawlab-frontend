@@ -13,7 +13,7 @@
       <slot name="prefix"/>
       <Button plain size="mini" type="info" @click="onClose">Cancel</Button>
       <Button
-          :disabled="disabled"
+          :disabled="confirmDisabled"
           :loading="confirmLoading"
           size="mini"
           type="primary"
@@ -58,10 +58,14 @@ export default defineComponent({
       type: Number,
       required: false,
     },
+    confirmDisabled: {
+      type: Boolean,
+      default: false,
+    },
     confirmLoading: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   emits: [
     'close',

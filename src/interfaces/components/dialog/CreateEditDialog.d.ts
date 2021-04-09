@@ -3,6 +3,7 @@ interface CreateEditDialogProps {
   type: CreateEditDialogType;
   width: string;
   batchTableColumns: TableColumns;
+  confirmDisabled?: boolean;
   confirmLoading?: boolean;
 }
 

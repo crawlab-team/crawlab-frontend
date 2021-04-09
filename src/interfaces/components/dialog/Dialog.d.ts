@@ -4,6 +4,7 @@ interface DialogProps {
   title?: string;
   width?: string;
   zIndex?: number;
+  confirmDisabled?: boolean;
   confirmLoading?: boolean;
 }
 

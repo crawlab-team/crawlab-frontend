@@ -22,11 +22,6 @@ const useProject = (store: Store<RootStoreState>) => {
 
   // project form rules
   const projectFormRules = readonly<FormRules>({
-    name: {
-      trigger: 'blur',
-      required: true,
-      message: 'Name is required',
-    },
     tags: {
       validator: ((_, value, callback) => {
         if (isDuplicated(value)) {

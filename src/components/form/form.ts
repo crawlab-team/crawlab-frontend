@@ -86,6 +86,10 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   });
 
   // dialog confirm
+  const confirmDisabled = computed<boolean>(() => {
+    return isSelectiveForm.value &&
+      selectedFormFields.value.length === 0;
+  });
   const confirmLoading = computed<boolean>(() => state.confirmLoading);
   const setConfirmLoading = (value: boolean) => store.commit(`${ns}/setConfirmLoading`, value);
   const onConfirm = async () => {
@@ -124,7 +128,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
           break;
         case 'edit':
           if (isBatchForm.value) {
-            res = await updateList(formListIds.value, form.value);
+            res = await updateList(formListIds.value, form.value, selectedFormFields.value);
           } else {
             res = await updateById(form.value._id as string, form.value);
           }
@@ -169,6 +173,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     isFormItemDisabled,
     activeDialogKey,
     createEditDialogVisible,
+    confirmDisabled,
     confirmLoading,
     setConfirmLoading,
     onConfirm,
