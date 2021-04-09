@@ -35,7 +35,9 @@ declare global {
     activeDialogKey: DialogKey | undefined;
     form: T;
     isSelectiveForm: boolean;
+    formList: T[];
     selectedFormFields: string[];
+    isBatchForm: boolean;
     confirmLoading: boolean;
     tableData: TableData<T>;
     tableTotal: number;
@@ -54,6 +56,9 @@ declare global {
     setIsSelectiveForm: StoreMutation<BaseStoreState<T>, boolean>;
     setSelectedFormFields: StoreMutation<BaseStoreState<T>, string[]>;
     resetSelectedFormFields: StoreMutation<BaseStoreState<T>>;
+    setFormList: StoreMutation<BaseStoreState<T>, T[]>;
+    resetFormList: StoreMutation<BaseStoreState<T>>;
+    setIsBatchForm: StoreMutation<BaseStoreState<T>, boolean>;
     setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;
     setTableData: StoreMutation<BaseStoreState<T>, TableDataWithTotal<T>>;
     resetTableData: StoreMutation<BaseStoreState<T>>;
@@ -66,6 +71,8 @@ declare global {
     updateById: StoreAction<BaseStoreState<T>, { id: string; form: T }>;
     deleteById: StoreAction<BaseStoreState<T>, string>;
     getList: StoreAction<BaseStoreState<T>>;
+    createList: StoreAction<BaseStoreState<T>, T[]>;
+    updateList: StoreAction<BaseStoreState<T>, BatchRequestPayloadWithData<T>>;
     deleteList: StoreAction<BaseStoreState<T>, BatchRequestPayload>;
   }
 

@@ -5,6 +5,7 @@ import {plainClone} from '@/utils/object';
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
+    formList,
     formRef,
   } = data;
 
@@ -23,6 +24,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // selected form fields
   const selectedFormFields = computed<string[]>(() => state.selectedFormFields);
+
+  // is batch form
+  const isBatchForm = computed<boolean>(() => state.isBatchForm);
 
   const validateForm = async () => {
     return await formRef.value?.validate();
@@ -134,6 +138,8 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     formRef,
     isSelectiveForm,
     selectedFormFields,
+    formList,
+    isBatchForm,
     validateForm,
     resetForm,
     isFormItemDisabled,

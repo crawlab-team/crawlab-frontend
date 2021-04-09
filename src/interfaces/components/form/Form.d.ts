@@ -33,6 +33,7 @@ declare global {
   interface FormComponentData<T> {
     form: Ref<T>;
     formRef: Ref;
+    formList: Ref<T[]>;
   }
 
   type DefaultFormFunc<T> = () => T;

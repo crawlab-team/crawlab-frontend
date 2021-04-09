@@ -4,7 +4,7 @@ interface Services<T = any> {
   updateById: (id: string, form: T) => Promise<ResponseWithData<T>>;
   deleteById: (id: string) => Promise<Response>;
   getList: () => Promise<ListResponseWithData<T>>;
+  createList: (data: T[]) => Promise<ListResponseWithData<T>>;
+  updateList: (ids: string[], data: T) => Promise<Response>;
   deleteList: (ids: string[]) => Promise<Response>;
-  // TODO: updateList
-  // TODO: createList
 }

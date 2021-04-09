@@ -7,6 +7,8 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
     form: {} as T,
     isSelectiveForm: false,
     selectedFormFields: [],
+    formList: [],
+    isBatchForm: false,
     confirmLoading: false,
     tableData: [],
     tableTotal: 0,
@@ -30,6 +32,8 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
       state.form = {} as T;
       state.isSelectiveForm = false;
       state.selectedFormFields = [];
+      state.formList = [];
+      state.isBatchForm = false;
       state.confirmLoading = false;
 
       // set active dialog key as undefined
@@ -49,6 +53,15 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     },
     resetSelectedFormFields: (state: BaseStoreState<T>) => {
       state.selectedFormFields = [];
+    },
+    setFormList: (state: BaseStoreState<T>, value: T[]) => {
+      state.formList = value;
+    },
+    resetFormList: (state: BaseStoreState<T>) => {
+      state.formList = [];
+    },
+    setIsBatchForm: (state: BaseStoreState<T>, value: boolean) => {
+      state.isBatchForm = value;
     },
     setConfirmLoading: (state: BaseStoreState<T>, value: boolean) => {
       state.confirmLoading = value;
@@ -74,6 +87,8 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
     update,
     del,
     getList,
+    createList,
+    updateList,
     deleteList,
   } = useService<T>(endpoint);
 
@@ -99,6 +114,17 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
       // TODO: filter
       const res = await getList(state.tablePagination);
       commit('setTableData', {data: res.data || [], total: res.total});
+      return res;
+    },
+    createList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>, data: T[]) => {
+      const res = await createList(data);
+      return res;
+    },
+    updateList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>, {
+      ids,
+      data
+    }: BatchRequestPayloadWithData<T>) => {
+      const res = await updateList(ids, data);
       return res;
     },
     deleteList: async ({commit}: StoreActionContext<BaseStoreState<T>>, ids: string[]) => {
