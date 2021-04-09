@@ -12,6 +12,9 @@
       @click="() => $emit('click')"
   >
     <font-awesome-icon :icon="icon"/>
+    <div v-if="badgeIcon" class="badge-icon">
+      <font-awesome-icon :icon="badgeIcon"/>
+    </div>
   </Button>
 </template>
 
@@ -24,6 +27,10 @@ export const faIconButtonProps = {
   icon: {
     type: [Array, String] as PropType<Icon>,
     required: true,
+  },
+  badgeIcon: {
+    type: [Array, String] as PropType<Icon>,
+    required: false,
   },
   ...buttonProps,
 };
@@ -40,6 +47,17 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+@import "../../styles/variables";
+
+.badge-icon {
+  position: absolute;
+  top: -2px;
+  right: 2px;
+  font-size: 8px;
+  color: $white;
+}
+</style>
 
 <style scoped>
 .el-button,

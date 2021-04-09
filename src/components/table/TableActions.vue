@@ -17,7 +17,7 @@
         :icon="['fa', 'edit']"
         class="action-btn"
         size="mini"
-        tooltip="Edit"
+        tooltip="Edit Selected"
         type="warning"
         @click="onEdit"
     />
@@ -27,7 +27,7 @@
         :icon="['fa', 'trash-alt']"
         class="action-btn"
         size="mini"
-        tooltip="Delete"
+        tooltip="Delete Selected"
         type="danger"
         @click="onDelete"
     />

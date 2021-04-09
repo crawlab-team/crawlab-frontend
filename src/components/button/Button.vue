@@ -90,6 +90,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .button-wrapper {
+  position: relative;
   margin-right: 10px;
 
   &.no-margin {
