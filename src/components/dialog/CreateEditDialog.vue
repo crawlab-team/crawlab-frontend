@@ -1,5 +1,6 @@
 <template>
   <Dialog
+      :title="title"
       :visible="visible"
       :width="width"
       :confirm-loading="confirmLoading"
@@ -20,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType, ref} from 'vue';
+import {computed, defineComponent, PropType, ref} from 'vue';
 import CreateDialogContentBatch from '@/components/dialog/CreateDialogContentBatch.vue';
 import Dialog from '@/components/dialog/Dialog.vue';
 
@@ -61,6 +62,18 @@ export default defineComponent({
   setup(props: CreateEditDialogProps, {emit}) {
     const tabName = ref<string>('single');
 
+    const title = computed<string>(() => {
+      const {type} = props;
+      switch (type) {
+        case 'create':
+          return 'Create';
+        case 'edit':
+          return 'Edit';
+        default:
+          return 'Dialog';
+      }
+    });
+
     const onClose = () => {
       emit('close');
     };
@@ -71,6 +84,7 @@ export default defineComponent({
 
     return {
       tabName,
+      title,
       onClose,
       onConfirm,
     };

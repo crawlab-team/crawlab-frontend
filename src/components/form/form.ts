@@ -1,18 +1,21 @@
 import {computed, watch} from 'vue';
 import {Store} from 'vuex';
 
-const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, services: Services<T>, data: FormComponentData<T>) => {
+const useForm = (ns: StoreListNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
     formRef,
   } = data;
 
   const getNewForm = () => {
-    return {...form.value} as T;
+    return {...form.value};
   };
 
   // store state
   const state = store.state[ns];
+
+  // active dialog key
+  const activeDialogKey = computed<DialogKey | undefined>(() => state.activeDialogKey);
 
   const validateForm = async () => {
     return await formRef.value?.validate();
@@ -21,16 +24,20 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
   const resetForm = () => {
     const {activeDialogKey} = state;
     if (activeDialogKey === 'create') {
-      form.value = getNewForm() as T;
+      form.value = getNewForm();
     } else if (activeDialogKey === 'edit') {
-      form.value = state.form.value;
+      form.value = state.form;
       formRef.value?.clearValidate();
     }
     formRef.value?.resetFields();
   };
 
+  // reset form when activeDialogKey is changed
+  watch(() => state.activeDialogKey, resetForm);
+
   const {
     create,
+    updateById,
     getList,
   } = services;
 
@@ -69,7 +76,18 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
 
     // request
     try {
-      const res = await create(form.value as T);
+      let res: HttpResponse;
+      switch (activeDialogKey.value) {
+        case 'create':
+          res = await create(form.value);
+          break;
+        case 'edit':
+          res = await updateById(form.value._id as string, form.value);
+          break;
+        default:
+          console.error(`activeDialogKey "${activeDialogKey.value}" is invalid`);
+          return;
+      }
       if (res.error) {
         console.error(res.error);
         return;
@@ -93,10 +111,6 @@ const useForm = <T>(ns: StoreListNamespace, store: Store<RootStoreState>, servic
   const onClose = () => {
     store.commit(`${ns}/hideDialog`);
   };
-
-  watch(() => state.activeDialogKey, () => {
-    resetForm();
-  });
 
   return {
     form,

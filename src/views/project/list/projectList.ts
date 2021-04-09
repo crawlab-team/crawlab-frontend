@@ -90,7 +90,8 @@ const useProjectList = () => {
           icon: ['fa', 'edit'],
           tooltip: 'Edit',
           onClick: (row) => {
-            store.commit('');
+            store.commit(`${storeNamespace}/setForm`, row);
+            store.commit(`${storeNamespace}/showDialog`, 'edit');
           },
         },
         {

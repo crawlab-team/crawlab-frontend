@@ -6,7 +6,7 @@
       @close="onClose"
   >
     <template #single>
-      <ProjectForm :is-create="activeDialogKey === 'create'"/>
+      <ProjectForm/>
     </template>
   </CreateEditDialog>
 </template>
@@ -23,12 +23,6 @@ export default defineComponent({
   components: {
     CreateEditDialog,
     ProjectForm,
-  },
-  props: {
-    isCreate: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup() {
     // store

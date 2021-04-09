@@ -17,6 +17,8 @@ interface Response {
   error?: string;
 }
 
+type HttpResponse = Response;
+
 interface ResponseWithData<T = any> extends Response {
   data?: T;
 }

@@ -35,7 +35,7 @@ const useSpider = (store: Store<RootStoreState>) => {
   ]);
 
   return {
-    ...useForm<Spider>('spider', store, useSpiderService(store), formComponentData),
+    ...useForm('spider', store, useSpiderService(store), formComponentData),
     id,
     modeOptions,
   };

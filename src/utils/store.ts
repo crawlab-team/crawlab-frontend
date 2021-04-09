@@ -14,15 +14,14 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
 
 export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
   return {
-    dialogVisible: (state: BaseStoreState<T>) => {
-      return state.activeDialogKey !== undefined;
-    },
+    dialogVisible: (state: BaseStoreState<T>) => state.activeDialogKey !== undefined,
   };
 };
 
 export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
   return {
     showDialog: (state: BaseStoreState<T>, key: DialogKey) => {
+      console.log(key);
       state.activeDialogKey = key;
     },
     hideDialog: (state: BaseStoreState<T>) => {
