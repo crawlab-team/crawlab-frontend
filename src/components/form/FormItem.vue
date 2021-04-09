@@ -3,7 +3,7 @@
     <el-form-item
         :prop="prop"
         :label="label"
-        :required="required || formContext?.required"
+        :required="isRequired"
         :show-message="editable"
         :rules="rules"
         :size="size || formContext?.size"
@@ -11,11 +11,16 @@
       <template #label>
         <el-tooltip :content="labelTooltip" :disabled="!labelTooltip">
           <span class="form-item-label">
-            <span :class="required || formContext?.required ? 'required' : ''" class="form-item-label-text">
+            <span :class="isRequired ? 'required' : ''" class="form-item-label-text">
               {{ label }}
             </span>
             <el-tooltip v-if="isSelectiveForm" :content="editableTooltip">
-              <el-checkbox v-model="editable" class="editable-checkbox" @change="onEditableChange"/>
+              <el-checkbox
+                  v-model="internalEditable"
+                  :disabled="notEditable"
+                  class="editable-checkbox"
+                  @change="onEditableChange"
+              />
             </el-tooltip>
           </span>
         </el-tooltip>
@@ -71,7 +76,11 @@ export default defineComponent({
     },
     rules: {
       type: [Object, Array] as PropType<RuleItem | RuleItem[]>,
-    }
+    },
+    notEditable: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props: FormItemProps, {emit}) {
     const formItem = ref<HTMLDivElement>();
@@ -94,10 +103,12 @@ export default defineComponent({
       };
     });
 
-    const editable = ref<boolean>(false);
+    const internalEditable = ref<boolean>(false);
 
     const editableTooltip = computed<string>(() => {
-      return editable.value ? 'Uncheck to disable editing' : 'Check to enable editing';
+      const {notEditable} = props;
+      if (notEditable) return 'Unable to edit';
+      return internalEditable.value ? 'Uncheck to disable editing' : 'Check to enable editing';
     });
 
     const onEditableChange = (value: boolean) => {
@@ -117,6 +128,12 @@ export default defineComponent({
       store?.commit(`${ns}/setSelectedFormFields`, fields);
     };
 
+    const isRequired = computed<boolean>(() => {
+      if (isSelectiveForm.value) return false;
+      const {required} = props;
+      return required;
+    });
+
     onMounted(() => {
       if (formItem.value) {
         const {labelWidth} = formContext;
@@ -132,9 +149,10 @@ export default defineComponent({
       formContext,
       style,
       isSelectiveForm,
-      editable,
+      internalEditable,
       editableTooltip,
       onEditableChange,
+      isRequired,
     };
   },
 });

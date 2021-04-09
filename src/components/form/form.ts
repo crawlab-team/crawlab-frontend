@@ -1,6 +1,6 @@
 import {computed, watch} from 'vue';
 import {Store} from 'vuex';
-import {plainClone} from '@/utils/object';
+import {cloneArray, plainClone} from '@/utils/object';
 
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
@@ -25,8 +25,11 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   // selected form fields
   const selectedFormFields = computed<string[]>(() => state.selectedFormFields);
 
-  // is batch form
-  const isBatchForm = computed<boolean>(() => state.isBatchForm);
+  // is batch form getters
+  const isBatchForm = computed<boolean>(() => store.getters[`${ns}/isBatchForm`]);
+
+  // form list ids getters
+  const formListIds = computed<string[]>(() => store.getters[`${ns}/formListIds`]);
 
   const validateForm = async () => {
     return await formRef.value?.validate();
@@ -34,16 +37,27 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   const resetForm = () => {
     const {activeDialogKey} = state;
-    switch (activeDialogKey) {
-      case 'create':
-        form.value = getNewForm();
-        break;
-      case 'edit':
-        form.value = plainClone(state.form);
-        formRef.value?.clearValidate();
-        break;
+    if (isBatchForm.value) {
+      switch (activeDialogKey) {
+        case 'create':
+          formList.value = [];
+          break;
+        case 'edit':
+          formList.value = cloneArray(state.formList);
+          break;
+      }
+    } else {
+      switch (activeDialogKey) {
+        case 'create':
+          form.value = getNewForm();
+          break;
+        case 'edit':
+          form.value = plainClone(state.form);
+          formRef.value?.clearValidate();
+          break;
+      }
+      formRef.value?.resetFields();
     }
-    formRef.value?.resetFields();
   };
 
   // reset form when activeDialogKey is changed
@@ -57,9 +71,11 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   };
 
   const {
+    getList,
     create,
     updateById,
-    getList,
+    createList,
+    updateList,
   } = services;
 
   // dialog create edit
@@ -100,10 +116,18 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
       let res: HttpResponse;
       switch (activeDialogKey.value) {
         case 'create':
-          res = await create(form.value);
+          if (isBatchForm.value) {
+            res = await createList(formList.value);
+          } else {
+            res = await create(form.value);
+          }
           break;
         case 'edit':
-          res = await updateById(form.value._id as string, form.value);
+          if (isBatchForm.value) {
+            res = await updateList(formListIds.value, form.value);
+          } else {
+            res = await updateById(form.value._id as string, form.value);
+          }
           break;
         default:
           console.error(`activeDialogKey "${activeDialogKey.value}" is invalid`);

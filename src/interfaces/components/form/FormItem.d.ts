@@ -11,5 +11,6 @@ declare global {
     required: boolean;
     isPlaceholder: boolean;
     rules?: RuleItem | RuleItem[];
+    notEditable?: boolean;
   }
 }

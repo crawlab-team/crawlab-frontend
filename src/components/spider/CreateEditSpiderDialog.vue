@@ -21,13 +21,10 @@ import useSpider from '@/components/spider/spider';
 export default defineComponent({
   name: 'CreateSpiderDialog',
   components: {
-    SpiderForm,
     CreateEditDialog,
+    SpiderForm,
   },
   setup() {
-    // tab name
-    const tabName = ref<string>('single');
-
     // store
     const store = useStore();
 
@@ -38,6 +35,9 @@ export default defineComponent({
       onConfirm,
       onClose,
     } = useSpider(store);
+
+    // tab name
+    const tabName = ref<string>('single');
 
     return {
       tabName,

@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import CreateEditDialog from '@/components/dialog/CreateEditDialog.vue';
 import {useStore} from 'vuex';
+import CreateEditDialog from '@/components/dialog/CreateEditDialog.vue';
 import ProjectForm from '@/components/project/ProjectForm.vue';
 import useProject from '@/components/project/project';
 

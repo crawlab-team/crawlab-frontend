@@ -19,6 +19,8 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
 export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
   return {
     dialogVisible: (state: BaseStoreState<T>) => state.activeDialogKey !== undefined,
+    isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.isBatchForm,
+    formListIds: (state: BaseStoreState<BaseModel>) => state.formList.map(d => d._id as string),
   };
 };
 

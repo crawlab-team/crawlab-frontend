@@ -6,17 +6,32 @@
         :placeholder="placeholder"
         :size="size"
         class="input"
+        :disabled="disabled"
     />
     <!-- ./Input -->
 
     <!-- Button -->
-    <Button v-if="buttonLabel" :size="size" :type="buttonType" class="button" no-margin>
+    <Button v-if="buttonLabel" :disabled="disabled" :size="size" :type="buttonType" class="button" no-margin>
       <Icon v-if="buttonIcon" :icon="buttonIcon"/>
       {{ buttonLabel }}
     </Button>
     <template v-else-if="buttonIcon">
-      <FaIconButton v-if="isFaIcon" :icon="buttonIcon" :size="size" :type="buttonType" class="button"/>
-      <IconButton v-else :icon="buttonIcon" :size="size" :type="buttonType" class="button"/>
+      <FaIconButton
+          v-if="isFaIcon"
+          :disabled="disabled"
+          :icon="buttonIcon"
+          :size="size"
+          :type="buttonType"
+          class="button"
+      />
+      <IconButton
+          v-else
+          :disabled="disabled"
+          :icon="buttonIcon"
+          :size="size"
+          :type="buttonType"
+          class="button"
+      />
     </template>
     <!-- ./Button -->
   </div>
@@ -60,6 +75,10 @@ export default defineComponent({
     buttonIcon: {
       type: [String, Array] as PropType<string | string[]>,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    }
   },
   emits: [
     'update:model-value',

@@ -35,8 +35,8 @@ declare global {
     activeDialogKey: DialogKey | undefined;
     form: T;
     isSelectiveForm: boolean;
-    formList: T[];
     selectedFormFields: string[];
+    formList: T[];
     isBatchForm: boolean;
     confirmLoading: boolean;
     tableData: TableData<T>;
@@ -46,6 +46,8 @@ declare global {
 
   interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
     dialogVisible: StoreGetter<BaseStoreState<T>, boolean>;
+    isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
+    formListIds: StoreGetter<BaseStoreState<T>, string[]>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {

@@ -2,10 +2,10 @@
   <Form v-if="form" ref="formRef" :model="form">
     <!-- Row -->
     <FormItem :span="2" label="Name" prop="name" required>
-      <el-input v-model="form.name" placeholder="Name"/>
+      <el-input v-model="form.name" :disabled="isFormItemDisabled('name')" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Display Name" prop="display_name" required>
-      <el-input v-model="form.display_name" placeholder="Display Name"/>
+      <el-input v-model="form.display_name" :disabled="isFormItemDisabled('display_name')" placeholder="Display Name"/>
     </FormItem>
     <!-- ./Row -->
 
@@ -109,11 +109,18 @@ export default defineComponent({
 
     // use spider
     const {
-      id: currentSpiderId,
-      modeOptions,
+      // default
+      activeDialogKey,
+      isSelectiveForm,
+      selectedFormFields,
       form,
       formRef,
       resetForm,
+      isFormItemDisabled,
+
+      // custom
+      id: currentSpiderId,
+      modeOptions,
     } = useSpider(store);
 
     // use node
@@ -132,12 +139,19 @@ export default defineComponent({
     });
 
     return {
+      // default
+      activeDialogKey,
+      isSelectiveForm,
+      selectedFormFields,
+      form,
+      formRef,
+      isFormItemDisabled,
+
+      // custom
       TASK_MODE_SELECTED_NODES,
       TASK_MODE_SELECTED_NODE_TAGS,
       currentSpiderId,
       modeOptions,
-      form,
-      formRef,
       allNodeSelectOptions,
       allNodeTags,
       allProjectSelectOptions,

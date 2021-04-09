@@ -6,7 +6,7 @@
       :rules="projectFormRules"
       :selective="isSelectiveForm"
   >
-    <FormItem :span="2" label="Name" prop="name" required>
+    <FormItem :span="2" label="Name" not-editable prop="name" required>
       <el-input v-model="form.name" :disabled="isFormItemDisabled('name')" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Tags" prop="tags">
@@ -39,14 +39,17 @@ export default defineComponent({
     const store = useStore();
 
     const {
+      // default
       activeDialogKey,
       isSelectiveForm,
       selectedFormFields,
-      projectFormRules,
       form,
       formRef,
       resetForm,
       isFormItemDisabled,
+
+      // custom
+      projectFormRules,
     } = useProject(store);
 
     onBeforeMount(() => {
@@ -54,13 +57,16 @@ export default defineComponent({
     });
 
     return {
+      // default
       activeDialogKey,
       isSelectiveForm,
       selectedFormFields,
       form,
       formRef,
-      projectFormRules,
       isFormItemDisabled,
+
+      // custom
+      projectFormRules,
     };
   },
 });

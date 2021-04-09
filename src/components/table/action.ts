@@ -32,6 +32,7 @@ const useAction = (props: TableProps, ctx: SetupContext, table: Ref<Table | unde
     if (storeContext) {
       store?.commit(`${ns}/showDialog`, 'edit');
       store?.commit(`${ns}/setIsSelectiveForm`, true);
+      store?.commit(`${ns}/setFormList`, selection.value);
     }
   };
 

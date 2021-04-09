@@ -5,4 +5,5 @@ interface InputWithButtonProps {
   buttonLabel?: string;
   buttonIcon?: Icon;
   buttonType: BasicType;
+  disabled?: boolean;
 }
