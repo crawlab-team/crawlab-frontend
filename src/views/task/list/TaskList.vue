@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, h} from 'vue';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {
   TASK_MODE_ALL,
   TASK_MODE_RANDOM,
@@ -155,7 +155,7 @@ export default defineComponent({
         width: '120',
       },
       {
-        key: COLUMN_NAME_ACTIONS,
+        key: TABLE_COLUMN_NAME_ACTIONS,
         label: 'Actions',
         icon: ['fa', 'tools'],
         fixed: 'right',

@@ -36,14 +36,14 @@
           <TableHeader :column="c" :index="scope.$index" @change="onHeaderChange"/>
         </template>
         <template #default="scope">
-          <TableCell :column="c" :row="scope.row"/>
+          <TableCell :column="c" :row="scope.row" :row-index="scope.$index"/>
         </template>
       </el-table-column>
     </el-table>
     <!-- ./Table Body-->
 
     <!-- Table Footer-->
-    <div class="table-footer">
+    <div v-if="!hideFooter" class="table-footer">
       <TableActions
           :selection="internalSelection"
           @delete="onDelete"
@@ -151,6 +151,10 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    hideFooter: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: [

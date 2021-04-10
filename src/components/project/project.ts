@@ -4,6 +4,7 @@ import {isDuplicated} from '@/utils/array';
 import useForm from '@/components/form/form';
 import useProjectService from '@/services/project/projectService';
 import {getDefaultFormComponentData} from '@/utils/form';
+import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_TAG_INPUT} from '@/constants/form';
 
 // get new project
 const getNewProject = (): Project => {
@@ -19,6 +20,22 @@ const useProject = (store: Store<RootStoreState>) => {
   // store
   const storeNamespace = 'project';
   const state = store.state.project;
+
+  // batch form fields
+  const batchFormFields = [
+    {
+      prop: 'name',
+      label: 'Name',
+      width: '150',
+      fieldType: FORM_FIELD_TYPE_INPUT,
+    },
+    {
+      prop: 'tags',
+      label: 'Tags',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_TAG_INPUT,
+    },
+  ] as FormTableField[];
 
   // project form rules
   const projectFormRules = readonly<FormRules>({
@@ -51,6 +68,7 @@ const useProject = (store: Store<RootStoreState>) => {
 
   return {
     ...useForm('project', store, useProjectService(store), formComponentData),
+    batchFormFields,
     projectFormRules,
     allProjectSelectOptions,
     allProjectTags,

@@ -3,7 +3,7 @@ import {useStore} from 'vuex';
 import {computed, h, readonly} from 'vue';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
 import Table from '@/components/table/Table.vue';
 
@@ -130,7 +130,7 @@ const useSpiderList = () => {
       width: '140',
     },
     {
-      key: COLUMN_NAME_ACTIONS,
+      key: TABLE_COLUMN_NAME_ACTIONS,
       label: 'Actions',
       icon: ['fa', 'tools'],
       width: '180',

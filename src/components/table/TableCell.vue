@@ -13,18 +13,22 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    rowIndex: {
+      type: Number,
+      required: true,
+    }
   },
   emits: [
     'click',
   ],
   setup: function (props) {
     const getChildren = () => {
-      const {row, column} = props as TableCellProps;
+      const {row, column, rowIndex} = props as TableCellProps;
 
       // value
       if (column.value !== undefined) {
         if (typeof column.value === 'function') {
-          return [column.value(row, column)];
+          return [column.value(row, rowIndex, column)];
         } else {
           return column.value;
         }
@@ -40,7 +44,7 @@ export default defineComponent({
             size,
             icon,
             onClick: () => {
-              onClick?.(row);
+              onClick?.(row, rowIndex, column);
             },
           };
           // FIXME: use "as any" to fix type errors temporarily

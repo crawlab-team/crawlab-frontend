@@ -2,10 +2,11 @@
   <CreateEditDialog
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
+      :action-functions="actionFunctions"
+      :batch-form-data="formList"
       :confirm-disabled="confirmDisabled"
       :confirm-loading="confirmLoading"
-      @confirm="onConfirm"
-      @close="onClose"
+      :batch-form-fields="batchFormFields"
   >
     <template #default>
       <ProjectForm/>

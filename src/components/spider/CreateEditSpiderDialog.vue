@@ -2,10 +2,11 @@
   <CreateEditDialog
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
+      :action-functions="actionFunctions"
+      :batch-form-data="formList"
       :confirm-disabled="confirmDisabled"
       :confirm-loading="confirmLoading"
-      @confirm="onConfirm"
-      @close="onClose"
+      :batch-form-fields="batchFormFields"
   >
     <template #default>
       <SpiderForm/>
@@ -14,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent} from 'vue';
 import {useStore} from 'vuex';
 import CreateEditDialog from '@/components/dialog/CreateEditDialog.vue';
 import SpiderForm from '@/components/spider/SpiderForm.vue';
@@ -30,12 +31,8 @@ export default defineComponent({
     // store
     const store = useStore();
 
-    // tab name
-    const tabName = ref<string>('single');
-
     return {
       ...useSpider(store),
-      tabName,
     };
   },
 });

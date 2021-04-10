@@ -20,6 +20,16 @@ const getNewSpider = () => {
 const formComponentData = getDefaultFormComponentData<Spider>(getNewSpider);
 
 const useSpider = (store: Store<RootStoreState>) => {
+  // batch form fields
+  const batchFormFields = [
+    {
+      prop: 'name',
+      label: 'Name',
+      width: '120px',
+      fieldType: 'input',
+    },
+  ] as FormTableField[];
+
   // route
   const route = useRoute();
 
@@ -36,6 +46,7 @@ const useSpider = (store: Store<RootStoreState>) => {
 
   return {
     ...useForm('spider', store, useSpiderService(store), formComponentData),
+    batchFormFields,
     id,
     modeOptions,
   };

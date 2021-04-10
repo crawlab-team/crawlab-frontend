@@ -12,6 +12,7 @@ declare global {
     rowKey: string;
     selectable: boolean;
     visibleButtons: BuiltInTableActionButtonName[];
+    hideFooter: boolean;
   }
 
   interface TableColumn<T = any> {
@@ -63,8 +64,8 @@ declare global {
     onClick?: TableButtonOnClickFunction;
   }
 
-  type TableValueFunction<T = any> = (row: T, column?: TableColumn<T>) => VNode;
-  type TableButtonOnClickFunction<T = any> = (row: T, column?: TableColumn<T>) => void;
+  type TableValueFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => VNode;
+  type TableButtonOnClickFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => void;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
 
   interface TableStore extends Store {

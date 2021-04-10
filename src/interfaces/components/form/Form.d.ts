@@ -1,5 +1,13 @@
 import {RuleItem} from 'async-validator';
 import {Ref} from 'vue';
+import {
+  FORM_FIELD_TYPE_CHECK_TAG_GROUP,
+  FORM_FIELD_TYPE_INPUT,
+  FORM_FIELD_TYPE_INPUT_TEXTAREA,
+  FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+  FORM_FIELD_TYPE_TAG_INPUT,
+  FORM_FIELD_TYPE_TAG_SELECT,
+} from '@/constants/form';
 
 declare global {
   interface FormProps {
@@ -38,5 +46,10 @@ declare global {
 
   type DefaultFormFunc<T> = () => T;
 
-  type FormEditType = 'single' | 'batch';
+  type FormFieldType = FORM_FIELD_TYPE_INPUT |
+    FORM_FIELD_TYPE_INPUT_TEXTAREA |
+    FORM_FIELD_TYPE_INPUT_WITH_BUTTON |
+    FORM_FIELD_TYPE_TAG_INPUT |
+    FORM_FIELD_TYPE_TAG_SELECT |
+    FORM_FIELD_TYPE_CHECK_TAG_GROUP;
 }

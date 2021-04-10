@@ -4,11 +4,11 @@ import {useService} from '@/services';
 export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   return {
     activeDialogKey: undefined,
+    createEditDialogTabName: 'single',
     form: {} as T,
     isSelectiveForm: false,
     selectedFormFields: [],
     formList: [],
-    isBatchForm: false,
     confirmLoading: false,
     tableData: [],
     tableTotal: 0,
@@ -19,7 +19,7 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
 export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
   return {
     dialogVisible: (state: BaseStoreState<T>) => state.activeDialogKey !== undefined,
-    isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.isBatchForm,
+    isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.createEditDialogTabName === 'batch',
     formListIds: (state: BaseStoreState<BaseModel>) => state.formList.map(d => d._id as string),
   };
 };
@@ -31,15 +31,21 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     },
     hideDialog: (state: BaseStoreState<T>) => {
       // reset all other state variables
+      state.createEditDialogTabName = 'single';
       state.form = {} as T;
       state.isSelectiveForm = false;
       state.selectedFormFields = [];
       state.formList = [];
-      state.isBatchForm = false;
       state.confirmLoading = false;
 
       // set active dialog key as undefined
       state.activeDialogKey = undefined;
+    },
+    setCreateEditDialogTabName: (state: BaseStoreState<T>, tabName: CreateEditTabName) => {
+      state.createEditDialogTabName = tabName;
+    },
+    resetCreateEditDialogTabName: (state: BaseStoreState<T>) => {
+      state.createEditDialogTabName = 'single';
     },
     setForm: (state: BaseStoreState<T>, value: T) => {
       state.form = value;
@@ -61,9 +67,6 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     },
     resetFormList: (state: BaseStoreState<T>) => {
       state.formList = [];
-    },
-    setIsBatchForm: (state: BaseStoreState<T>, value: boolean) => {
-      state.isBatchForm = value;
     },
     setConfirmLoading: (state: BaseStoreState<T>, value: boolean) => {
       state.confirmLoading = value;

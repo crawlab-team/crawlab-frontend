@@ -8,13 +8,19 @@
       @close="onClose"
       @confirm="onConfirm"
   >
-    <el-tabs v-model="tabName" :class="[type, visible ? 'visible' : '']" class="create-edit-dialog-tabs">
+    <el-tabs
+        v-model="internalTabName"
+        :class="[type, visible ? 'visible' : '']"
+        class="create-edit-dialog-tabs"
+        @tab-click="onTabChange"
+    >
       <el-tab-pane label="Single" name="single">
         <slot/>
       </el-tab-pane>
       <el-tab-pane label="Batch" name="batch">
         <CreateDialogContentBatch
-            :columns="batchTableColumns"
+            :data="batchFormData"
+            :fields="batchFormFields"
         />
       </el-tab-pane>
     </el-tabs>
@@ -22,9 +28,11 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, PropType, ref} from 'vue';
+import {computed, defineComponent, PropType, provide, ref, SetupContext} from 'vue';
 import CreateDialogContentBatch from '@/components/dialog/CreateDialogContentBatch.vue';
 import Dialog from '@/components/dialog/Dialog.vue';
+import {emptyArrayFunc, emptyObjectFunc} from '@/utils/func';
+import {Pane} from 'element-plus/lib/el-tabs/src/tabs.vue';
 
 export default defineComponent({
   name: 'CreateEditDialog',
@@ -45,11 +53,13 @@ export default defineComponent({
       type: String,
       default: '960px',
     },
-    batchTableColumns: {
-      type: Array as PropType<TableColumns>,
-      default: () => {
-        return [];
-      }
+    batchFormData: {
+      type: Array as PropType<TableData>,
+      default: emptyArrayFunc,
+    },
+    batchFormFields: {
+      type: Array as PropType<FormTableField[]>,
+      default: emptyArrayFunc,
     },
     confirmDisabled: {
       type: Boolean,
@@ -58,15 +68,13 @@ export default defineComponent({
     confirmLoading: {
       type: Boolean,
       default: false,
-    }
+    },
+    actionFunctions: {
+      type: Object as PropType<CreateEditDialogActionFunctions>,
+      default: emptyObjectFunc,
+    },
   },
-  emits: [
-    'close',
-    'confirm',
-  ],
-  setup(props: CreateEditDialogProps, {emit}) {
-    const tabName = ref<string>('single');
-
+  setup(props: CreateEditDialogProps, ctx: SetupContext) {
     const title = computed<string>(() => {
       const {visible, type} = props;
       if (!visible) return '';
@@ -81,18 +89,31 @@ export default defineComponent({
     });
 
     const onClose = () => {
-      emit('close');
+      const {actionFunctions} = props;
+      actionFunctions?.onClose?.();
     };
 
     const onConfirm = () => {
-      emit('confirm');
+      const {actionFunctions} = props;
+      actionFunctions?.onConfirm?.();
     };
 
+    const internalTabName = ref<CreateEditTabName>('single');
+    const onTabChange = (tab: Pane) => {
+      const tabName = tab.paneName as unknown as CreateEditTabName;
+      const {actionFunctions} = props;
+      actionFunctions?.onTabChange?.(tabName);
+      console.log(actionFunctions);
+    };
+
+    provide<CreateEditDialogActionFunctions | undefined>('action-functions', props.actionFunctions);
+
     return {
-      tabName,
       title,
       onClose,
       onConfirm,
+      internalTabName,
+      onTabChange,
     };
   },
 });

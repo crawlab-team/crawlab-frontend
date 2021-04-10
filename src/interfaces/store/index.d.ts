@@ -33,11 +33,11 @@ declare global {
 
   interface BaseStoreState<T = any> {
     activeDialogKey: DialogKey | undefined;
+    createEditDialogTabName: CreateEditTabName;
     form: T;
     isSelectiveForm: boolean;
     selectedFormFields: string[];
     formList: T[];
-    isBatchForm: boolean;
     confirmLoading: boolean;
     tableData: TableData<T>;
     tableTotal: number;
@@ -53,6 +53,8 @@ declare global {
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {
     showDialog: StoreMutation<BaseStoreState<T>, DialogKey>;
     hideDialog: StoreMutation<BaseStoreState<T>>;
+    setCreateEditDialogTabName: StoreMutation<BaseStoreState<T>, CreateEditTabName>;
+    resetCreateEditDialogTabName: StoreMutation<BaseStoreState<T>>;
     setForm: StoreMutation<BaseStoreState<T>, T>;
     resetForm: StoreMutation<BaseStoreState<T>>;
     setIsSelectiveForm: StoreMutation<BaseStoreState<T>, boolean>;
@@ -60,7 +62,6 @@ declare global {
     resetSelectedFormFields: StoreMutation<BaseStoreState<T>>;
     setFormList: StoreMutation<BaseStoreState<T>, T[]>;
     resetFormList: StoreMutation<BaseStoreState<T>>;
-    setIsBatchForm: StoreMutation<BaseStoreState<T>, boolean>;
     setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;
     setTableData: StoreMutation<BaseStoreState<T>, TableDataWithTotal<T>>;
     resetTableData: StoreMutation<BaseStoreState<T>>;

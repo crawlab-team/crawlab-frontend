@@ -1,3 +1,3 @@
 interface CreateDialogContentBatchProps {
-  columns: TableColumns;
+  fields: FormTableField[];
 }

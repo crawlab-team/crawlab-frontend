@@ -16,7 +16,7 @@ import {computed, defineComponent, h} from 'vue';
 import Table from '@/components/table/Table.vue';
 import NodeType from '@/components/node/NodeType.vue';
 import {Node} from '@/interfaces/views/node.d';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import Switch from '@/components/switch/Switch.vue';
 import NodeActive from '@/components/node/NodeActive.vue';
 
@@ -125,7 +125,7 @@ export default defineComponent({
         hasFilter: true,
       },
       {
-        key: COLUMN_NAME_ACTIONS,
+        key: TABLE_COLUMN_NAME_ACTIONS,
         label: 'Actions',
         icon: ['fa', 'tools'],
         fixed: 'right',

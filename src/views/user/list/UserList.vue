@@ -14,7 +14,7 @@
 <script lang="ts">
 import {computed, defineComponent} from 'vue';
 import Table from '@/components/table/Table.vue';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 
 export default defineComponent({
   name: 'UserList',
@@ -60,7 +60,7 @@ export default defineComponent({
         width: '200',
       },
       {
-        key: COLUMN_NAME_ACTIONS,
+        key: TABLE_COLUMN_NAME_ACTIONS,
         label: 'Actions',
         icon: ['fa', 'tools'],
         fixed: 'right',

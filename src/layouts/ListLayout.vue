@@ -83,7 +83,7 @@ import NavActionItem from '@/components/nav/NavActionItem.vue';
 import Table from '@/components/table/Table.vue';
 import NavActionButton from '@/components/nav/NavActionButton.vue';
 import NavActions from '@/components/nav/NavActions.vue';
-import {voidFunc} from '@/utils/func';
+import {emptyObjectFunc} from '@/utils/func';
 
 export default defineComponent({
   name: 'ListLayout',
@@ -140,11 +140,7 @@ export default defineComponent({
     },
     actionFunctions: {
       type: Object as PropType<ListLayoutActionFunctions>,
-      default: () => {
-        return {
-          getList: voidFunc,
-        };
-      }
+      default: emptyObjectFunc,
     },
   },
   emits: [

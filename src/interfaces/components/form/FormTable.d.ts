@@ -1,4 +1,11 @@
 interface FormTableProps {
   data: TableData;
-  columns: TableColumns;
+  fields: FormTableField[];
+}
+
+interface FormTableField {
+  prop: string;
+  label: string;
+  width?: string;
+  fieldType: FormFieldType;
 }

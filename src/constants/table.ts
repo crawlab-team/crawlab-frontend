@@ -1,4 +1,4 @@
-export const COLUMN_NAME_ACTIONS = 'actions';
+export const TABLE_COLUMN_NAME_ACTIONS = 'actions';
 
 export const TABLE_ACTION_ADD = 'add';
 export const TABLE_ACTION_EDIT = 'edit';

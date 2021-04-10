@@ -1,6 +1,7 @@
 import {computed, watch} from 'vue';
 import {Store} from 'vuex';
 import {cloneArray, plainClone} from '@/utils/object';
+import useFormTable from '@/components/form/formTable';
 
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
@@ -11,6 +12,14 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   const getNewForm = () => {
     return {...form.value};
+  };
+
+  const getNewFormList = () => {
+    const list = [];
+    for (let i = 0; i < 5; i++) {
+      list.push(getNewForm());
+    }
+    return list;
   };
 
   // store state
@@ -37,10 +46,11 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   const resetForm = () => {
     const {activeDialogKey} = state;
+    console.log(isBatchForm.value, activeDialogKey);
     if (isBatchForm.value) {
       switch (activeDialogKey) {
         case 'create':
-          formList.value = [];
+          formList.value = getNewFormList();
           break;
         case 'edit':
           formList.value = cloneArray(state.formList);
@@ -62,6 +72,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // reset form when activeDialogKey is changed
   watch(() => state.activeDialogKey, resetForm);
+  watch(() => isBatchForm.value, resetForm);
 
   // whether form item is disabled
   const isFormItemDisabled = (prop: string) => {
@@ -161,7 +172,37 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     store.commit(`${ns}/hideDialog`);
   };
 
+  // dialog tab change
+  const onTabChange = (tabName: CreateEditTabName) => {
+    if (tabName === 'batch') {
+      formList.value = getNewFormList();
+    }
+    store.commit(`${ns}/setCreateEditTabName`, tabName);
+    console.log(state.createEditDialogTabName);
+  };
+
+  // use form table
+  const formTable = useFormTable(ns, store, services, data);
+  const {
+    onAdd,
+    onClone,
+    onDelete,
+    onFieldChange,
+  } = formTable;
+
+  // action functions
+  const actionFunctions = {
+    onClose,
+    onConfirm,
+    onTabChange,
+    onAdd,
+    onClone,
+    onDelete,
+    onFieldChange,
+  } as CreateEditDialogActionFunctions;
+
   return {
+    ...formTable,
     form,
     formRef,
     isSelectiveForm,
@@ -176,8 +217,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     confirmDisabled,
     confirmLoading,
     setConfirmLoading,
-    onConfirm,
-    onClose,
+    actionFunctions,
   };
 };
 

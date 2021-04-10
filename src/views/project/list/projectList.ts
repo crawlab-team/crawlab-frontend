@@ -1,6 +1,6 @@
 import {h} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
-import {COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
 import {ElMessageBox} from 'element-plus';
 import useList from '@/layouts/list';
@@ -75,7 +75,7 @@ const useProjectList = () => {
       width: '300',
     },
     {
-      key: COLUMN_NAME_ACTIONS,
+      key: TABLE_COLUMN_NAME_ACTIONS,
       label: 'Actions',
       fixed: 'right',
       width: '200',
