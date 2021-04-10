@@ -77,7 +77,7 @@ export default defineComponent({
           },
           {
             type: 'info',
-            icon: ['fa', 'plus'],
+            icon: ['fa', 'clone'],
             tooltip: 'Clone',
             onClick: (_, rowIndex) => {
               emit('clone', rowIndex);
