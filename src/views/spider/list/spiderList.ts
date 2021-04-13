@@ -41,7 +41,7 @@ const useSpiderList = () => {
   // table columns
   const tableColumns = readonly<TableColumns<Spider>>([
     {
-      key: 'display_name',
+      key: 'name',
       label: 'Name',
       icon: ['fa', 'font'],
       width: '160',
@@ -63,7 +63,7 @@ const useSpiderList = () => {
       }
     },
     {
-      key: 'project_name',
+      key: 'project_id',
       label: 'Project',
       icon: ['fa', 'project-diagram'],
       width: '120',

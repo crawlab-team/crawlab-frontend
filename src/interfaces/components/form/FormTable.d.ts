@@ -8,4 +8,7 @@ interface FormTableField {
   label: string;
   width?: string;
   fieldType: FormFieldType;
+  options?: SelectOption[];
+  required?: boolean;
+  placeholder?: string;
 }

@@ -1,10 +1,12 @@
 import {Store} from 'vuex';
 import {plainClone} from '@/utils/object';
+import {Ref} from 'vue';
 
 const useFormTable = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
     formList,
+    formTableFieldRefsMap,
   } = data;
 
   const getNewForm = () => {
@@ -25,7 +27,21 @@ const useFormTable = (ns: ListStoreNamespace, store: Store<RootStoreState>, serv
   };
 
   const onFieldChange = (rowIndex: number, prop: string, value: any) => {
-    formList.value[rowIndex][prop] = value;
+    if (rowIndex !== -1) {
+      // one row change
+      const item = formList.value[rowIndex];
+      item[prop] = value;
+    } else {
+      // all rows change
+      for (let i = 0; i < formList.value.length; i++) {
+        onFieldChange(i, prop, value);
+      }
+    }
+  };
+
+  const onFieldRegister = (rowIndex: number, prop: string, formRef: Ref) => {
+    const key = [rowIndex, prop] as FormTableFieldRefsMapKey;
+    formTableFieldRefsMap.value.set(key, formRef);
   };
 
   return {
@@ -33,6 +49,7 @@ const useFormTable = (ns: ListStoreNamespace, store: Store<RootStoreState>, serv
     onClone,
     onDelete,
     onFieldChange,
+    onFieldRegister,
   };
 };
 

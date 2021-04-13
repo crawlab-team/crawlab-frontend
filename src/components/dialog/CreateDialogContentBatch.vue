@@ -1,22 +1,40 @@
 <template>
-  <FormTable
-      :data="data"
-      :fields="fields"
-      @add="onAdd"
-      @clone="onClone"
-      @delete="onDelete"
-      @field-change="onFieldChange"
-  />
+  <div class="create-dialog-content-batch">
+    <el-form class="control-panel" inline>
+      <el-form-item>
+        <Button type="primary" @click="onAdd">
+          <font-awesome-icon :icon="['fa', 'plus']"/>
+          Add
+        </Button>
+      </el-form-item>
+      <el-form-item label="Edit All">
+        <Switch :on-change="onEditAllChange" :value="editAll"/>
+      </el-form-item>
+    </el-form>
+    <FormTable
+        :data="data"
+        :fields="fields"
+        @add="onAdd"
+        @clone="onClone"
+        @delete="onDelete"
+        @field-change="onFieldChange"
+        @field-register="onFieldRegister"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, inject, PropType, Ref, ref} from 'vue';
 import FormTable from '@/components/form/FormTable.vue';
 import {emptyArrayFunc} from '@/utils/func';
+import Switch from '@/components/switch/Switch.vue';
+import Button from '@/components/button/Button.vue';
 
 export default defineComponent({
   name: 'CreateDialogContentBatch',
   components: {
+    Button,
+    Switch,
     FormTable,
   },
   props: {
@@ -32,6 +50,11 @@ export default defineComponent({
     }
   },
   setup(props: CreateDialogContentBatchProps) {
+    const editAll = ref<boolean>(false);
+    const onEditAllChange = (value: boolean) => {
+      editAll.value = value;
+    };
+
     const actionFunctions = inject('action-functions') as CreateEditDialogActionFunctions;
 
     const onAdd = (rowIndex: number) => {
@@ -47,19 +70,40 @@ export default defineComponent({
     };
 
     const onFieldChange = (rowIndex: number, prop: string, value: any) => {
+      if (editAll.value) {
+        // edit all rows
+        rowIndex = -1;
+      }
+
       actionFunctions?.onFieldChange?.(rowIndex, prop, value);
     };
 
+    const onFieldRegister = (rowIndex: number, prop: string, formRef: Ref) => {
+      actionFunctions?.onFieldRegister(rowIndex, prop, formRef);
+    };
+
     return {
+      editAll,
+      onEditAllChange,
       onAdd,
       onClone,
       onDelete,
       onFieldChange,
+      onFieldRegister,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+.create-dialog-content-batch {
+  .control-panel {
+    margin-bottom: 10px;
+
+    .el-form-item {
+      margin: 0;
+    }
+  }
+}
 
 </style>

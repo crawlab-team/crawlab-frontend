@@ -10,6 +10,13 @@ import {Store} from 'vuex';
 import useForm from '@/components/form/form';
 import useSpiderService from '@/services/spider/spiderService';
 import {getDefaultFormComponentData} from '@/utils/form';
+import {
+  FORM_FIELD_TYPE_INPUT,
+  FORM_FIELD_TYPE_INPUT_TEXTAREA,
+  FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+  FORM_FIELD_TYPE_SELECT
+} from '@/constants/form';
+import useProject from '@/components/project/project';
 
 // get new spider
 const getNewSpider = () => {
@@ -20,13 +27,66 @@ const getNewSpider = () => {
 const formComponentData = getDefaultFormComponentData<Spider>(getNewSpider);
 
 const useSpider = (store: Store<RootStoreState>) => {
+  // options for default mode
+  const modeOptions = readonly<SelectOption[]>([
+    {value: TASK_MODE_RANDOM, label: 'Random Node'},
+    {value: TASK_MODE_ALL, label: 'All Nodes'},
+    {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
+    {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
+  ]);
+
+  // use project
+  const {
+    allProjectSelectOptions,
+  } = useProject(store);
+
   // batch form fields
   const batchFormFields = [
     {
       prop: 'name',
       label: 'Name',
-      width: '120px',
-      fieldType: 'input',
+      width: '150',
+      placeholder: 'Spider Name',
+      fieldType: FORM_FIELD_TYPE_INPUT,
+      required: true,
+    },
+    {
+      prop: 'cmd',
+      label: 'Execute Command',
+      width: '200',
+      placeholder: 'Execute Command',
+      fieldType: FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+      required: true,
+    },
+    {
+      prop: 'param',
+      label: 'Param',
+      width: '200',
+      placeholder: 'Param',
+      fieldType: FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+      required: true,
+    },
+    {
+      prop: 'project_id',
+      label: 'Project',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_SELECT,
+      options: allProjectSelectOptions.value,
+      required: true,
+    },
+    {
+      prop: 'mode',
+      label: 'Default Run Mode',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_SELECT,
+      options: modeOptions,
+      required: true,
+    },
+    {
+      prop: 'description',
+      label: 'Description',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
   ] as FormTableField[];
 
@@ -35,14 +95,6 @@ const useSpider = (store: Store<RootStoreState>) => {
 
   // spider id
   const id = computed(() => route.params.id);
-
-  // options for default mode
-  const modeOptions = readonly<SelectOption[]>([
-    {value: TASK_MODE_RANDOM, label: 'Random Node'},
-    {value: TASK_MODE_ALL, label: 'All Nodes'},
-    {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
-    {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
-  ]);
 
   return {
     ...useForm('spider', store, useSpiderService(store), formComponentData),

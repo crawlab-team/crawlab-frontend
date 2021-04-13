@@ -95,6 +95,8 @@ export default defineComponent({
     const state = storeContext?.state;
     const isSelectiveForm = computed<boolean | undefined>(() => state?.isSelectiveForm);
     const selectedFormFields = computed<string[] | undefined>(() => state?.selectedFormFields);
+    const isBatchForm = computed<boolean>(() => store?.getters[`${ns}/isBatchForm`]);
+    const activeDialogKey = computed<DialogKey | undefined>(() => state?.activeDialogKey);
 
     const style = computed<Partial<CSSStyleDeclaration>>(() => {
       const {span} = props;
@@ -130,8 +132,14 @@ export default defineComponent({
     };
 
     const isRequired = computed<boolean>(() => {
-      if (!internalEditable.value) return false;
-      if (isSelectiveForm.value) return true;
+      switch (activeDialogKey.value) {
+        case 'edit':
+          if (isBatchForm.value) {
+            if (!internalEditable.value) return false;
+          }
+          break;
+      }
+
       const {required} = props;
       return required;
     });

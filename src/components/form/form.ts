@@ -1,4 +1,4 @@
-import {computed, watch} from 'vue';
+import {computed, provide, watch} from 'vue';
 import {Store} from 'vuex';
 import {cloneArray, plainClone} from '@/utils/object';
 import useFormTable from '@/components/form/formTable';
@@ -6,8 +6,9 @@ import useFormTable from '@/components/form/formTable';
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
-    formList,
     formRef,
+    formList,
+    formTableFieldRefsMap,
   } = data;
 
   const getNewForm = () => {
@@ -41,14 +42,24 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   const formListIds = computed<string[]>(() => store.getters[`${ns}/formListIds`]);
 
   const validateForm = async () => {
-    return await formRef.value?.validate();
+    if (isBatchForm.value && activeDialogKey.value === 'create') {
+      let valid = true;
+      for (const formRef of formTableFieldRefsMap.value.values()) {
+        try {
+          await formRef.value?.validate?.();
+        } catch (e) {
+          valid = false;
+        }
+      }
+      return valid;
+    } else {
+      return await formRef.value?.validate();
+    }
   };
 
   const resetForm = () => {
-    const {activeDialogKey} = state;
-    console.log(isBatchForm.value, activeDialogKey);
     if (isBatchForm.value) {
-      switch (activeDialogKey) {
+      switch (activeDialogKey.value) {
         case 'create':
           formList.value = getNewFormList();
           break;
@@ -57,7 +68,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
           break;
       }
     } else {
-      switch (activeDialogKey) {
+      switch (activeDialogKey.value) {
         case 'create':
           form.value = getNewForm();
           break;
@@ -68,6 +79,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
       }
       formRef.value?.resetFields();
     }
+    formTableFieldRefsMap.value = new Map();
   };
 
   // reset form when activeDialogKey is changed
@@ -80,6 +92,12 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     if (!prop) return false;
     return !selectedFormFields.value.includes(prop);
   };
+
+  // whether the form is empty
+  const isEmptyForm = (d: any): boolean => {
+    return JSON.stringify(d) === JSON.stringify(getNewForm());
+  };
+  provide<(d: any) => boolean>('fn:isEmptyForm', isEmptyForm);
 
   const {
     getList,
@@ -132,7 +150,8 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
       switch (activeDialogKey.value) {
         case 'create':
           if (isBatchForm.value) {
-            res = await createList(formList.value);
+            const changedFormList = formList.value.filter(d => !isEmptyForm(d));
+            res = await createList(changedFormList);
           } else {
             res = await create(form.value);
           }
@@ -177,8 +196,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     if (tabName === 'batch') {
       formList.value = getNewFormList();
     }
-    store.commit(`${ns}/setCreateEditTabName`, tabName);
-    console.log(state.createEditDialogTabName);
+    store.commit(`${ns}/setCreateEditDialogTabName`, tabName);
   };
 
   // use form table
@@ -188,6 +206,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     onClone,
     onDelete,
     onFieldChange,
+    onFieldRegister,
   } = formTable;
 
   // action functions
@@ -199,6 +218,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     onClone,
     onDelete,
     onFieldChange,
+    onFieldRegister,
   } as CreateEditDialogActionFunctions;
 
   return {

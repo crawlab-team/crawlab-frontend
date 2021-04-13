@@ -51,7 +51,7 @@ export default defineComponent({
     },
     width: {
       type: String,
-      default: '960px',
+      default: '80vw',
     },
     batchFormData: {
       type: Array as PropType<TableData>,
@@ -103,7 +103,6 @@ export default defineComponent({
       const tabName = tab.paneName as unknown as CreateEditTabName;
       const {actionFunctions} = props;
       actionFunctions?.onTabChange?.(tabName);
-      console.log(actionFunctions);
     };
 
     provide<CreateEditDialogActionFunctions | undefined>('action-functions', props.actionFunctions);

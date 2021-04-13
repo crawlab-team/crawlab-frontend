@@ -42,7 +42,11 @@ declare global {
     form: Ref<T>;
     formRef: Ref;
     formList: Ref<T[]>;
+    formTableFieldRefsMap: Ref<FormTableFieldRefsMap>;
   }
+
+  type FormTableFieldRefsMapKey = [number, string];
+  type FormTableFieldRefsMap = Map<FormTableFieldRefsMapKey, Ref>;
 
   type DefaultFormFunc<T> = () => T;
 

@@ -2,11 +2,12 @@
   <div class="input-with-button">
     <!-- Input -->
     <el-input
-        v-model="value"
+        v-model="internalValue"
         :placeholder="placeholder"
         :size="size"
         class="input"
         :disabled="disabled"
+        @input="onInput"
     />
     <!-- ./Input -->
 
@@ -82,10 +83,11 @@ export default defineComponent({
   },
   emits: [
     'update:model-value',
+    'input',
     'click',
   ],
   setup(props: InputWithButtonProps, {emit}) {
-    const value = ref<string>();
+    const internalValue = ref<string>();
 
     const {
       isFaIcon: _isFaIcon,
@@ -97,9 +99,14 @@ export default defineComponent({
       return _isFaIcon(buttonIcon);
     };
 
-    watch(() => value.value, () => {
-      emit('update:model-value', value);
+    watch(() => props.modelValue, () => {
+      internalValue.value = props.modelValue;
     });
+
+    const onInput = (value: string) => {
+      emit('update:model-value', value);
+      emit('input', value);
+    };
 
     const onClick = () => {
       emit('click');
@@ -107,13 +114,14 @@ export default defineComponent({
 
     onMounted(() => {
       const {modelValue} = props;
-      value.value = modelValue;
+      internalValue.value = modelValue;
     });
 
     return {
-      value,
+      internalValue,
       isFaIcon,
       onClick,
+      onInput,
     };
   },
 });

@@ -19,7 +19,10 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
 export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
   return {
     dialogVisible: (state: BaseStoreState<T>) => state.activeDialogKey !== undefined,
-    isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.createEditDialogTabName === 'batch',
+    // isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.createEditDialogTabName === 'batch',
+    isBatchForm: (state: BaseStoreState<T>) => {
+      return state.isSelectiveForm || state.createEditDialogTabName === 'batch';
+    },
     formListIds: (state: BaseStoreState<BaseModel>) => state.formList.map(d => d._id as string),
   };
 };

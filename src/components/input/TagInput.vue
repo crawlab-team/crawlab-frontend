@@ -6,6 +6,7 @@
             v-if="item.isEdit"
             ref="input"
             v-model="inputValue"
+            size="mini"
             placeholder="Tag Name"
             :disabled="disabled"
             @blur="onBlur($index, $event)"

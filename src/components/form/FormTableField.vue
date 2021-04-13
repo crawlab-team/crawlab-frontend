@@ -1,33 +1,86 @@
 <template>
-  <el-input
-      v-if="fieldType === FORM_FIELD_TYPE_INPUT"
-      v-model="internalValue"
-      size="mini"
-      @change="onInputChange"
-  />
-  <TagInput
-      v-else-if="fieldType === FORM_FIELD_TYPE_TAG_INPUT"
-      v-model="internalValue"
-      @change="onInputChange"
-  />
-  <!-- TODO: implement more field types -->
+  <el-form ref="formRef" :model="form">
+    <el-form-item :prop="prop" :required="isRequired">
+      <el-input
+          v-if="fieldType === FORM_FIELD_TYPE_INPUT"
+          v-model="internalValue"
+          :placeholder="placeholder"
+          size="mini"
+          @input="onInputChange"
+      />
+      <el-input
+          v-else-if="fieldType === FORM_FIELD_TYPE_INPUT_TEXTAREA"
+          v-model="internalValue"
+          :placeholder="placeholder"
+          size="mini"
+          type="textarea"
+          @input="onInputChange"
+      />
+      <el-select
+          v-else-if="fieldType === FORM_FIELD_TYPE_SELECT"
+          v-model="internalValue"
+          :placeholder="placeholder"
+          size="mini"
+          @change="onInputChange"
+      >
+        <el-option
+            v-for="op in options"
+            :key="op.value"
+            :label="op.label"
+            :value="op.value"
+        />
+      </el-select>
+      <InputWithButton
+          v-else-if="fieldType === FORM_FIELD_TYPE_INPUT_WITH_BUTTON"
+          v-model="internalValue"
+          :placeholder="placeholder"
+          button-label="Edit"
+          size="mini"
+          @input="onInputChange"
+      />
+      <TagInput
+          v-else-if="fieldType === FORM_FIELD_TYPE_TAG_INPUT"
+          v-model="internalValue"
+          @change="onInputChange"
+      />
+      <!-- TODO: implement more field types -->
+    </el-form-item>
+  </el-form>
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, PropType, ref, SetupContext} from 'vue';
+import {
+  computed,
+  defineComponent,
+  inject,
+  onBeforeMount,
+  onMounted,
+  PropType,
+  Ref,
+  ref,
+  SetupContext,
+  watch
+} from 'vue';
 import {
   FORM_FIELD_TYPE_CHECK_TAG_GROUP,
   FORM_FIELD_TYPE_INPUT,
   FORM_FIELD_TYPE_INPUT_TEXTAREA,
   FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+  FORM_FIELD_TYPE_SELECT,
   FORM_FIELD_TYPE_TAG_INPUT,
   FORM_FIELD_TYPE_TAG_SELECT,
 } from '@/constants/form';
 import TagInput from '@/components/input/TagInput.vue';
+import {emptyArrayFunc, voidFunc} from '@/utils/func';
+import {ElForm} from 'element-plus';
+import InputWithButton from '@/components/input/InputWithButton.vue';
 
 export default defineComponent({
   name: 'FormTableField',
-  components: {TagInput},
+  components: {
+    InputWithButton,
+    TagInput,
+  },
   props: {
     form: {
       type: Object as PropType<any>,
@@ -41,35 +94,96 @@ export default defineComponent({
       type: String as PropType<FormFieldType>,
       required: true,
     },
+    options: {
+      type: Array as PropType<SelectOption[]>,
+      default: emptyArrayFunc,
+    },
     required: {
       type: Boolean,
       default: false,
+    },
+    placeholder: {
+      type: String,
+      default: 'Please enter value',
+    },
+    onChange: {
+      type: Function as PropType<(value: any) => void>,
+      default: voidFunc,
+    },
+    onRegister: {
+      type: Function as PropType<(formRef: Ref) => void>,
+      default: voidFunc,
     }
   },
   setup(props: FormTableFieldProps, {emit}: SetupContext) {
+    // form ref
+    const formRef = ref<typeof ElForm>();
+
+    // internal value
     const internalValue = ref<any>();
 
-    const onInputChange = (value: any) => emit('update:model-value', value);
+    // computed field value
+    const fieldValue = computed(() => {
+      const {form, prop} = props;
+      return form[prop];
+    });
+    watch(() => fieldValue.value, () => {
+      if (internalValue.value !== fieldValue.value) {
+        internalValue.value = fieldValue.value;
+      }
+    });
+
+    const onInputChange = (value: any) => {
+      const {onChange} = props;
+      onChange?.(value);
+      formRef.value?.validate?.();
+    };
+
+    const isEmptyForm = inject('fn:isEmptyForm') as (d: any) => boolean;
+
+    const isRequired = computed<boolean>(() => {
+      const {form, required} = props;
+      if (isEmptyForm(form)) return false;
+      return required || false;
+    });
 
     onBeforeMount(() => {
       const {form, prop} = props;
+
+      // initialize internal value
       internalValue.value = form[prop];
+    });
+
+    onMounted(() => {
+      const {onRegister} = props;
+
+      // register form ref
+      onRegister?.(formRef);
     });
 
     return {
       FORM_FIELD_TYPE_INPUT,
       FORM_FIELD_TYPE_INPUT_TEXTAREA,
       FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
+      FORM_FIELD_TYPE_SELECT,
       FORM_FIELD_TYPE_TAG_INPUT,
       FORM_FIELD_TYPE_TAG_SELECT,
       FORM_FIELD_TYPE_CHECK_TAG_GROUP,
+      formRef,
       internalValue,
       onInputChange,
+      isRequired,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+.el-form {
+  margin: 0;
 
+  .el-form-item {
+    margin: 0;
+  }
+}
 </style>

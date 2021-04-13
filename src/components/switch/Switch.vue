@@ -3,7 +3,7 @@
       :active-color="variables.successColor"
       :inactive-color="variables.infoMediumColor"
       :value="value"
-      width="40"
+      :width="40"
       @change="onChange"
   />
 </template>

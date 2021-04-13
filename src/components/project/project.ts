@@ -4,7 +4,7 @@ import {isDuplicated} from '@/utils/array';
 import useForm from '@/components/form/form';
 import useProjectService from '@/services/project/projectService';
 import {getDefaultFormComponentData} from '@/utils/form';
-import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_TAG_INPUT} from '@/constants/form';
+import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_INPUT_TEXTAREA, FORM_FIELD_TYPE_TAG_INPUT} from '@/constants/form';
 
 // get new project
 const getNewProject = (): Project => {
@@ -28,12 +28,19 @@ const useProject = (store: Store<RootStoreState>) => {
       label: 'Name',
       width: '150',
       fieldType: FORM_FIELD_TYPE_INPUT,
+      required: true,
     },
     {
       prop: 'tags',
       label: 'Tags',
       width: '200',
       fieldType: FORM_FIELD_TYPE_TAG_INPUT,
+    },
+    {
+      prop: 'description',
+      label: 'Description',
+      width: '800',
+      fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
   ] as FormTableField[];
 

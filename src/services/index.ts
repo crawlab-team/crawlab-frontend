@@ -29,7 +29,7 @@ export const useService = <T = any>(endpoint: string): Services<T> => {
       return await getList<T>(`${endpoint}`, params);
     },
     createList: async (data: T[]) => {
-      return await putList<T>(`${endpoint}`, data);
+      return await putList<T>(`${endpoint}/batch`, data);
     },
     updateList: async (ids: string[], data: T, fields: string[]) => {
       return await postList<T>(`${endpoint}`, {ids, data: JSON.stringify(data), fields});
