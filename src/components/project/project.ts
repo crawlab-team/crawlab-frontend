@@ -18,11 +18,11 @@ const formComponentData = getDefaultFormComponentData<Project>(getNewProject);
 
 const useProject = (store: Store<RootStoreState>) => {
   // store
-  const storeNamespace = 'project';
+  const ns = 'project';
   const state = store.state.project;
 
   // batch form fields
-  const batchFormFields = [
+  const batchFormFields: FormTableField[] = [
     {
       prop: 'name',
       label: 'Name',
@@ -45,10 +45,10 @@ const useProject = (store: Store<RootStoreState>) => {
       placeholder: 'Description',
       fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
-  ] as FormTableField[];
+  ];
 
-  // project form rules
-  const projectFormRules = readonly<FormRules>({
+  // form rules
+  const formRules = readonly<FormRules>({
     tags: {
       validator: ((_, value, callback) => {
         if (isDuplicated(value)) {
@@ -62,7 +62,7 @@ const useProject = (store: Store<RootStoreState>) => {
   // all project select options
   const allProjectSelectOptions = computed<SelectOption[]>(() => state.allProjectSelectOptions);
   const setAllProjectSelectOptions = (options: SelectOption[]) => {
-    store.commit(`${storeNamespace}/setAllProjectSelectOptions`, options);
+    store.commit(`${ns}/setAllProjectSelectOptions`, options);
   };
 
   // all project tags
@@ -73,13 +73,13 @@ const useProject = (store: Store<RootStoreState>) => {
     };
   }));
   const setAllProjectTags = (tags: string[]) => {
-    store.commit(`${storeNamespace}/setAllProjectTags`, tags);
+    store.commit(`${ns}/setAllProjectTags`, tags);
   };
 
   return {
     ...useForm('project', store, useProjectService(store), formComponentData),
     batchFormFields,
-    projectFormRules,
+    formRules,
     allProjectSelectOptions,
     allProjectTags,
     setAllProjectSelectOptions,

@@ -1,4 +1,4 @@
-type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreMutations, SpiderStoreGetters, SpiderStoreActions>;
+type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreGetters, SpiderStoreMutations, SpiderStoreActions>;
 
 interface SpiderStoreState extends BaseStoreState<Spider> {
   sidebarCollapsed: boolean;

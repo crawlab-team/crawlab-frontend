@@ -12,8 +12,7 @@ import {
 } from '@/constants/task';
 
 declare global {
-  interface Task {
-    _id?: string;
+  interface Task extends BaseModel {
     spider_id?: string;
     spider_name?: string;
     status?: TaskStatus;
@@ -29,6 +28,9 @@ declare global {
     param?: string;
     error?: string;
     stats?: TaskStats;
+
+    // view model
+    spider: Spider;
   }
 
   type TaskStatus =

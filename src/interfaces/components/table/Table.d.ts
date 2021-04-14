@@ -61,11 +61,13 @@ declare global {
     icon?: Icon | TableValueFunction;
     tooltip?: string;
     isHtml?: boolean;
+    disabled?: TableButtonDisabledFunction;
     onClick?: TableButtonOnClickFunction;
   }
 
   type TableValueFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => VNode;
   type TableButtonOnClickFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => void;
+  type TableButtonDisabledFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => boolean;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
 
   interface TableStore extends Store {

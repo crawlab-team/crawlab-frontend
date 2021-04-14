@@ -3,7 +3,6 @@
       v-if="form"
       ref="formRef"
       :model="form"
-      :rules="formRules"
       :selective="isSelectiveForm"
   >
     <FormItem :span="2" label="Name" not-editable prop="name" required>
@@ -11,6 +10,12 @@
     </FormItem>
     <FormItem :span="2" label="Tags" prop="tags">
       <TagInput v-model="form.tags" :disabled="isFormItemDisabled('tags')"/>
+    </FormItem>
+    <FormItem :span="2" label="Is Master" prop="is_master" required>
+      <Switch v-model="form.is_master" :disabled="isFormItemDisabled('is_master')"/>
+    </FormItem>
+    <FormItem :span="2" label="IP" prop="ip" required>
+      <el-input v-model="form.ip" :disabled="isFormItemDisabled('ip')" placeholder="IP"/>
     </FormItem>
     <FormItem :span="4" label="Description" prop="description">
       <el-input
@@ -26,20 +31,26 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {useStore} from 'vuex';
-import useProject from '@/components/project/project';
+import useNode from '@/components/node/node';
+import TagInput from '@/components/input/TagInput.vue';
 import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
-import TagInput from '@/components/input/TagInput.vue';
+import Switch from '@/components/switch/Switch.vue';
 
 export default defineComponent({
-  name: 'ProjectForm',
-  components: {TagInput, FormItem, Form},
-  setup() {
+  name: 'NodeForm',
+  components: {
+    Switch,
+    Form,
+    FormItem,
+    TagInput,
+  },
+  setup(props, {emit}) {
     // store
     const store = useStore();
 
     return {
-      ...useProject(store),
+      ...useNode(store),
     };
   },
 });

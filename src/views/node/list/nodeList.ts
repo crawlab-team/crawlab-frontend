@@ -1,31 +1,26 @@
-import {h} from 'vue';
-import ProjectTag from '@/components/project/ProjectTag.vue';
-import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
-import {useStore} from 'vuex';
-import {ElMessageBox} from 'element-plus';
 import useList from '@/layouts/list';
-import useProjectService from '@/services/project/projectService';
+import {useStore} from 'vuex';
+import {getDefaultUseListOptions} from '@/utils/list';
+import {h} from 'vue';
+import NodeType from '@/components/node/NodeType.vue';
+import Tag from '@/components/tag/Tag.vue';
+import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {ElMessageBox} from 'element-plus';
+import useNodeService from '@/services/node/nodeService';
 
-const useProjectList = () => {
-  // TODO: dummy data
-  const types = [
-    'primary',
-    'success',
-    'warning',
-    'danger',
-    'info',
-  ];
+type Node = CNode;
 
+const useNodeList = () => {
   // store
-  const ns = 'project';
+  const ns = 'node';
   const store = useStore<RootStoreState>();
   const {commit} = store;
 
   // services
   const {
-    deleteById,
     getList,
-  } = useProjectService(store);
+    deleteById,
+  } = useNodeService(store);
 
   // nav actions
   const navActions: ListActionGroup[] = [
@@ -34,8 +29,8 @@ const useProjectList = () => {
       children: [
         {
           buttonType: 'label',
-          label: 'New Project',
-          tooltip: 'New Project',
+          label: 'New Node',
+          tooltip: 'New Node',
           icon: ['fa', 'plus'],
           type: 'success',
           onClick: () => {
@@ -47,7 +42,7 @@ const useProjectList = () => {
   ];
 
   // table columns
-  const tableColumns: TableColumns<Project> = [
+  const tableColumns: TableColumns<Node> = [
     {
       key: 'name',
       label: 'Name',
@@ -55,16 +50,29 @@ const useProjectList = () => {
       width: '150',
     },
     {
+      key: 'type',
+      label: 'Node Type',
+      icon: ['fa', 'list'],
+      width: '150',
+      value: (row: Node) => {
+        return h(NodeType, {isMaster: row.is_master} as NodeTypeProps);
+      },
+    },
+    {
+      key: 'ip',
+      label: 'IP',
+      icon: ['fa', 'location'],
+      width: '150',
+    },
+    {
       key: 'tags',
       label: 'Tags',
       icon: ['fa', 'hashtag'],
-      value: (row: Project) => {
-        if (!row.tags) return [];
-        const tags = row.tags.map(tag => h(ProjectTag, {
-          label: tag,
-          // TODO: dummy data
-          type: types[Math.floor(Math.random() * types.length)],
-        } as ProjectTagProps));
+      value: (row: Node) => {
+        if (!row.tags) return;
+        const tags = row.tags.map(tag => {
+          return h(Tag, {label: tag, type: 'primary'} as TagProps);
+        });
         return h('div', tags);
       },
       width: '200',
@@ -73,7 +81,7 @@ const useProjectList = () => {
       key: 'description',
       label: 'Description',
       icon: ['fa', 'comment-alt'],
-      width: '300',
+      width: '400',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,
@@ -109,7 +117,8 @@ const useProjectList = () => {
           size: 'mini',
           icon: ['fa', 'trash-alt'],
           tooltip: 'Delete',
-          onClick: async (row: Project) => {
+          disabled: (row: Node) => !row.active,
+          onClick: async (row: Node) => {
             const res = await ElMessageBox.confirm('Are you sure to delete?', 'Delete');
             if (res) {
               await deleteById(row._id as string);
@@ -123,14 +132,11 @@ const useProjectList = () => {
   ];
 
   // options
-  const opts = {
-    navActions,
-    tableColumns,
-  } as UseListOptions<Project>;
+  const opts = getDefaultUseListOptions<Node>(navActions, tableColumns);
 
   return {
-    ...useList<Project>(ns, store, opts),
+    ...useList<Node>(ns, store, opts)
   };
 };
 
-export default useProjectList;
+export default useNodeList;

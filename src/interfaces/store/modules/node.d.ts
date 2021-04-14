@@ -1,17 +1,17 @@
-interface NodeStoreModule extends BaseModule<NodeStoreState> {
-  // getters: NodeStoreGetters;
-  mutations: NodeStoreMutations;
-}
+type Node = CNode;
 
-interface NodeStoreState extends BaseStoreState {
+type NodeStoreModule = BaseModule<NodeStoreState, NodeStoreGetters, NodeStoreMutations, NodeStoreActions>;
+
+interface NodeStoreState extends BaseStoreState<CNode> {
   allNodeSelectOptions: SelectOption[];
   allNodeTags: string[];
 }
 
-// interface NodeStoreGetters extends GetterTree<NodeStoreState, RootStoreState> {
-// }
+type NodeStoreGetters = BaseStoreGetters<CNode>;
 
-interface NodeStoreMutations extends BaseStoreMutations<Node> {
-  setAllNodeSelectOptions: StoreMutation<NodeStoreState, SelectOption[]>;
-  setAllNodeTags: StoreMutation<NodeStoreState, string[]>;
+interface NodeStoreMutations extends BaseStoreMutations<CNode> {
+  setAllNodeSelectOptions: StoreMutation<BaseStoreState<CNode>, SelectOption[]>;
+  setAllNodeTags: StoreMutation<BaseStoreState<CNode>, string[]>;
 }
+
+type NodeStoreActions = BaseStoreActions<CNode>;

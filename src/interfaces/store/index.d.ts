@@ -7,6 +7,7 @@ declare global {
     node: NodeStoreState;
     project: ProjectStoreState;
     spider: SpiderStoreState;
+    task: TaskStoreState;
     file: FileStoreState;
   }
 
@@ -25,7 +26,7 @@ declare global {
     StoreActionHandler<S, P, T>
     | StoreActionObject<S, P, T>;
 
-  interface BaseModule<S, M, G = any, A = any> extends Module<S, RootStoreState> {
+  interface BaseModule<S, G = any, M = any, A = any> extends Module<S, RootStoreState> {
     getters: G;
     mutations: M;
     actions: A;
@@ -42,12 +43,14 @@ declare global {
     tableData: TableData<T>;
     tableTotal: number;
     tablePagination: TablePagination;
+    allList: T[];
   }
 
   interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
     dialogVisible: StoreGetter<BaseStoreState<T>, boolean>;
     isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
     formListIds: StoreGetter<BaseStoreState<T>, string[]>;
+    allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {
@@ -66,6 +69,8 @@ declare global {
     setTableData: StoreMutation<BaseStoreState<T>, TableDataWithTotal<T>>;
     resetTableData: StoreMutation<BaseStoreState<T>>;
     setTablePagination: StoreMutation<BaseStoreState<T>, TablePagination>;
+    setAllList: StoreMutation<BaseStoreState<T>, T[]>;
+    resetAllList: StoreMutation<BaseStoreState<T>>;
   }
 
   interface BaseStoreActions<T = any> extends ActionTree<BaseStoreState<T>, RootStoreState> {
@@ -81,8 +86,8 @@ declare global {
 
   type StoreActionContext<S = BaseStoreState> = ActionContext<S, RootStoreState>;
 
-  type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'file';
-  type ListStoreNamespace = 'node' | 'project' | 'spider';
+  type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'task' | 'schedule' | 'file';
+  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task';
 
   interface StoreContext<T> {
     namespace: StoreNamespace;
@@ -93,5 +98,10 @@ declare global {
   interface ListStoreContext<T> extends StoreContext<T> {
     namespace: ListStoreNamespace;
     state: RootStoreState[ListStoreNamespace];
+  }
+
+  interface GetDefaultStoreGettersOptions {
+    selectOptionValueKey?: string;
+    selectOptionLabelKey?: string;
   }
 }

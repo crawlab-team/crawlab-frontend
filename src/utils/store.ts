@@ -13,10 +13,14 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
     tableData: [],
     tableTotal: 0,
     tablePagination: getDefaultPagination(),
+    allList: [],
   };
 };
 
-export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
+export const getDefaultStoreGetters = <T = any>(opts: GetDefaultStoreGettersOptions): BaseStoreGetters<T> => {
+  if (!opts.selectOptionValueKey) opts.selectOptionValueKey = '_id';
+  if (!opts.selectOptionLabelKey) opts.selectOptionLabelKey = 'name';
+
   return {
     dialogVisible: (state: BaseStoreState<T>) => state.activeDialogKey !== undefined,
     // isBatchForm: (state: BaseStoreState<T>) => state.isSelectiveForm || state.createEditDialogTabName === 'batch',
@@ -24,6 +28,12 @@ export const getDefaultStoreGetters = <T = any>(): BaseStoreGetters<T> => {
       return state.isSelectiveForm || state.createEditDialogTabName === 'batch';
     },
     formListIds: (state: BaseStoreState<BaseModel>) => state.formList.map(d => d._id as string),
+    allListSelectOptions: (state: BaseStoreState<BaseModel>) => state.allList.map(d => {
+      return {
+        value: d[opts.selectOptionValueKey as string],
+        label: d[opts.selectOptionLabelKey as string],
+      };
+    })
   };
 };
 
@@ -82,8 +92,14 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
       state.tableData = data;
       state.tableTotal = total;
     },
-    setTablePagination: (state: BaseStoreState, pagination: TablePagination) => {
+    setTablePagination: (state: BaseStoreState<T>, pagination: TablePagination) => {
       state.tablePagination = pagination;
+    },
+    setAllList: (state: BaseStoreState<T>, value: T[]) => {
+      state.allList = value;
+    },
+    resetAllList: (state: BaseStoreState<T>) => {
+      state.allList = [];
     },
   };
 };

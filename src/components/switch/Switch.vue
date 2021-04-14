@@ -1,34 +1,87 @@
 <template>
   <el-switch
-      :active-color="variables.successColor"
-      :inactive-color="variables.infoMediumColor"
-      :value="value"
-      :width="40"
+      v-model="internalValue"
+      :active-color="activeColor"
+      :active-icon-class="activeIconClass"
+      :active-text="activeText"
+      :disabled="disabled"
+      :inactive-color="inactiveColor"
+      :inactive-icon-class="inactiveIconClass"
+      :inactive-text="inactiveText"
+      :loading="loading"
+      :width="width"
       @change="onChange"
   />
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue';
+import {defineComponent, ref, watch} from 'vue';
 import variables from '@/styles/variables.scss';
 
 export default defineComponent({
   name: 'Switch',
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
-    onChange: {
-      type: Function as PropType<SwitchChangeFunc>,
-      default: () => {
-        return;
-      }
-    }
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    activeColor: {
+      type: String,
+      default: variables.successColor,
+    },
+    inactiveColor: {
+      type: String,
+      default: variables.infoMediumColor,
+    },
+    activeIconClass: {
+      type: String,
+      default: '',
+    },
+    inactiveIconClass: {
+      type: String,
+      default: '',
+    },
+    activeText: {
+      type: String,
+      default: '',
+    },
+    inactiveText: {
+      type: String,
+      default: '',
+    },
+    width: {
+      type: Number,
+      default: 40,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: [
+    'update:model-value',
+    'change',
+  ],
   setup(props: SwitchProps, {emit}) {
+    const internalValue = ref<boolean>(false);
+    watch(() => props.modelValue, () => {
+      internalValue.value = props.modelValue;
+    });
+
+    const onChange = (value: boolean) => {
+      internalValue.value = value;
+      emit('update:model-value', value);
+      emit('change', value);
+    };
+
     return {
       variables,
+      internalValue,
+      onChange,
     };
   },
 });

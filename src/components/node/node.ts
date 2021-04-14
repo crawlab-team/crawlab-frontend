@@ -1,34 +1,36 @@
-import {computed} from 'vue';
+import {readonly} from 'vue';
 import {Store} from 'vuex';
+import useForm from '@/components/form/form';
+import useNodeService from '@/services/node/nodeService';
+import {getDefaultFormComponentData} from '@/utils/form';
+
+type Node = CNode;
+
+// get new node
+const getNewNode = (): Node => {
+  return {
+    tags: [],
+  };
+};
+
+// form component data
+const formComponentData = getDefaultFormComponentData<Node>(getNewNode);
 
 const useNode = (store: Store<RootStoreState>) => {
-  // implementation
-  const storeNamespace = 'node';
+  // store
+  const ns = 'node';
   const {node: state} = store.state as RootStoreState;
 
-  // all node select options
-  const allNodeSelectOptions = computed<SelectOption[]>(() => state.allNodeSelectOptions);
-  const setAllNodeSelectOptions = (options: SelectOption[]) => {
-    store.commit(`${storeNamespace}/setAllNodeSelectOptions`, options);
-  };
+  // batch form fields
+  const batchFormFields: FormTableField[] = [];
 
-  // all node tags
-  const allNodeTags = computed<SelectOption[]>(() => state.allNodeTags.map(tag => {
-    return {
-      label: tag,
-      value: tag,
-    };
-  }));
-  const setAllNodeTags = (tags: string[]) => {
-    store.commit(`${storeNamespace}/setAllNodeTags`, tags);
-  };
+  // form rules
+  const formRules = readonly<FormRules>({});
 
   return {
-    // public variables and methods
-    allNodeSelectOptions,
-    allNodeTags,
-    setAllNodeSelectOptions,
-    setAllNodeTags,
+    ...useForm(ns, store, useNodeService(store), formComponentData),
+    batchFormFields,
+    formRules,
   };
 };
 

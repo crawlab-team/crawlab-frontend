@@ -4,6 +4,7 @@ import layout from '@/store/modules/layout';
 import node from '@/store/modules/node';
 import project from '@/store/modules/project';
 import spider from '@/store/modules/spider';
+import task from '@/store/modules/task';
 import file from '@/store/modules/file';
 
 export default createStore<RootStoreState>({
@@ -13,6 +14,7 @@ export default createStore<RootStoreState>({
     node,
     project,
     spider,
+    task,
     file,
   },
 }) as Store<RootStoreState>;

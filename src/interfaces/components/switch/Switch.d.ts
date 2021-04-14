@@ -1,6 +1,12 @@
 interface SwitchProps {
-  value: boolean;
-  onChange: SwitchChangeFunc;
+  modelValue: boolean;
+  disabled?: boolean;
+  activeColor?: string;
+  inactiveColor?: string;
+  activeIconClass?: string;
+  inactiveIconClass?: string;
+  activeText?: string;
+  inactiveText?: string;
+  width?: number;
+  loading?: boolean;
 }
-
-type SwitchChangeFunc = (value: boolean) => void;

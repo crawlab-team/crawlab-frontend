@@ -12,7 +12,7 @@ const useSpiderList = () => {
   const router = useRouter();
 
   // store
-  const storeNamespace = 'spider';
+  const ns = 'spider';
   const store = useStore<RootStoreState>();
   const {commit} = store;
 
@@ -28,7 +28,7 @@ const useSpiderList = () => {
           icon: ['fa', 'plus'],
           type: 'success',
           onClick: () => {
-            commit(`${storeNamespace}/showDialog`, 'create');
+            commit(`${ns}/showDialog`, 'create');
           }
         }
       ]
@@ -194,19 +194,19 @@ const useSpiderList = () => {
   });
 
   // const onClickCreate = () => {
-  //   commit(`${storeNamespace}/showDialog`, 'create');
+  //   commit(`${ns}/showDialog`, 'create');
   // };
   //
   // const onClickEdit = () => {
-  //   commit(`${storeNamespace}/showDialog`, 'edit');
+  //   commit(`${ns}/showDialog`, 'edit');
   // };
   //
   // const onClickClone = () => {
-  //   commit(`${storeNamespace}/showDialog`, 'clone');
+  //   commit(`${ns}/showDialog`, 'clone');
   // };
 
   // const onClickRun = () => {
-  //   commit(`${storeNamespace}/showDialog`, 'run');
+  //   commit(`${ns}/showDialog`, 'run');
   // };
 
   // options
@@ -216,7 +216,7 @@ const useSpiderList = () => {
   } as UseListOptions<Spider>;
 
   return {
-    ...useList<Spider>(storeNamespace, store, opts),
+    ...useList<Spider>(ns, store, opts),
     tableActionsPrefix,
   };
 };

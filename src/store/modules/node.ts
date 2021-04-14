@@ -1,7 +1,12 @@
-import {getDefaultStoreMutations, getDefaultStoreState} from '@/utils/store';
+import {
+  getDefaultStoreActions,
+  getDefaultStoreGetters,
+  getDefaultStoreMutations,
+  getDefaultStoreState
+} from '@/utils/store';
 
 const state = {
-  ...getDefaultStoreState<Node>(),
+  ...getDefaultStoreState<CNode>(),
   // TODO: dummy data
   allNodeSelectOptions: [
     {label: 'Master', value: 'master'},
@@ -19,8 +24,12 @@ const state = {
   ],
 } as NodeStoreState;
 
+const getters = {
+  ...getDefaultStoreGetters<CNode>(),
+} as NodeStoreGetters;
+
 const mutations = {
-  ...getDefaultStoreMutations<Node>(),
+  ...getDefaultStoreMutations<CNode>(),
   setAllNodeSelectOptions: (state: NodeStoreState, options: SelectOption[]) => {
     state.allNodeSelectOptions = options;
   },
@@ -29,8 +38,14 @@ const mutations = {
   },
 } as NodeStoreMutations;
 
+const actions = {
+  ...getDefaultStoreActions<CNode>('/nodes'),
+} as NodeStoreActions;
+
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
+  actions,
 } as NodeStoreModule;

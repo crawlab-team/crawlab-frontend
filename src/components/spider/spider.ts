@@ -1,5 +1,5 @@
 import {useRoute} from 'vue-router';
-import {computed, readonly} from 'vue';
+import {computed} from 'vue';
 import {
   TASK_MODE_ALL,
   TASK_MODE_RANDOM,
@@ -28,12 +28,12 @@ const formComponentData = getDefaultFormComponentData<Spider>(getNewSpider);
 
 const useSpider = (store: Store<RootStoreState>) => {
   // options for default mode
-  const modeOptions = readonly<SelectOption[]>([
+  const modeOptions: SelectOption[] = [
     {value: TASK_MODE_RANDOM, label: 'Random Node'},
     {value: TASK_MODE_ALL, label: 'All Nodes'},
     {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
     {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
-  ]);
+  ];
 
   // use project
   const {
@@ -41,7 +41,7 @@ const useSpider = (store: Store<RootStoreState>) => {
   } = useProject(store);
 
   // batch form fields
-  const batchFormFields = [
+  const batchFormFields: FormTableField[] = [
     {
       prop: 'name',
       label: 'Name',
@@ -88,7 +88,7 @@ const useSpider = (store: Store<RootStoreState>) => {
       width: '200',
       fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
-  ] as FormTableField[];
+  ];
 
   // route
   const route = useRoute();

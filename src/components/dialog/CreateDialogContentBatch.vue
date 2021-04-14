@@ -8,7 +8,7 @@
         </Button>
       </el-form-item>
       <el-form-item label="Edit All">
-        <Switch :on-change="onEditAllChange" :value="editAll"/>
+        <Switch v-model="editAll"/>
       </el-form-item>
     </el-form>
     <FormTable
@@ -51,9 +51,6 @@ export default defineComponent({
   },
   setup(props: CreateDialogContentBatchProps) {
     const editAll = ref<boolean>(false);
-    const onEditAllChange = (value: boolean) => {
-      editAll.value = value;
-    };
 
     const actionFunctions = inject('action-functions') as CreateEditDialogActionFunctions;
 
@@ -84,7 +81,6 @@ export default defineComponent({
 
     return {
       editAll,
-      onEditAllChange,
       onAdd,
       onClone,
       onDelete,

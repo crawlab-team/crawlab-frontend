@@ -1,7 +1,7 @@
 import {computed, provide, readonly, watch} from 'vue';
 import {Store} from 'vuex';
 
-const useList = <S, T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts: UseListOptions<T>): ListLayoutComponentData => {
+const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts: UseListOptions<T>): ListLayoutComponentData => {
   // options
   const {
     tableColumns,
