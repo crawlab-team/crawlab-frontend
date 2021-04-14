@@ -10,6 +10,7 @@ declare global {
     confirmDisabled?: boolean;
     confirmLoading?: boolean;
     actionFunctions?: CreateEditDialogActionFunctions;
+    tabName?: CreateEditTabName;
   }
 
   type CreateEditDialogType = 'create' | 'edit';

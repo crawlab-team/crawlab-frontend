@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, PropType, provide, ref, SetupContext} from 'vue';
+import {computed, defineComponent, PropType, provide, ref, SetupContext, watch} from 'vue';
 import CreateDialogContentBatch from '@/components/dialog/CreateDialogContentBatch.vue';
 import Dialog from '@/components/dialog/Dialog.vue';
 import {emptyArrayFunc, emptyObjectFunc} from '@/utils/func';
@@ -73,6 +73,10 @@ export default defineComponent({
       type: Object as PropType<CreateEditDialogActionFunctions>,
       default: emptyObjectFunc,
     },
+    tabName: {
+      type: String as PropType<CreateEditTabName>,
+      default: 'single',
+    }
   },
   setup(props: CreateEditDialogProps, ctx: SetupContext) {
     const title = computed<string>(() => {
@@ -104,6 +108,9 @@ export default defineComponent({
       const {actionFunctions} = props;
       actionFunctions?.onTabChange?.(tabName);
     };
+    watch(() => props.tabName, () => {
+      internalTabName.value = props.tabName as CreateEditTabName;
+    });
 
     provide<CreateEditDialogActionFunctions | undefined>('action-functions', props.actionFunctions);
 

@@ -28,18 +28,21 @@ const useProject = (store: Store<RootStoreState>) => {
       label: 'Name',
       width: '150',
       fieldType: FORM_FIELD_TYPE_INPUT,
+      placeholder: 'Name',
       required: true,
     },
     {
       prop: 'tags',
       label: 'Tags',
       width: '200',
+      placeholder: 'Tags',
       fieldType: FORM_FIELD_TYPE_TAG_INPUT,
     },
     {
       prop: 'description',
       label: 'Description',
       width: '800',
+      placeholder: 'Description',
       fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
   ] as FormTableField[];

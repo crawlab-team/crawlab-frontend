@@ -1,6 +1,7 @@
 <template>
   <CreateEditDialog
       :type="activeDialogKey"
+      :tab-name="createEditDialogTabName"
       :visible="createEditDialogVisible"
       :action-functions="actionFunctions"
       :batch-form-data="formList"

@@ -114,6 +114,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     return ['create', 'edit'].includes(activeDialogKey);
   });
 
+  // dialog create edit tab name
+  const createEditDialogTabName = computed<CreateEditTabName>(() => state.createEditDialogTabName);
+
   // dialog confirm
   const confirmDisabled = computed<boolean>(() => {
     return isSelectiveForm.value &&
@@ -233,6 +236,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     resetForm,
     isFormItemDisabled,
     activeDialogKey,
+    createEditDialogTabName,
     createEditDialogVisible,
     confirmDisabled,
     confirmLoading,
