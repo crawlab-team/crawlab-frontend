@@ -21,11 +21,13 @@
 import {defineComponent} from 'vue';
 import ListLayout from '@/layouts/ListLayout.vue';
 import useNodeList from '@/views/node/list/nodeList';
+import CreateEditNodeDialog from '@/components/node/CreateEditNodeDialog.vue';
 
 export default defineComponent({
   name: 'NodeList',
   components: {
     ListLayout,
+    CreateEditNodeDialog,
   },
   setup() {
     return {

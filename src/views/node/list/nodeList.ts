@@ -61,7 +61,7 @@ const useNodeList = () => {
     {
       key: 'ip',
       label: 'IP',
-      icon: ['fa', 'location'],
+      icon: ['fa', 'map-marker-alt'],
       width: '150',
     },
     {
