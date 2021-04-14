@@ -23,7 +23,7 @@ const linkTagProps = {
   ...tagProps,
   path: {
     type: String,
-    required: true,
+    default: '',
   },
 };
 

@@ -17,7 +17,8 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   };
 };
 
-export const getDefaultStoreGetters = <T = any>(opts: GetDefaultStoreGettersOptions): BaseStoreGetters<T> => {
+export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOptions): BaseStoreGetters<T> => {
+  if (!opts) opts = {};
   if (!opts.selectOptionValueKey) opts.selectOptionValueKey = '_id';
   if (!opts.selectOptionLabelKey) opts.selectOptionLabelKey = 'name';
 
@@ -30,10 +31,19 @@ export const getDefaultStoreGetters = <T = any>(opts: GetDefaultStoreGettersOpti
     formListIds: (state: BaseStoreState<BaseModel>) => state.formList.map(d => d._id as string),
     allListSelectOptions: (state: BaseStoreState<BaseModel>) => state.allList.map(d => {
       return {
-        value: d[opts.selectOptionValueKey as string],
-        label: d[opts.selectOptionLabelKey as string],
+        value: d[opts?.selectOptionValueKey as string],
+        label: d[opts?.selectOptionLabelKey as string],
       };
-    })
+    }),
+    allTags: (state: BaseStoreState<BaseModel>) => {
+      const tagsSet = new Set<string>();
+      state.allList.forEach(d => {
+        const tags = d?.tags as string[];
+        if (!tags || !Array.isArray(tags)) return;
+        tags.forEach(t => tagsSet.add(t));
+      });
+      return Array.from(tagsSet);
+    },
   };
 };
 

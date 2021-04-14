@@ -51,6 +51,7 @@ declare global {
     isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
     formListIds: StoreGetter<BaseStoreState<T>, string[]>;
     allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
+    allTags: StoreGetter<BaseStoreState<T>, string[]>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {

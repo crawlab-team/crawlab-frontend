@@ -2,10 +2,7 @@ type Node = CNode;
 
 type NodeStoreModule = BaseModule<NodeStoreState, NodeStoreGetters, NodeStoreMutations, NodeStoreActions>;
 
-interface NodeStoreState extends BaseStoreState<CNode> {
-  allNodeSelectOptions: SelectOption[];
-  allNodeTags: string[];
-}
+type NodeStoreState = BaseStoreState<CNode>;
 
 type NodeStoreGetters = BaseStoreGetters<CNode>;
 

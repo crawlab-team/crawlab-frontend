@@ -1,3 +1,3 @@
 interface LinkTagProps extends TagProps {
-  path: string;
+  path?: string;
 }

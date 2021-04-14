@@ -123,13 +123,13 @@ export default defineComponent({
 
     // use node
     const {
-      allNodeSelectOptions,
-      allNodeTags,
+      allListSelectOptions: allNodeSelectOptions,
+      allTags: allNodeTags,
     } = useNode(store);
 
     // use project
     const {
-      allProjectSelectOptions,
+      allListSelectOptions: allProjectSelectOptions,
     } = useProject(store);
 
     return {

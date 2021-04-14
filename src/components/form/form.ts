@@ -99,6 +99,12 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   };
   provide<(d: any) => boolean>('fn:isEmptyForm', isEmptyForm);
 
+  // all list select options
+  const allListSelectOptions = computed<SelectOption[]>(() => store.getters[`${ns}/allListSelectOptions`]);
+
+  // all tags
+  const allTags = computed<string[]>(() => store.getters[`${ns}/allTags`]);
+
   const {
     getList,
     create,
@@ -238,6 +244,8 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     activeDialogKey,
     createEditDialogTabName,
     createEditDialogVisible,
+    allListSelectOptions,
+    allTags,
     confirmDisabled,
     confirmLoading,
     setConfirmLoading,

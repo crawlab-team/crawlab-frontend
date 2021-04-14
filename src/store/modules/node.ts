@@ -30,12 +30,6 @@ const getters = {
 
 const mutations = {
   ...getDefaultStoreMutations<CNode>(),
-  setAllNodeSelectOptions: (state: NodeStoreState, options: SelectOption[]) => {
-    state.allNodeSelectOptions = options;
-  },
-  setAllNodeTags: (state: NodeStoreState, tags: string[]) => {
-    state.allNodeTags = tags;
-  },
 } as NodeStoreMutations;
 
 const actions = {
