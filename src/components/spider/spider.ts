@@ -19,8 +19,10 @@ import {
 import useProject from '@/components/project/project';
 
 // get new spider
-const getNewSpider = () => {
-  return {};
+const getNewSpider = (): Spider => {
+  return {
+    mode: TASK_MODE_RANDOM,
+  };
 };
 
 // form component data
@@ -41,7 +43,7 @@ const useSpider = (store: Store<RootStoreState>) => {
   } = useProject(store);
 
   // batch form fields
-  const batchFormFields: FormTableField[] = [
+  const batchFormFields = computed<FormTableField[]>(() => [
     {
       prop: 'name',
       label: 'Name',
@@ -64,7 +66,6 @@ const useSpider = (store: Store<RootStoreState>) => {
       width: '200',
       placeholder: 'Param',
       fieldType: FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
-      required: true,
     },
     {
       prop: 'project_id',
@@ -72,7 +73,6 @@ const useSpider = (store: Store<RootStoreState>) => {
       width: '200',
       fieldType: FORM_FIELD_TYPE_SELECT,
       options: allProjectSelectOptions.value,
-      required: true,
     },
     {
       prop: 'mode',
@@ -88,7 +88,7 @@ const useSpider = (store: Store<RootStoreState>) => {
       width: '200',
       fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
-  ];
+  ]);
 
   // route
   const route = useRoute();

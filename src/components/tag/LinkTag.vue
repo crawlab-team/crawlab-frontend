@@ -36,7 +36,9 @@ export default defineComponent({
 
     const onClick = () => {
       const {path} = props;
-      router.push(path);
+      if (path) {
+        router.push(path);
+      }
     };
 
     return {

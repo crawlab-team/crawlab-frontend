@@ -56,6 +56,7 @@ export default defineComponent({
           key: prop,
           label,
           width,
+          required,
           value: (row: BaseModel, rowIndex: number) => h(FormTableField, {
             form: row,
             prop,

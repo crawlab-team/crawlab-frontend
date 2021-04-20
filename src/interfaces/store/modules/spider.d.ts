@@ -1,9 +1,6 @@
 type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreGetters, SpiderStoreMutations, SpiderStoreActions>;
 
 interface SpiderStoreState extends BaseStoreState<Spider> {
-  sidebarCollapsed: boolean;
-  actionsCollapsed: boolean;
-  tabs: NavItem[];
   dialogVisible: SpiderDialogVisible;
 }
 

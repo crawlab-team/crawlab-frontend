@@ -9,6 +9,7 @@ export const getDefaultService = <T>(ns: string, store: Store<RootStoreState>): 
     updateById: (id: string, form: T) => dispatch(`${ns}/updateById`, {id, form}),
     deleteById: (id: string) => dispatch(`${ns}/deleteById`, id),
     getList: () => dispatch(`${ns}/getList`),
+    getAll: () => dispatch(`${ns}/getAllList`),
     createList: (data: T[]) => dispatch(`${ns}/createList`, data),
     updateList: (ids: string[], data: T, fields: string[]) => dispatch(`${ns}/updateList`, {ids, data, fields}),
     deleteList: (ids: string[]) => dispatch(`${ns}/deleteList`, ids),

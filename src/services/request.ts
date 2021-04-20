@@ -76,6 +76,10 @@ const useRequest = () => {
     return res;
   };
 
+  const getAll = async <T = any>(url: string, opts?: AxiosRequestConfig) => {
+    return await getList(url, {}, opts);
+  };
+
   const postList = async <T = any, R = Response, PM = any>(url: string, data?: BatchRequestPayloadWithJsonStringData, params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     return await post<BatchRequestPayloadWithJsonStringData, R, PM>(url, data, params, opts);
   };
@@ -97,6 +101,7 @@ const useRequest = () => {
     put,
     del,
     getList,
+    getAll,
     postList,
     putList,
     delList,

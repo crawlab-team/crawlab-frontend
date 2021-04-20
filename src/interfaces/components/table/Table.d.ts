@@ -28,10 +28,11 @@ declare global {
     rowKey?: string;
     buttons?: TableColumnButton[];
     value?: TableValueFunction<T> | any;
-    filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
     disableTransfer?: boolean;
     defaultHidden?: boolean;
     hasFilter?: boolean;
+    filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
+    required?: boolean;
   }
 
   type TableColumns<T = any> = TableColumn<T>[];

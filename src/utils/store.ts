@@ -14,6 +14,9 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
     tableTotal: 0,
     tablePagination: getDefaultPagination(),
     allList: [],
+    sidebarCollapsed: false,
+    actionsCollapsed: false,
+    tabs: [],
   };
 };
 
@@ -111,6 +114,18 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     resetAllList: (state: BaseStoreState<T>) => {
       state.allList = [];
     },
+    expandSidebar: (state: BaseStoreState<T>) => {
+      state.sidebarCollapsed = false;
+    },
+    collapseSidebar: (state: BaseStoreState<T>) => {
+      state.sidebarCollapsed = true;
+    },
+    expandActions: (state: BaseStoreState<T>) => {
+      state.actionsCollapsed = false;
+    },
+    collapseActions: (state: BaseStoreState<T>) => {
+      state.actionsCollapsed = true;
+    },
   };
 };
 
@@ -121,6 +136,7 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
     updateById,
     deleteById,
     getList,
+    getAll,
     createList,
     updateList,
     deleteList,
@@ -148,6 +164,11 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
       // TODO: filter
       const res = await getList(state.tablePagination);
       commit('setTableData', {data: res.data || [], total: res.total});
+      return res;
+    },
+    getAllList: async ({commit}: StoreActionContext<BaseStoreState<T>>) => {
+      const res = await getAll();
+      commit('setAllList', res.data || []);
       return res;
     },
     createList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>, data: T[]) => {

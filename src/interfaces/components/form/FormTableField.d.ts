@@ -5,6 +5,7 @@ declare global {
     form: any;
     prop: string;
     fieldType: FormFieldType;
+    options?: SelectOption[];
     required?: boolean;
     placeholder?: string;
     onChange?: (value: any) => void;

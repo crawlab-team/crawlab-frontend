@@ -7,6 +7,7 @@ import Tag from '@/components/tag/Tag.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {ElMessageBox} from 'element-plus';
 import useNodeService from '@/services/node/nodeService';
+import NavLink from '@/components/nav/NavLink.vue';
 
 type Node = CNode;
 
@@ -48,6 +49,10 @@ const useNodeList = () => {
       label: 'Name',
       icon: ['fa', 'font'],
       width: '150',
+      value: (row: Node) => h(NavLink, {
+        path: `/nodes/${row._id}`,
+        label: row.name,
+      }),
     },
     {
       key: 'type',

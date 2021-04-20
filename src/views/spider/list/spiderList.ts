@@ -1,11 +1,12 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
-import {computed, h, readonly} from 'vue';
+import {computed, h, onBeforeMount, readonly} from 'vue';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
 import Table from '@/components/table/Table.vue';
+import NavLink from '@/components/nav/NavLink.vue';
 
 const useSpiderList = () => {
   // router
@@ -15,6 +16,7 @@ const useSpiderList = () => {
   const ns = 'spider';
   const store = useStore<RootStoreState>();
   const {commit} = store;
+  const state = store.state[ns];
 
   // nav actions
   const navActions = readonly<ListActionGroup[]>([
@@ -35,8 +37,8 @@ const useSpiderList = () => {
     }
   ]);
 
-  // TODO: dummy data
-  const projectNames = ['Project 1', 'Project 2', 'Project 3'];
+  // all project list
+  const allProjectList = computed<Project[]>(() => store.state.project.allList);
 
   // table columns
   const tableColumns = readonly<TableColumns<Spider>>([
@@ -46,7 +48,10 @@ const useSpiderList = () => {
       icon: ['fa', 'font'],
       width: '160',
       align: 'left',
-      hasFilter: true,
+      value: (row: Spider) => h(NavLink, {
+        path: `/spiders/${row._id}`,
+        label: row.name,
+      }),
     },
     {
       key: 'spider_type',
@@ -67,14 +72,20 @@ const useSpiderList = () => {
       label: 'Project',
       icon: ['fa', 'project-diagram'],
       width: '120',
-      filterItems: () => {
-        const arr: SelectOption[] = [];
-        projectNames.forEach((d, i) => {
-          arr.push({label: d, value: (i + 1).toString()});
-        });
-        return arr;
-      },
       hasFilter: true,
+      filterItems: () => allProjectList.value.map(d => {
+        return {
+          label: d.name,
+          value: d._id,
+        };
+      }),
+      value: (row: Spider) => {
+        const p = allProjectList.value.find(d => d._id === row.project_id);
+        return h(NavLink, {
+          label: p?.name,
+          path: `/projects/${row.project_id}`,
+        });
+      },
     },
     // {
     //   key: 'is_long_task',
@@ -214,6 +225,12 @@ const useSpiderList = () => {
     navActions,
     tableColumns,
   } as UseListOptions<Spider>;
+
+  onBeforeMount(async () => {
+    await Promise.all([
+      store.dispatch(`project/getAllList`),
+    ]);
+  });
 
   return {
     ...useList<Spider>(ns, store, opts),

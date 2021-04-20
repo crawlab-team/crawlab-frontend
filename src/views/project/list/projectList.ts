@@ -5,6 +5,7 @@ import {useStore} from 'vuex';
 import {ElMessageBox} from 'element-plus';
 import useList from '@/layouts/list';
 import useProjectService from '@/services/project/projectService';
+import NavLink from '@/components/nav/NavLink.vue';
 
 const useProjectList = () => {
   // TODO: dummy data
@@ -53,6 +54,10 @@ const useProjectList = () => {
       label: 'Name',
       icon: ['fa', 'font'],
       width: '150',
+      value: (row: Project) => h(NavLink, {
+        path: `/projects/${row._id}`,
+        label: row.name,
+      }),
     },
     {
       key: 'tags',

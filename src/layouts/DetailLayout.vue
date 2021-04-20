@@ -1,0 +1,133 @@
+<template>
+  <div :class="sidebarCollapsed ? 'collapsed' : ''" class="detail-layout">
+    <div class="sidebar">
+      <NavSidebar
+          ref="navSidebar"
+          :active-key="activeId"
+          :collapsed="sidebarCollapsed"
+          :items="navItems"
+          @select="onNavSidebarSelect"
+          @toggle="onNavSidebarToggle"
+      />
+    </div>
+    <div class="content">
+      <NavTabs :active-key="activeTabName" :items="tabs" class="nav-tabs" @select="onNavTabsSelect">
+        <template v-slot:extra>
+          <el-tooltip
+              v-model="showActionsToggleTooltip"
+              :content="actionsCollapsed ? 'Expand actions bar' : 'Collapse actions bar'"
+          >
+            <div :class="actionsCollapsed ? 'collapsed' : ''" class="actions-toggle" @click="onActionsToggle">
+              <font-awesome-icon :icon="['fa', 'angle-up']" class="icon"/>
+            </div>
+          </el-tooltip>
+        </template>
+      </NavTabs>
+      <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
+        <NavActionBack @click="onBack"/>
+        <slot name="actions"/>
+      </NavActions>
+      <div :style="contentContainerStyle" class="content-container">
+        <router-view/>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import {computed, defineComponent, PropType} from 'vue';
+import useDetail from '@/layouts/detail';
+import NavSidebar from '@/components/nav/NavSidebar.vue';
+import NavTabs from '@/components/nav/NavTabs.vue';
+import NavActions from '@/components/nav/NavActions.vue';
+import NavActionBack from '@/components/nav/NavActionBack.vue';
+
+export default defineComponent({
+  name: 'DetailLayout',
+  components: {
+    NavSidebar,
+    NavTabs,
+    NavActions,
+    NavActionBack,
+  },
+  props: {
+    storeNamespace: {
+      type: String as PropType<ListStoreNamespace>,
+      required: true,
+    },
+  },
+  setup(props: DetailLayoutProps, {emit}) {
+    const ns = computed(() => props.storeNamespace);
+
+    return {
+      ...useDetail(ns.value),
+    };
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+
+@import "../styles/variables.scss";
+
+.detail-layout {
+  display: flex;
+  height: 100%;
+
+  &.collapsed {
+    .sidebar {
+      flex-basis: 0;
+      width: 0;
+    }
+
+    .content {
+      flex: 1;
+      max-width: 100%;
+    }
+  }
+
+  .sidebar {
+    flex-basis: $navSidebarWidth;
+    transition: all $navSidebarCollapseTransitionDuration;
+  }
+
+  .content {
+    //margin: 10px;
+    flex: 1;
+    background-color: $containerWhiteBg;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(100% - #{$navSidebarWidth});
+
+    .nav-tabs {
+      height: calc(#{$navTabsHeight} + 1px);
+    }
+
+    .nav-actions {
+      height: fit-content;
+    }
+
+    .content-container {
+      flex: 1;
+    }
+  }
+
+  .actions-toggle {
+    height: $navTabsHeight;
+    color: $infoColor;
+    cursor: pointer;
+    padding: 0 20px;
+    border-left: 1px solid $containerBorderColor;
+
+    .icon {
+      transition: all $defaultTransitionDuration;
+    }
+
+    &.collapsed {
+      .icon {
+        transform: rotateZ(180deg);
+      }
+    }
+  }
+}
+</style>

@@ -9,7 +9,7 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
   } = opts;
 
   // store state
-  const state = store.state[ns];
+  const state = store.state[ns] as BaseStoreState;
 
   // table
   const tableData = computed<TableData<T>>(() => state.tableData as TableData<T>);
@@ -20,6 +20,7 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
   const actionFunctions = readonly<ListLayoutActionFunctions>({
     setPagination: (pagination: TablePagination) => store.commit(`${ns}/setTablePagination`, pagination),
     getList: () => store.dispatch(`${ns}/getList`),
+    getAll: () => store.dispatch(`${ns}/getAllList`),
     deleteList: (ids: string[]) => store.dispatch(`${ns}/deleteList`, ids),
   });
 

@@ -19,7 +19,7 @@
           :disabled="isFormItemDisabled('cmd')"
       />
     </FormItem>
-    <FormItem :span="2" label="Param" prop="param" required>
+    <FormItem :span="2" label="Param" prop="param">
       <InputWithButton
           v-model="form.param"
           :button-icon="['fa', 'edit']"
@@ -44,7 +44,7 @@
         />
       </el-select>
     </FormItem>
-    <FormItem :span="2" label="Project" prop="project_id" required>
+    <FormItem :span="2" label="Project" prop="project_id">
       <el-select
           v-model="form.project_id"
           :disabled="isFormItemDisabled('project_id')"

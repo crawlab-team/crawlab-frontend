@@ -44,6 +44,9 @@ declare global {
     tableTotal: number;
     tablePagination: TablePagination;
     allList: T[];
+    sidebarCollapsed: boolean;
+    actionsCollapsed: boolean;
+    tabs: NavItem[];
   }
 
   interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
@@ -72,6 +75,10 @@ declare global {
     setTablePagination: StoreMutation<BaseStoreState<T>, TablePagination>;
     setAllList: StoreMutation<BaseStoreState<T>, T[]>;
     resetAllList: StoreMutation<BaseStoreState<T>>;
+    expandSidebar: StoreMutation<BaseStoreState<T>>;
+    collapseSidebar: StoreMutation<BaseStoreState<T>>;
+    expandActions: StoreMutation<BaseStoreState<T>>;
+    collapseActions: StoreMutation<BaseStoreState<T>>;
   }
 
   interface BaseStoreActions<T = any> extends ActionTree<BaseStoreState<T>, RootStoreState> {
@@ -80,6 +87,7 @@ declare global {
     updateById: StoreAction<BaseStoreState<T>, { id: string; form: T }>;
     deleteById: StoreAction<BaseStoreState<T>, string>;
     getList: StoreAction<BaseStoreState<T>>;
+    getAllList: StoreAction<BaseStoreState<T>>;
     createList: StoreAction<BaseStoreState<T>, T[]>;
     updateList: StoreAction<BaseStoreState<T>, BatchRequestPayloadWithData<T>>;
     deleteList: StoreAction<BaseStoreState<T>, BatchRequestPayload>;
@@ -100,6 +108,8 @@ declare global {
     namespace: ListStoreNamespace;
     state: RootStoreState[ListStoreNamespace];
   }
+
+  type DetailStoreContext<T> = ListStoreContext<T>;
 
   interface GetDefaultStoreGettersOptions {
     selectOptionValueKey?: string;

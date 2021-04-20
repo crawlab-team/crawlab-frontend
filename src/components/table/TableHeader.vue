@@ -1,6 +1,6 @@
 <template>
   <div class="table-header">
-    <span class="label">
+    <span :class="[column.required ? 'required' : '']" class="label">
       <span v-if="column.icon" class="label-icon">
         <Icon :icon="column.icon"/>
       </span>
@@ -219,6 +219,12 @@ export default defineComponent({
   .label {
     display: flex;
     align-items: center;
+
+    &.required:before {
+      content: "*";
+      color: $red;
+      margin-right: 4px;
+    }
 
     .label-icon {
       color: $infoMediumLightColor;

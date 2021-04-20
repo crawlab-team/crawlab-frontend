@@ -19,10 +19,10 @@ const formComponentData = getDefaultFormComponentData<Project>(getNewProject);
 const useProject = (store: Store<RootStoreState>) => {
   // store
   const ns = 'project';
-  const state = store.state.project;
+  const state = store.state[ns];
 
   // batch form fields
-  const batchFormFields: FormTableField[] = [
+  const batchFormFields = computed<FormTableField[]>(() => [
     {
       prop: 'name',
       label: 'Name',
@@ -45,7 +45,7 @@ const useProject = (store: Store<RootStoreState>) => {
       placeholder: 'Description',
       fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
-  ];
+  ]);
 
   // form rules
   const formRules = readonly<FormRules>({
@@ -60,21 +60,28 @@ const useProject = (store: Store<RootStoreState>) => {
   });
 
   // all project select options
-  const allProjectSelectOptions = computed<SelectOption[]>(() => state.allProjectSelectOptions);
-  const setAllProjectSelectOptions = (options: SelectOption[]) => {
-    store.commit(`${ns}/setAllProjectSelectOptions`, options);
-  };
-
-  // all project tags
-  const allProjectTags = computed<SelectOption[]>(() => state.allProjectTags.map(tag => {
+  const allProjectSelectOptions = computed<SelectOption[]>(() => state.allList.map(d => {
     return {
-      label: tag,
-      value: tag,
+      label: d.name,
+      value: d._id,
     };
   }));
-  const setAllProjectTags = (tags: string[]) => {
-    store.commit(`${ns}/setAllProjectTags`, tags);
-  };
+
+  // all project tags
+  const allProjectTags = computed<SelectOption[]>(() => {
+    const tagsSet = new Set<string>();
+    state.allList.forEach(d => {
+      d.tags?.forEach(t => {
+        tagsSet.add(t);
+      });
+    });
+    return Array.from(tagsSet).map(d => {
+      return {
+        label: d,
+        value: d,
+      };
+    });
+  });
 
   return {
     ...useForm('project', store, useProjectService(store), formComponentData),
@@ -82,8 +89,6 @@ const useProject = (store: Store<RootStoreState>) => {
     formRules,
     allProjectSelectOptions,
     allProjectTags,
-    setAllProjectSelectOptions,
-    setAllProjectTags,
   };
 };
 
