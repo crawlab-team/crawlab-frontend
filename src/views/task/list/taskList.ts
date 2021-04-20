@@ -1,7 +1,7 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
 import {getDefaultUseListOptions} from '@/utils/list';
-import {h} from 'vue';
+import {h, onBeforeMount} from 'vue';
 import SpiderTag from '@/components/spider/SpiderTag.vue';
 
 const useTaskList = () => {
@@ -42,13 +42,20 @@ const useTaskList = () => {
       icon: ['fa', 'spider'],
       width: '200',
       value: (row: Task) => {
-        return h(SpiderTag, {spider: row.spider} as SpiderTagProps, []);
+        return h(SpiderTag, {spider: row} as SpiderTagProps, []);
       },
     }
   ];
 
   // options
   const opts = getDefaultUseListOptions<Task>(navActions, tableColumns);
+
+  onBeforeMount(async () => {
+    await Promise.all([
+      store.dispatch(`spider/getAllList`),
+      store.dispatch(`project/getAllList`),
+    ]);
+  });
 
   return {
     ...useList<Task>(ns, store, opts),

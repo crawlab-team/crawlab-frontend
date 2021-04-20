@@ -11,7 +11,7 @@
   >
     <template #extra>
       <!-- Dialogs (handled by store) -->
-      <CreateSpiderDialog/>
+      <!--      <CreateSpiderDialog/>-->
       <!-- ./Dialogs -->
     </template>
   </ListLayout>
