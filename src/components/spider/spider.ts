@@ -68,19 +68,19 @@ const useSpider = (store: Store<RootStoreState>) => {
       fieldType: FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
     },
     {
-      prop: 'project_id',
-      label: 'Project',
-      width: '200',
-      fieldType: FORM_FIELD_TYPE_SELECT,
-      options: allProjectSelectOptions.value,
-    },
-    {
       prop: 'mode',
       label: 'Default Run Mode',
       width: '200',
       fieldType: FORM_FIELD_TYPE_SELECT,
       options: modeOptions,
       required: true,
+    },
+    {
+      prop: 'project_id',
+      label: 'Project',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_SELECT,
+      options: allProjectSelectOptions.value,
     },
     {
       prop: 'description',
