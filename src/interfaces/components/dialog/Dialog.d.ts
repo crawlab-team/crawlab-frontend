@@ -8,10 +8,8 @@ interface DialogProps {
   confirmLoading?: boolean;
 }
 
-type DialogKey = 'create' | 'edit' | 'clone' | 'delete';
+type DialogKey = 'create' | 'edit' | 'run';
 
 interface DialogVisible {
   createEdit: boolean;
-  clone: boolean;
-  delete: boolean;
 }

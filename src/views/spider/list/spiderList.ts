@@ -1,6 +1,6 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
-import {computed, h, onBeforeMount, readonly} from 'vue';
+import {computed, h, onBeforeMount} from 'vue';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
@@ -19,7 +19,7 @@ const useSpiderList = () => {
   const state = store.state[ns];
 
   // nav actions
-  const navActions = readonly<ListActionGroup[]>([
+  const navActions = computed<ListActionGroup[]>(() => [
     {
       name: 'common',
       children: [
@@ -41,7 +41,7 @@ const useSpiderList = () => {
   const allProjectList = computed<Project[]>(() => store.state.project.allList);
 
   // table columns
-  const tableColumns = readonly<TableColumns<Spider>>([
+  const tableColumns = computed<TableColumns<Spider>>(() => [
     {
       key: 'name',
       label: 'Name',

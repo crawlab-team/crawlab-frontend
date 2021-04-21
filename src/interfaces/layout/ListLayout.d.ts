@@ -13,8 +13,8 @@ declare global {
   }
 
   interface ListLayoutComponentData<T = any> {
-    navActions: ListActionGroup[];
-    tableColumns: TableColumns<T>;
+    navActions: Ref<ListActionGroup[]>;
+    tableColumns: Ref<TableColumns<T>>;
     tableData: Ref<TableData<T>>;
     tableTotal: Ref<number>;
     tablePagination: Ref<TablePagination>;
@@ -22,8 +22,8 @@ declare global {
   }
 
   interface UseListOptions<T> {
-    navActions: ListActionGroup[];
-    tableColumns: TableColumns<T>;
+    navActions: Ref<ListActionGroup[]>;
+    tableColumns: Ref<TableColumns<T>>;
   }
 
   interface ListActionGroup {

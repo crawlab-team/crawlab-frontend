@@ -1,4 +1,4 @@
-import {h} from 'vue';
+import {computed, h} from 'vue';
 import ProjectTag from '@/components/project/ProjectTag.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
@@ -6,6 +6,7 @@ import {ElMessageBox} from 'element-plus';
 import useList from '@/layouts/list';
 import useProjectService from '@/services/project/projectService';
 import NavLink from '@/components/nav/NavLink.vue';
+import {useRouter} from 'vue-router';
 
 const useProjectList = () => {
   // TODO: dummy data
@@ -16,6 +17,9 @@ const useProjectList = () => {
     'danger',
     'info',
   ];
+
+  // router
+  const router = useRouter();
 
   // store
   const ns = 'project';
@@ -29,7 +33,7 @@ const useProjectList = () => {
   } = useProjectService(store);
 
   // nav actions
-  const navActions: ListActionGroup[] = [
+  const navActions = computed<ListActionGroup[]>(() => [
     {
       name: 'common',
       children: [
@@ -45,10 +49,10 @@ const useProjectList = () => {
         }
       ]
     }
-  ];
+  ]);
 
   // table columns
-  const tableColumns: TableColumns<Project> = [
+  const tableColumns = computed<TableColumns<Project>>(() => [
     {
       key: 'name',
       label: 'Name',
@@ -90,6 +94,9 @@ const useProjectList = () => {
           type: 'primary',
           icon: ['fa', 'search'],
           tooltip: 'View',
+          onClick: (row) => {
+            router.push(`/projects/${row._id}`);
+          },
         },
         {
           type: 'warning',
@@ -125,7 +132,7 @@ const useProjectList = () => {
       ],
       disableTransfer: true,
     }
-  ];
+  ]);
 
   // options
   const opts = {

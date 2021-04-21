@@ -33,6 +33,7 @@ declare global {
   }
 
   interface BaseStoreState<T = any> {
+    dialogVisible: DialogVisible;
     activeDialogKey: DialogKey | undefined;
     createEditDialogTabName: CreateEditTabName;
     form: T;
@@ -55,6 +56,7 @@ declare global {
     formListIds: StoreGetter<BaseStoreState<T>, string[]>;
     allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
     allTags: StoreGetter<BaseStoreState<T>, string[]>;
+    tabName: StoreGetter<BaseStoreState<T>, string>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {

@@ -1,7 +1,7 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
 import {getDefaultUseListOptions} from '@/utils/list';
-import {h, onBeforeMount} from 'vue';
+import {computed, h, onBeforeMount} from 'vue';
 import SpiderTag from '@/components/spider/SpiderTag.vue';
 
 const useTaskList = () => {
@@ -10,7 +10,7 @@ const useTaskList = () => {
   const {commit} = store;
 
   // nav actions
-  const navActions: ListActionGroup[] = [
+  const navActions = computed<ListActionGroup[]>(() => [
     {
       name: 'common',
       children: [
@@ -26,10 +26,10 @@ const useTaskList = () => {
         }
       ]
     }
-  ];
+  ]);
 
   // table columns
-  const tableColumns: TableColumns<Task> = [
+  const tableColumns = computed<TableColumns<Task>>(() => [
     {
       key: 'name',
       label: 'Name',
@@ -45,7 +45,7 @@ const useTaskList = () => {
         return h(SpiderTag, {spider: row} as SpiderTagProps, []);
       },
     }
-  ];
+  ]);
 
   // options
   const opts = getDefaultUseListOptions<Task>(navActions, tableColumns);

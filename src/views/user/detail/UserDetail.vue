@@ -1,15 +1,13 @@
 <template>
-  <DetailLayout store-namespace="project">
-  </DetailLayout>
+  <div class="project-detail">
+  </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import DetailLayout from '@/layouts/DetailLayout.vue';
 
 export default defineComponent({
-  name: 'ProjectDetail',
-  components: {DetailLayout},
+  name: 'NodeDetail',
   setup(props, {emit}) {
     return {};
   },

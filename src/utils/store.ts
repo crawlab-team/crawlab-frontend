@@ -1,8 +1,12 @@
 import {getDefaultPagination} from '@/utils/pagination';
 import {useService} from '@/services';
+import router from '@/router';
 
 export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
   return {
+    dialogVisible: {
+      createEdit: true,
+    },
     activeDialogKey: undefined,
     createEditDialogTabName: 'single',
     form: {} as T,
@@ -16,7 +20,7 @@ export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
     allList: [],
     sidebarCollapsed: false,
     actionsCollapsed: false,
-    tabs: [],
+    tabs: [{id: 'overview', title: 'Overview'}],
   };
 };
 
@@ -46,6 +50,11 @@ export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOpt
         tags.forEach(t => tagsSet.add(t));
       });
       return Array.from(tagsSet);
+    },
+    tabName: () => {
+      const arr = router.currentRoute.value.path.split('/');
+      if (arr.length < 3) return '';
+      return arr[3];
     },
   };
 };

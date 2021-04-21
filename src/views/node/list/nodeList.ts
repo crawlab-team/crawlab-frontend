@@ -1,7 +1,7 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
 import {getDefaultUseListOptions} from '@/utils/list';
-import {h} from 'vue';
+import {computed, h} from 'vue';
 import NodeType from '@/components/node/NodeType.vue';
 import Tag from '@/components/tag/Tag.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
@@ -24,7 +24,7 @@ const useNodeList = () => {
   } = useNodeService(store);
 
   // nav actions
-  const navActions: ListActionGroup[] = [
+  const navActions = computed<ListActionGroup[]>(() => [
     {
       name: 'common',
       children: [
@@ -40,10 +40,10 @@ const useNodeList = () => {
         }
       ]
     }
-  ];
+  ]);
 
   // table columns
-  const tableColumns: TableColumns<Node> = [
+  const tableColumns = computed<TableColumns<Node>>(() => [
     {
       key: 'name',
       label: 'Name',
@@ -134,7 +134,7 @@ const useNodeList = () => {
       ],
       disableTransfer: true,
     }
-  ];
+  ]);
 
   // options
   const opts = getDefaultUseListOptions<Node>(navActions, tableColumns);

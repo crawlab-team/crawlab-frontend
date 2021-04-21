@@ -1,17 +1,10 @@
 type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreGetters, SpiderStoreMutations, SpiderStoreActions>;
 
-interface SpiderStoreState extends BaseStoreState<Spider> {
-  dialogVisible: SpiderDialogVisible;
-}
+type SpiderStoreState = BaseStoreState<Spider>;
 
-interface SpiderStoreGetters extends BaseStoreGetters<Spider> {
-  tabName: StoreGetter<SpiderStoreState, SpiderTabName>;
-}
+type SpiderStoreGetters = BaseStoreGetters<Spider>;
 
-interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
-  setSidebarCollapsed: StoreMutation<SpiderStoreState, boolean>;
-  setActionsCollapsed: StoreMutation<SpiderStoreState, boolean>;
-}
+type SpiderStoreMutations = BaseStoreMutations<Spider>;
 
 interface SpiderStoreActions extends BaseStoreActions<Spider> {
   runById: (id: string) => Promise<Response>;

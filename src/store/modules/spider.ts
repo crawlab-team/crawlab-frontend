@@ -16,13 +16,6 @@ const state = {
     {id: 'tasks', title: 'Tasks'},
     {id: 'settings', title: 'Settings'},
   ],
-  dialogVisible: {
-    createEdit: false,
-    clone: false,
-    run: false,
-    delete: false,
-  },
-  form: {},
 } as SpiderStoreState;
 
 const getters = {
