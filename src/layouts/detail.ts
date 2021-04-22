@@ -4,6 +4,7 @@ import {computed, onBeforeMount, onMounted, provide, ref} from 'vue';
 import variables from '@/styles/variables.scss';
 import {plainClone} from '@/utils/object';
 import {getRoutePathByDepth} from '@/utils/route';
+import {ElMessage} from 'element-plus';
 
 const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
   const router = useRouter();
@@ -105,6 +106,16 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
     router.push(`${primaryRoutePath.value}`);
   };
 
+  const onSave = async () => {
+    if (!activeId.value) {
+      console.error('Active id is empty');
+      return;
+    }
+    await store.dispatch(`${ns}/updateById`, {id: activeId.value, form: state.form});
+    await store.dispatch(`${ns}/getAllList`);
+    ElMessage.success('Saved successfully');
+  };
+
   onBeforeMount(async () => {
     await Promise.all([
       getForm(),
@@ -140,6 +151,7 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
     onActionsToggle,
     onNavTabsSelect,
     onBack,
+    onSave,
   };
 };
 

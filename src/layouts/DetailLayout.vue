@@ -24,7 +24,10 @@
         </template>
       </NavTabs>
       <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
-        <NavActionGroupDetailCommon @click="onBack"/>
+        <NavActionGroupDetailCommon
+            @back="onBack"
+            @save="onSave"
+        />
         <slot name="actions"/>
       </NavActions>
       <div :style="contentContainerStyle" class="content-container">
