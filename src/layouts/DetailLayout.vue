@@ -24,7 +24,7 @@
         </template>
       </NavTabs>
       <NavActions ref="navActions" :collapsed="actionsCollapsed" class="nav-actions">
-        <NavActionBack @click="onBack"/>
+        <NavActionGroupDetailCommon @click="onBack"/>
         <slot name="actions"/>
       </NavActions>
       <div :style="contentContainerStyle" class="content-container">
@@ -40,15 +40,15 @@ import useDetail from '@/layouts/detail';
 import NavSidebar from '@/components/nav/NavSidebar.vue';
 import NavTabs from '@/components/nav/NavTabs.vue';
 import NavActions from '@/components/nav/NavActions.vue';
-import NavActionBack from '@/components/nav/NavActionBack.vue';
+import NavActionGroupDetailCommon from '@/components/nav/NavActionGroupDetailCommon.vue';
 
 export default defineComponent({
   name: 'DetailLayout',
   components: {
+    NavActionGroupDetailCommon,
     NavSidebar,
     NavTabs,
     NavActions,
-    NavActionBack,
   },
   props: {
     storeNamespace: {

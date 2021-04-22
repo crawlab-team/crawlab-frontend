@@ -28,8 +28,7 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
 
   const activeId = computed<string>(() => {
     const {id} = route.params;
-    const activeItem = navItems.value.find(d => d.id === id);
-    return activeItem?.id || '';
+    return id as string || '';
   });
 
   const activeTabName = computed<SpiderTabName>(() => store.getters[`${ns}/tabName`]);
@@ -63,12 +62,18 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
 
   const primaryRoutePath = computed<string>(() => getRoutePathByDepth(route.path));
 
-  const onNavSidebarSelect = (id: string) => {
+  const getForm = async () => {
+    if (!activeId.value) return;
+    return await store.dispatch(`${ns}/getById`, activeId.value);
+  };
+
+  const onNavSidebarSelect = async (id: string) => {
     if (!id) {
       console.error(new Error('id is empty'));
       return;
     }
-    router.push(`${primaryRoutePath.value}/${id}`);
+    await router.push(`${primaryRoutePath.value}/${id}`);
+    await getForm();
   };
 
   const onNavSidebarToggle = (value: boolean) => {
@@ -101,7 +106,10 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
   };
 
   onBeforeMount(async () => {
-    await store.dispatch(`${ns}/getAllList`);
+    await Promise.all([
+      getForm(),
+      store.dispatch(`${ns}/getAllList`),
+    ]);
   });
 
   onMounted(() => {

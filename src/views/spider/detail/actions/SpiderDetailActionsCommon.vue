@@ -2,9 +2,6 @@
   <NavActionGroup>
     <NavActionFaIcon :icon="['fa', 'tools']" tooltip="Spider Actions"/>
     <NavActionItem>
-      <FaIconButton :icon="['fa', 'save']" tooltip="Save" type="primary"/>
-    </NavActionItem>
-    <NavActionItem>
       <FaIconButton :icon="['fa', 'play']" tooltip="Run" type="success"/>
     </NavActionItem>
     <NavActionItem>

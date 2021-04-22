@@ -8,6 +8,7 @@ declare global {
     labelWidth?: string;
     size?: string;
     span: number;
+    offset: number;
     required: boolean;
     isPlaceholder: boolean;
     rules?: RuleItem | RuleItem[];

@@ -4,8 +4,18 @@
     <FormItem :span="2" label="Name" prop="name" required>
       <el-input v-model="form.name" :disabled="isFormItemDisabled('name')" placeholder="Name"/>
     </FormItem>
-    <FormItem :span="2" label="Display Name" prop="display_name" required>
-      <el-input v-model="form.display_name" :disabled="isFormItemDisabled('display_name')" placeholder="Display Name"/>
+    <FormItem :span="2" label="Project" prop="project_id">
+      <el-select
+          v-model="form.project_id"
+          :disabled="isFormItemDisabled('project_id')"
+      >
+        <el-option
+            v-for="op in allProjectSelectOptions"
+            :key="op.value"
+            :label="op.label"
+            :value="op.value"
+        />
+      </el-select>
     </FormItem>
     <!-- ./Row -->
 
@@ -31,26 +41,13 @@
     <!-- ./Row -->
 
     <!-- Row -->
-    <FormItem :span="2" label="Default Mode" prop="mode" required>
+    <FormItem :offset="2" :span="2" label="Default Mode" prop="mode" required>
       <el-select
           v-model="form.mode"
           :disabled="isFormItemDisabled('mode')"
       >
         <el-option
             v-for="op in modeOptions"
-            :key="op.value"
-            :label="op.label"
-            :value="op.value"
-        />
-      </el-select>
-    </FormItem>
-    <FormItem :span="2" label="Project" prop="project_id">
-      <el-select
-          v-model="form.project_id"
-          :disabled="isFormItemDisabled('project_id')"
-      >
-        <el-option
-            v-for="op in allProjectSelectOptions"
             :key="op.value"
             :label="op.label"
             :value="op.value"

@@ -83,6 +83,7 @@ export default defineComponent({
 .nav-actions {
   margin: 0;
   padding: 0 10px;
+  min-height: 50px;
   display: flex;
   flex-wrap: wrap;
   height: fit-content;

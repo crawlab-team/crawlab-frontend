@@ -1,18 +1,18 @@
 import {computed, provide, watch} from 'vue';
 import {Store} from 'vuex';
-import {cloneArray, plainClone} from '@/utils/object';
+import {cloneArray} from '@/utils/object';
 import useFormTable from '@/components/form/formTable';
 
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
-    form,
+    form: newForm,
     formRef,
     formList,
     formTableFieldRefsMap,
   } = data;
 
   const getNewForm = () => {
-    return {...form.value};
+    return {...newForm.value};
   };
 
   const getNewFormList = () => {
@@ -25,6 +25,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // store state
   const state = store.state[ns];
+
+  // form
+  const form = computed<BaseModel>(() => state.form);
 
   // active dialog key
   const activeDialogKey = computed<DialogKey | undefined>(() => state.activeDialogKey);
@@ -70,10 +73,10 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     } else {
       switch (activeDialogKey.value) {
         case 'create':
-          form.value = getNewForm();
+          store.commit(`${ns}/setForm`, getNewForm());
           break;
         case 'edit':
-          form.value = plainClone(state.form);
+          // store.commit(`${ns}/setForm`, plainClone(state.form))
           formRef.value?.clearValidate();
           break;
       }

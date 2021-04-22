@@ -7,19 +7,17 @@ export default [
   {
     path: endpoint,
     component: import('@/views/node/list/NodeList.vue'),
+  },
+  {
+    path: `${endpoint}/:id`,
+    redirect: to => {
+      return {path: to.path + '/' + TAB_NAME_OVERVIEW};
+    },
+    component: () => import('@/views/node/detail/NodeDetail.vue'),
     children: [
       {
-        path: `${endpoint}/:id`,
-        redirect: to => {
-          return {path: to.path + '/' + TAB_NAME_OVERVIEW};
-        },
-        component: () => import('@/views/node/detail/NodeDetail.vue'),
-        children: [
-          {
-            path: TAB_NAME_OVERVIEW,
-            component: () => import('@/views/node/detail/tabs/NodeDetailTabOverview.vue'),
-          }
-        ]
+        path: TAB_NAME_OVERVIEW,
+        component: () => import('@/views/node/detail/tabs/NodeDetailTabOverview.vue'),
       }
     ]
   },

@@ -70,6 +70,11 @@ export default defineComponent({
       required: false,
       default: 1,
     },
+    offset: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     isPlaceholder: {
       type: Boolean,
       default: false,
@@ -99,9 +104,10 @@ export default defineComponent({
     const activeDialogKey = computed<DialogKey | undefined>(() => state?.activeDialogKey);
 
     const style = computed<Partial<CSSStyleDeclaration>>(() => {
-      const {span} = props;
+      const {span, offset} = props;
       return {
         flexBasis: `calc(100% / ${formContext.grid} * ${span})`,
+        marginRight: `calc(100% / ${formContext.grid} * ${offset})`,
       };
     });
 
