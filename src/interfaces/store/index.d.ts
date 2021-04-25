@@ -9,6 +9,7 @@ declare global {
     spider: SpiderStoreState;
     task: TaskStoreState;
     file: FileStoreState;
+    tag: TagStoreState;
   }
 
   type StoreGetter<S, T> = (state: S, getters: StoreGetter<S, T>, rootState: RootStoreState, rootGetters: any) => T;
@@ -33,6 +34,7 @@ declare global {
   }
 
   interface BaseStoreState<T = any> {
+    ns: StoreNamespace;
     dialogVisible: DialogVisible;
     activeDialogKey: DialogKey | undefined;
     createEditDialogTabName: CreateEditTabName;
@@ -55,8 +57,8 @@ declare global {
     isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
     formListIds: StoreGetter<BaseStoreState<T>, string[]>;
     allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
-    allTags: StoreGetter<BaseStoreState<T>, string[]>;
     tabName: StoreGetter<BaseStoreState<T>, string>;
+    allTags: StoreGetter<BaseStoreState<T>, Tag[]>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {
@@ -97,8 +99,8 @@ declare global {
 
   type StoreActionContext<S = BaseStoreState> = ActionContext<S, RootStoreState>;
 
-  type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'task' | 'schedule' | 'file';
-  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task';
+  type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'task' | 'schedule' | 'file' | 'tag';
+  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task' | 'tag';
 
   interface StoreContext<T> {
     namespace: StoreNamespace;

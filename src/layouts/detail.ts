@@ -112,8 +112,11 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
       return;
     }
     await store.dispatch(`${ns}/updateById`, {id: activeId.value, form: state.form});
-    await store.dispatch(`${ns}/getAllList`);
     ElMessage.success('Saved successfully');
+    await Promise.all([
+      store.dispatch(`${ns}/getAllList`),
+      store.dispatch(`${ns}/getById`, activeId.value),
+    ]);
   };
 
   onBeforeMount(async () => {

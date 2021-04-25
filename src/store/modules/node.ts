@@ -6,7 +6,7 @@ import {
 } from '@/utils/store';
 
 const state = {
-  ...getDefaultStoreState<CNode>(),
+  ...getDefaultStoreState<CNode>('node'),
   // TODO: dummy data
   allNodeSelectOptions: [
     {label: 'Master', value: 'master'},

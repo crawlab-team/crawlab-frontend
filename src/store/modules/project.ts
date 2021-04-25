@@ -6,7 +6,7 @@ import {
 } from '@/utils/store';
 
 const state = {
-  ...getDefaultStoreState<Project>(),
+  ...getDefaultStoreState<Project>('project'),
   // TODO: dummy data
   allProjectSelectOptions: [
     {label: 'Taobao', value: '000000000000000000000000'},

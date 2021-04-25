@@ -67,28 +67,11 @@ const useProject = (store: Store<RootStoreState>) => {
     };
   }));
 
-  // all project tags
-  const allProjectTags = computed<SelectOption[]>(() => {
-    const tagsSet = new Set<string>();
-    state.allList.forEach(d => {
-      d.tags?.forEach(t => {
-        tagsSet.add(t);
-      });
-    });
-    return Array.from(tagsSet).map(d => {
-      return {
-        label: d,
-        value: d,
-      };
-    });
-  });
-
   return {
     ...useForm('project', store, useProjectService(store), formComponentData),
     batchFormFields,
     formRules,
     allProjectSelectOptions,
-    allProjectTags,
   };
 };
 

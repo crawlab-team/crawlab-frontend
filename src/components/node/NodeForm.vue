@@ -11,8 +11,8 @@
     <FormItem :span="2" label="Tags" prop="tags">
       <TagInput v-model="form.tags" :disabled="isFormItemDisabled('tags')"/>
     </FormItem>
-    <FormItem :span="2" label="Is Master" prop="is_master" required>
-      <Switch v-model="form.is_master" :disabled="isFormItemDisabled('is_master')"/>
+    <FormItem :span="2" label="Type" prop="type">
+      <NodeType :is-master="form.is_master"/>
     </FormItem>
     <FormItem :span="2" label="IP" prop="ip" required>
       <el-input v-model="form.ip" :disabled="isFormItemDisabled('ip')" placeholder="IP"/>
@@ -35,12 +35,12 @@ import useNode from '@/components/node/node';
 import TagInput from '@/components/input/TagInput.vue';
 import Form from '@/components/form/Form.vue';
 import FormItem from '@/components/form/FormItem.vue';
-import Switch from '@/components/switch/Switch.vue';
+import NodeType from '@/components/node/NodeType.vue';
 
 export default defineComponent({
   name: 'NodeForm',
   components: {
-    Switch,
+    NodeType,
     Form,
     FormItem,
     TagInput,

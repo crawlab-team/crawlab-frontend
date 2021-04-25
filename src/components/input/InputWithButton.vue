@@ -8,6 +8,9 @@
         class="input"
         :disabled="disabled"
         @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus"
+        @keyup.enter="onBlur"
     />
     <!-- ./Input -->
 
@@ -85,6 +88,9 @@ export default defineComponent({
     'update:model-value',
     'input',
     'click',
+    'blur',
+    'focus',
+    'keyup.enter',
   ],
   setup(props: InputWithButtonProps, {emit}) {
     const internalValue = ref<string>();
@@ -112,6 +118,18 @@ export default defineComponent({
       emit('click');
     };
 
+    const onBlur = () => {
+      emit('blur');
+    };
+
+    const onFocus = () => {
+      emit('focus');
+    };
+
+    const onKeyUpEnter = () => {
+      emit('keyup.enter');
+    };
+
     onMounted(() => {
       const {modelValue} = props;
       internalValue.value = modelValue;
@@ -122,6 +140,9 @@ export default defineComponent({
       isFaIcon,
       onClick,
       onInput,
+      onBlur,
+      onFocus,
+      onKeyUpEnter,
     };
   },
 });

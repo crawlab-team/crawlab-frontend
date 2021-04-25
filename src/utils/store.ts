@@ -2,8 +2,9 @@ import {getDefaultPagination} from '@/utils/pagination';
 import {useService} from '@/services';
 import router from '@/router';
 
-export const getDefaultStoreState = <T = any>(): BaseStoreState<T> => {
+export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreState<T> => {
   return {
+    ns,
     dialogVisible: {
       createEdit: true,
     },
@@ -42,19 +43,13 @@ export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOpt
         label: d[opts?.selectOptionLabelKey as string],
       };
     }),
-    allTags: (state: BaseStoreState<BaseModel>) => {
-      const tagsSet = new Set<string>();
-      state.allList.forEach(d => {
-        const tags = d?.tags as string[];
-        if (!tags || !Array.isArray(tags)) return;
-        tags.forEach(t => tagsSet.add(t));
-      });
-      return Array.from(tagsSet);
-    },
     tabName: () => {
       const arr = router.currentRoute.value.path.split('/');
       if (arr.length < 3) return '';
       return arr[3];
+    },
+    allTags: (state: BaseStoreState<T>, getters, rootState) => {
+      return rootState.tag.allList.filter(d => d.col === `${state.ns}s`);
     },
   };
 };

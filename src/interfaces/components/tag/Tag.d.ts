@@ -3,6 +3,8 @@ interface TagProps {
   tooltip?: string;
   type?: BasicType;
   color?: string;
+  backgroundColor?: string;
+  borderColor?: string;
   icon?: Icon;
   spinning?: boolean;
   width?: string;

@@ -8,5 +8,4 @@ interface CNode extends BaseModel {
   is_master?: boolean;
   enabled?: boolean;
   active?: boolean;
-  tags?: string[];
 }

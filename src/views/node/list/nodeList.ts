@@ -76,7 +76,7 @@ const useNodeList = () => {
       value: (row: Node) => {
         if (!row.tags) return;
         const tags = row.tags.map(tag => {
-          return h(Tag, {label: tag, type: 'primary'} as TagProps);
+          return h(Tag, {label: tag.name, type: 'primary'} as TagProps);
         });
         return h('div', tags);
       },

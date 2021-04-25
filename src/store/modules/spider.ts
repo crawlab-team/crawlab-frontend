@@ -7,7 +7,7 @@ import {
 } from '@/utils/store';
 
 const state = {
-  ...getDefaultStoreState<Spider>(),
+  ...getDefaultStoreState<Spider>('spider'),
   sidebarCollapsed: false,
   actionsCollapsed: false,
   tabs: [

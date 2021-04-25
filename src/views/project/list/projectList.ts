@@ -70,7 +70,7 @@ const useProjectList = () => {
       value: (row: Project) => {
         if (!row.tags) return [];
         const tags = row.tags.map(tag => h(ProjectTag, {
-          label: tag,
+          label: tag.name,
           // TODO: dummy data
           type: types[Math.floor(Math.random() * types.length)],
         } as ProjectTagProps));

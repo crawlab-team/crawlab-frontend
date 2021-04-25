@@ -6,20 +6,20 @@ import {
 } from '@/utils/store';
 
 const state = {
-  ...getDefaultStoreState<Task>('task'),
-} as TaskStoreState;
+  ...getDefaultStoreState<Tag>('tag'),
+} as TagStoreState;
 
 const getters = {
-  ...getDefaultStoreGetters<Task>(),
-} as TaskStoreGetters;
+  ...getDefaultStoreGetters<Tag>(),
+} as TagStoreGetters;
 
 const mutations = {
-  ...getDefaultStoreMutations<Task>(),
-} as TaskStoreMutations;
+  ...getDefaultStoreMutations<Tag>(),
+} as TagStoreMutations;
 
 const actions = {
-  ...getDefaultStoreActions<Task>('/tasks'),
-} as TaskStoreActions;
+  ...getDefaultStoreActions<Tag>('/tags'),
+} as TagStoreActions;
 
 export default {
   namespaced: true,
@@ -27,4 +27,4 @@ export default {
   getters,
   mutations,
   actions,
-} as TaskStoreModule;
+} as TagStoreModule;

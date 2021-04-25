@@ -1,10 +1,8 @@
 interface TagInputProps {
-  modelValue: string[];
+  modelValue: Tag[];
   disabled: boolean;
 }
 
-interface TagInputOption {
-  value?: string;
-  color?: Color | string;
+interface TagInputOption extends Tag {
   isEdit?: boolean;
 }

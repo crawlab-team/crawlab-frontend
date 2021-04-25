@@ -1,12 +1,12 @@
 <template>
   <el-tooltip :content="tooltip" :disabled="!tooltip">
     <el-tag
+        ref="tagRef"
         :closable="closable"
         :class="cls"
         :size="size"
-        :style="style"
         :type="type"
-        :color="color"
+        :color="backgroundColor"
         :effect="effect"
         class="tag"
         @click="onClick($event)"
@@ -21,8 +21,9 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, PropType} from 'vue';
+import {computed, defineComponent, onMounted, PropType, ref, watch} from 'vue';
 import Icon from '@/components/icon/Icon.vue';
+import {ElTag} from 'element-plus';
 
 export const tagProps = {
   label: {
@@ -36,6 +37,12 @@ export const tagProps = {
     default: 'primary',
   },
   color: {
+    type: String as PropType<string>,
+  },
+  backgroundColor: {
+    type: String as PropType<string>,
+  },
+  borderColor: {
     type: String as PropType<string>,
   },
   icon: {
@@ -80,12 +87,7 @@ export default defineComponent({
     'mouseleave',
   ],
   setup(props: TagProps, {emit}) {
-    const style = computed<Partial<CSSStyleDeclaration>>(() => {
-      const {width} = props;
-      return {
-        width,
-      };
-    });
+    const tagRef = ref<typeof ElTag>();
 
     const onClick = (ev?: Event) => {
       ev?.stopPropagation();
@@ -111,8 +113,44 @@ export default defineComponent({
       return cls;
     });
 
+    const setStyle = () => {
+      const {color, borderColor, width} = props;
+
+      // set style of tag
+      const elTag = tagRef.value?.$el;
+      if (!elTag) return;
+      const styleTagList = [];
+      const borderColor_ = borderColor ?? color;
+      if (color) styleTagList.push(`color: ${color}`);
+      if (borderColor_) styleTagList.push(`border-color: ${borderColor_}`);
+      if (width) styleTagList.push(`width: ${width}`);
+      const styleTag = styleTagList.join(';');
+      elTag.setAttribute('style', styleTag);
+
+      // set style of tag close
+      const elTagClose = elTag.querySelector('.el-tag__close');
+      const styleTagCloseList = [];
+      // const styleTagCloseHoverList = [];
+      if (color) {
+        styleTagCloseList.push(`color: ${color}`);
+        styleTagCloseList.push(`background-color: transparent`);
+        // styleTagCloseHoverList.push(`color: ${color}`);
+        // styleTagCloseHoverList.push(`background-color: transparent`);
+      }
+      const styleTagClose = styleTagCloseList.join(';');
+      elTagClose.setAttribute('style', styleTagClose);
+    };
+
+    watch(() => props.color, setStyle);
+    watch(() => props.backgroundColor, setStyle);
+    watch(() => props.borderColor, setStyle);
+
+    onMounted(() => {
+      setStyle();
+    });
+
     return {
-      style,
+      tagRef,
       onClick,
       onClose,
       cls,
@@ -143,5 +181,10 @@ export default defineComponent({
   .icon {
     margin-right: 5px;
   }
+}
+</style>
+<style scoped>
+.tag >>> .el-tag__close:hover {
+  font-weight: bolder;
 }
 </style>
