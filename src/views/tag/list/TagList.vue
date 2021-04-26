@@ -3,7 +3,6 @@
       :action-functions="actionFunctions"
       :nav-actions="navActions"
       :pagination="tablePagination"
-      :table-actions-prefix="tableActionsPrefix"
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
@@ -37,7 +36,6 @@ export default defineComponent({
       tableTotal,
       tablePagination,
       actionFunctions,
-      tableActionsPrefix,
     } = useTagList();
 
     return {
@@ -47,7 +45,6 @@ export default defineComponent({
       tableTotal,
       tablePagination,
       actionFunctions,
-      tableActionsPrefix,
     };
   },
 });

@@ -47,29 +47,40 @@
     <!-- ./Input -->
 
     <!-- Color Picker -->
-    <el-color-picker
+    <ColorPicker
         v-model="internalValue.color"
         :disabled="!isNew"
         :predefine="predefinedColors"
         class="color-picker"
         show-alpha
     />
+    <!--    <el-color-picker-->
+    <!--        v-model="internalValue.color"-->
+    <!--        :disabled="!isNew"-->
+    <!--        :predefine="predefinedColors"-->
+    <!--        class="color-picker"-->
+    <!--        show-alpha-->
+    <!--    />-->
     <!-- ./Color Picker -->
   </div>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, PropType, readonly, ref, watch} from 'vue';
 import {ElInput} from 'element-plus';
-import {predefinedColors} from '@/components/input/TagInput.vue';
 import {plainClone} from '@/utils/object';
 import useTagService from '@/services/tag/tagService';
 import {useStore} from 'vuex';
 import {FILTER_OP_CONTAINS, FILTER_OP_EQUAL} from '@/constants/filter';
 import {getNewTag} from '@/components/tag/tag';
+import {getPredefinedColors} from '@/utils/color';
+import ColorPicker from '@/components/color/ColorPicker.vue';
 
 export default defineComponent({
   name: 'TagInputItem',
+  components: {
+    ColorPicker,
+  },
   props: {
     modelValue: {
       type: Object as PropType<Tag>,
@@ -107,6 +118,9 @@ export default defineComponent({
     const inputRef = ref<typeof ElInput>();
 
     const isNew = computed<boolean>(() => !internalValue.value._id);
+
+    // predefined colors
+    const predefinedColors = readonly<string[]>(getPredefinedColors());
 
     watch(() => props.modelValue, () => {
       if (!props.modelValue) {
@@ -280,7 +294,9 @@ export default defineComponent({
 
 <style scoped>
 .tag-input-item >>> .input,
-.tag-input-item >>> .color-picker {
+.tag-input-item >>> .actions,
+.tag-input-item >>> .color-picker,
+.tag-input-item >>> .color-picker .el-color-picker {
   margin: 0;
   padding: 0;
   height: 28px;

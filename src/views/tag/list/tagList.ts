@@ -1,10 +1,10 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
 import {computed, h} from 'vue';
-import TagType from '@/components/tag/TagType.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
 import NavLink from '@/components/nav/NavLink.vue';
+import ColorPicker from '@/components/color/ColorPicker.vue';
 
 const useTagList = () => {
   // router
@@ -49,18 +49,22 @@ const useTagList = () => {
       }),
     },
     {
-      key: 'tag_type',
-      label: 'Tag Type',
-      icon: ['fa', 'list'],
+      key: 'color',
+      label: 'Color',
+      icon: ['fa', 'palette'],
       width: '120',
-      filterItems: [
-        {label: 'Customized', value: 'customized'},
-        {label: 'Configurable', value: 'configurable'},
-      ],
-      hasFilter: true,
-      value: (row: Tag) => {
-        return h(TagType, {type: row.tag_type});
+      value: ({color}: Tag) => {
+        return h(ColorPicker, {
+          modelValue: color,
+          disabled: true,
+        });
       }
+    },
+    {
+      key: 'description',
+      label: 'Description',
+      icon: ['fa', 'comment-alt'],
+      width: 'auto',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,

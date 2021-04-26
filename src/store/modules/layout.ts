@@ -1,19 +1,12 @@
 import {plainClone} from '@/utils/object';
+import {menuItems} from '@/router';
 
 export default {
   namespaced: true,
   state: {
     // sidebar
     sidebarCollapsed: false,
-    menuItems: [
-      {path: '/', title: 'Home', icon: ['fa', 'home']},
-      {path: '/nodes', title: 'Nodes', icon: ['fa', 'server']},
-      {path: '/projects', title: 'Projects', icon: ['fa', 'project-diagram']},
-      {path: '/spiders', title: 'Spiders', icon: ['fa', 'spider']},
-      {path: '/tasks', title: 'Tasks', icon: ['fa', 'tasks']},
-      {path: '/schedules', title: 'Schedules', icon: ['fa', 'clock']},
-      {path: '/users', title: 'Users', icon: ['fa', 'users']},
-    ],
+    menuItems,
 
     // tabs view
     activeTabId: undefined,

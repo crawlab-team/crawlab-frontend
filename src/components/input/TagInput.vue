@@ -47,10 +47,7 @@ import TagComp from '@/components/tag/Tag.vue';
 import Tab from '@/components/tab/Tab.vue';
 import TagInputItem from '@/components/input/TagInputItem.vue';
 import {cloneArray} from '@/utils/object';
-import colors from '@/styles/color.scss';
 import {getNewTag} from '@/components/tag/tag';
-
-export const predefinedColors = Object.values(colors);
 
 export default defineComponent({
   name: 'TagInput',

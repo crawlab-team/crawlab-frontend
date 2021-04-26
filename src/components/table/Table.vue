@@ -1,9 +1,9 @@
 <template>
-  <div class="table">
+  <div ref="tableWrapperRef" class="table">
     <!-- Table Body -->
     <el-table
         v-if="selectedColumns.length > 0"
-        ref="table"
+        ref="tableRef"
         :data="tableData"
         :fit="false"
         :row-key="rowKey"
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, onBeforeMount, PropType, ref, SetupContext} from 'vue';
+import {defineComponent, inject, PropType, ref, SetupContext} from 'vue';
 import {Table} from 'element-plus/lib/el-table/src/table.type';
 import TableCell from '@/components/table/TableCell.vue';
 import TableHeader from '@/components/table/TableHeader.vue';
@@ -166,7 +166,8 @@ export default defineComponent({
     'selection-change',
   ],
   setup(props: TableProps, ctx: SetupContext) {
-    const table = ref<Table>();
+    const tableWrapperRef = ref();
+    const tableRef = ref<Table>();
 
     const {
       tableData,
@@ -179,8 +180,7 @@ export default defineComponent({
       onShowColumnsTransfer,
       onHideColumnsTransfer,
       onColumnsChange,
-      initColumns,
-    } = useColumn(props, ctx, table);
+    } = useColumn(props, ctx, tableRef, tableWrapperRef);
 
     const {
       onHeaderChange,
@@ -196,19 +196,16 @@ export default defineComponent({
       onEdit,
       onDelete,
       onExport,
-    } = useAction(props, ctx, table, actionFunctions as ListLayoutActionFunctions);
+    } = useAction(props, ctx, tableRef, actionFunctions as ListLayoutActionFunctions);
 
     const {
       onCurrentChange,
       onSizeChange,
     } = usePagination(props, ctx);
 
-    onBeforeMount(() => {
-      initColumns();
-    });
-
     return {
-      table,
+      tableWrapperRef,
+      tableRef,
       tableData,
       internalSelectedColumnKeys,
       columnsTransferVisible,

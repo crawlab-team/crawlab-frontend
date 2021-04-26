@@ -1,5 +1,5 @@
 import {Ref, VNode} from 'vue';
-import {AnyObject, Store, StoreMutations, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
+import {AnyObject, Store, StoreMutations, TableColumnCtx, Table} from 'element-plus/lib/el-table/src/table.type';
 
 declare global {
   interface TableProps {

@@ -1,9 +1,10 @@
-import {computed, ref, Ref, SetupContext} from 'vue';
+import {computed, onBeforeMount, onMounted, ref, Ref, SetupContext} from 'vue';
 import {Table, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
 import {cloneArray, plainClone} from '@/utils/object';
 import useStore from '@/components/table/store';
+import {getColumnWidth, getTableWidth} from '@/utils/table';
 
-const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | undefined>) => {
+const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | undefined>, wrapper: Ref) => {
   const {columns} = props;
 
   const {store} = useStore(props, ctx, table);
@@ -54,17 +55,42 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     return columnKeysSorted === internalSelectedColumnKeysSorted;
   };
 
-  const updateColumns = (columnKeys: string[]) => {
+  const updateColumns = (columnKeys?: string[]) => {
     if (!store.value) return;
+
+    if (!columnKeys) {
+      columnKeys = selectedColumns.value.map(d => d.key);
+    }
 
     // selection column keys
     const selectionColumnKeys = columnsCtx.value.filter(d => d.type === 'selection').map(d => d.columnKey);
 
-    // column keys
-    const columns = selectionColumnKeys.concat(columnKeys).map(key => columnCtxMap.value[key]);
+    // table width
+    const tableWidth = getTableWidth();
+
+    // table width
+    let tableFixedTotalWidth = 0;
+    columns.map((d) => getColumnWidth(d) as number).filter(w => !!w).forEach((w: number) => {
+      tableFixedTotalWidth += w;
+    });
+
+    // auto width
+    const autoWidth = tableWidth ? (tableWidth - tableFixedTotalWidth - 40 - 2) : 0;
+
+    // columns to update
+    const columnsToUpdate = selectionColumnKeys.concat(columnKeys).map(key => {
+      const columnCtx = columnCtxMap.value[key];
+      const column = columnsMap.value[key];
+      if (column && column.width === 'auto') {
+        if (autoWidth) {
+          columnCtx.width = autoWidth;
+        }
+      }
+      return columnCtx;
+    });
 
     if (isColumnsEqual(columnKeys)) {
-      store.value?.commit('setColumns', columns);
+      store.value?.commit('setColumns', columnsToUpdate);
       store.value?.updateColumns();
     }
     internalSelectedColumnKeys.value = columnKeys;
@@ -82,6 +108,14 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     }
   };
 
+  onBeforeMount(() => {
+    initColumns();
+  });
+
+  onMounted(() => {
+    setTimeout(updateColumns, 100);
+  });
+
   return {
     internalSelectedColumnKeys,
     columnsMap,
@@ -90,7 +124,6 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     onShowColumnsTransfer,
     onHideColumnsTransfer,
     onColumnsChange,
-    initColumns,
   };
 };
 
