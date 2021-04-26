@@ -13,7 +13,6 @@
           @close="onClose($index, $event)"
           @delete="onDelete($index, $event)"
           @focus="onFocus($index, $event)"
-          @keyup.enter="onBlur($index, $event)"
       />
       <Tag
           v-else
@@ -49,24 +48,9 @@ import Tab from '@/components/tab/Tab.vue';
 import TagInputItem from '@/components/input/TagInputItem.vue';
 import {cloneArray} from '@/utils/object';
 import colors from '@/styles/color.scss';
+import {getNewTag} from '@/components/tag/tag';
 
-export const defaultTagInputValue = {
-  color: '#409eff',
-} as Tag;
-
-export const predefinedColors = [
-  colors.red,
-  colors.magenta,
-  colors.purple,
-  colors.geekBlue,
-  colors.blue,
-  colors.cyan,
-  colors.green,
-  colors.limeGreen,
-  colors.yellow,
-  colors.gold,
-  colors.orange,
-];
+export const predefinedColors = Object.values(colors);
 
 export default defineComponent({
   name: 'TagInput',
@@ -175,7 +159,7 @@ export default defineComponent({
 
       // add value to array
       selectedValue.value.push({
-        ...defaultTagInputValue,
+        ...getNewTag(),
         isEdit: true,
       });
 
@@ -209,12 +193,12 @@ export default defineComponent({
 
 .tag-input {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  height: 28px;
+  min-height: 28px;
 
   .tag-input-item {
     margin-right: 10px;
-    //line-height: 24px;
 
     &:last-child {
       margin-right: 0;

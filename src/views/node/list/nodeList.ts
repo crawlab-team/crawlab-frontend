@@ -3,11 +3,11 @@ import {useStore} from 'vuex';
 import {getDefaultUseListOptions} from '@/utils/list';
 import {computed, h} from 'vue';
 import NodeType from '@/components/node/NodeType.vue';
-import Tag from '@/components/tag/Tag.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {ElMessageBox} from 'element-plus';
 import useNodeService from '@/services/node/nodeService';
 import NavLink from '@/components/nav/NavLink.vue';
+import TagList from '@/components/tag/TagList.vue';
 
 type Node = CNode;
 
@@ -73,12 +73,8 @@ const useNodeList = () => {
       key: 'tags',
       label: 'Tags',
       icon: ['fa', 'hashtag'],
-      value: (row: Node) => {
-        if (!row.tags) return;
-        const tags = row.tags.map(tag => {
-          return h(Tag, {label: tag.name, type: 'primary'} as TagProps);
-        });
-        return h('div', tags);
+      value: ({tags}: Node) => {
+        return h(TagList, {tags});
       },
       width: '200',
     },

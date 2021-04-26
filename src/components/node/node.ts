@@ -8,7 +8,7 @@ import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_SWITCH} from '@/constants/form';
 type Node = CNode;
 
 // get new node
-const getNewNode = (): Node => {
+export const getNewNode = (): Node => {
   return {
     tags: [],
   };

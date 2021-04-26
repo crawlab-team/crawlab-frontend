@@ -7,7 +7,7 @@ import {getDefaultFormComponentData} from '@/utils/form';
 import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_INPUT_TEXTAREA, FORM_FIELD_TYPE_TAG_INPUT} from '@/constants/form';
 
 // get new project
-const getNewProject = (): Project => {
+export const getNewProject = (): Project => {
   return {
     tags: [],
   };

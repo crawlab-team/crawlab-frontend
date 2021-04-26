@@ -3,6 +3,7 @@ interface FilterConditionProps {
 }
 
 interface FilterConditionData {
-  type?: string;
+  key?: string;
+  op?: string;
   value?: string;
 }

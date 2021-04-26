@@ -15,7 +15,7 @@
         :class="isInvalidValue ? 'invalid' : ''"
         size="mini"
         placeholder="Value"
-        :disabled="condition.type === FILTER_CONDITION_TYPE_NOT_SET"
+        :disabled="condition.type === FILTER_OP_NOT_SET"
         @input="onValueChange"
     />
     <el-tooltip content="Delete Condition">
@@ -27,21 +27,21 @@
 <script lang="ts">
 import {computed, defineComponent} from 'vue';
 import {
-  FILTER_CONDITION_TYPE_CONTAINS,
-  FILTER_CONDITION_TYPE_EQUAL_TO,
-  FILTER_CONDITION_TYPE_GREATER_THAN,
-  FILTER_CONDITION_TYPE_GREATER_THAN_OR_EQUAL_TO,
-  FILTER_CONDITION_TYPE_LESS_THAN,
-  FILTER_CONDITION_TYPE_LESS_THAN_OR_EQUAL_TO,
-  FILTER_CONDITION_TYPE_NOT_CONTAINS,
-  FILTER_CONDITION_TYPE_NOT_EQUAL_TO,
-  FILTER_CONDITION_TYPE_NOT_SET,
-  FILTER_CONDITION_TYPE_REGEX,
+  FILTER_OP_CONTAINS,
+  FILTER_OP_EQUAL,
+  FILTER_OP_GREATER_THAN,
+  FILTER_OP_GREATER_THAN_EQUAL,
+  FILTER_OP_LESS_THAN,
+  FILTER_OP_LESS_THAN_EQUAL,
+  FILTER_OP_NOT_CONTAINS,
+  FILTER_OP_NOT_EQUAL,
+  FILTER_OP_NOT_SET,
+  FILTER_OP_REGEX,
 } from '@/constants/filter';
 import {plainClone} from '@/utils/object';
 
 export const defaultFilterCondition: FilterConditionData = {
-  type: FILTER_CONDITION_TYPE_NOT_SET,
+  op: FILTER_OP_NOT_SET,
   value: '',
 };
 
@@ -50,16 +50,16 @@ export const getDefaultFilterCondition = () => {
 };
 
 export const conditionTypesOptions: SelectOption[] = [
-  {value: FILTER_CONDITION_TYPE_NOT_SET, label: 'Not Set'},
-  {value: FILTER_CONDITION_TYPE_CONTAINS, label: 'Contains'},
-  {value: FILTER_CONDITION_TYPE_NOT_CONTAINS, label: 'Not Contains'},
-  {value: FILTER_CONDITION_TYPE_REGEX, label: 'Regex'},
-  {value: FILTER_CONDITION_TYPE_EQUAL_TO, label: 'Equal to'},
-  {value: FILTER_CONDITION_TYPE_NOT_EQUAL_TO, label: 'Not Equal to'},
-  {value: FILTER_CONDITION_TYPE_GREATER_THAN, label: 'Greater than'},
-  {value: FILTER_CONDITION_TYPE_LESS_THAN, label: 'Less than'},
-  {value: FILTER_CONDITION_TYPE_GREATER_THAN_OR_EQUAL_TO, label: 'Greater than or Equal to'},
-  {value: FILTER_CONDITION_TYPE_LESS_THAN_OR_EQUAL_TO, label: 'Less than or Equal to'},
+  {value: FILTER_OP_NOT_SET, label: 'Not Set'},
+  {value: FILTER_OP_CONTAINS, label: 'Contains'},
+  {value: FILTER_OP_NOT_CONTAINS, label: 'Not Contains'},
+  {value: FILTER_OP_REGEX, label: 'Regex'},
+  {value: FILTER_OP_EQUAL, label: 'Equal to'},
+  {value: FILTER_OP_NOT_EQUAL, label: 'Not Equal to'},
+  {value: FILTER_OP_GREATER_THAN, label: 'Greater than'},
+  {value: FILTER_OP_LESS_THAN, label: 'Less than'},
+  {value: FILTER_OP_GREATER_THAN_EQUAL, label: 'Greater than or Equal to'},
+  {value: FILTER_OP_LESS_THAN_EQUAL, label: 'Less than or Equal to'},
 ];
 
 export const conditionTypesMap: { [key: string]: string } = (() => {
@@ -85,7 +85,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const isInvalidValue = computed<boolean>(() => {
       const {condition} = props as FilterConditionProps;
-      if (condition?.type === FILTER_CONDITION_TYPE_NOT_SET) {
+      if (condition?.op === FILTER_OP_NOT_SET) {
         return false;
       }
       return !condition?.value;
@@ -94,8 +94,8 @@ export default defineComponent({
     const onTypeChange = (conditionType: string) => {
       const {condition} = props as FilterConditionProps;
       if (condition) {
-        condition.type = conditionType;
-        if (condition.type === FILTER_CONDITION_TYPE_NOT_SET) {
+        condition.op = conditionType;
+        if (condition.op === FILTER_OP_NOT_SET) {
           condition.value = undefined;
         }
       }
@@ -115,7 +115,7 @@ export default defineComponent({
     };
 
     return {
-      FILTER_CONDITION_TYPE_NOT_SET,
+      FILTER_OP_NOT_SET,
       conditionTypesOptions,
       isInvalidValue,
       onTypeChange,

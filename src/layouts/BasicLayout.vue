@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeMount} from 'vue';
+import {computed, defineComponent} from 'vue';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
 import {useStore} from 'vuex';
@@ -30,10 +30,6 @@ export default defineComponent({
     const {layout} = store.state as RootStoreState;
 
     const sidebarCollapsed = computed<boolean>(() => layout.sidebarCollapsed);
-
-    onBeforeMount(() => {
-      store.dispatch('tag/getAllList');
-    });
 
     return {
       sidebarCollapsed,

@@ -1,5 +1,4 @@
 import {computed, h} from 'vue';
-import ProjectTag from '@/components/project/ProjectTag.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {useStore} from 'vuex';
 import {ElMessageBox} from 'element-plus';
@@ -7,17 +6,9 @@ import useList from '@/layouts/list';
 import useProjectService from '@/services/project/projectService';
 import NavLink from '@/components/nav/NavLink.vue';
 import {useRouter} from 'vue-router';
+import TagList from '@/components/tag/TagList.vue';
 
 const useProjectList = () => {
-  // TODO: dummy data
-  const types = [
-    'primary',
-    'success',
-    'warning',
-    'danger',
-    'info',
-  ];
-
   // router
   const router = useRouter();
 
@@ -67,14 +58,8 @@ const useProjectList = () => {
       key: 'tags',
       label: 'Tags',
       icon: ['fa', 'hashtag'],
-      value: (row: Project) => {
-        if (!row.tags) return [];
-        const tags = row.tags.map(tag => h(ProjectTag, {
-          label: tag.name,
-          // TODO: dummy data
-          type: types[Math.floor(Math.random() * types.length)],
-        } as ProjectTagProps));
-        return h('div', tags);
+      value: ({tags}: Project) => {
+        return h(TagList, {tags});
       },
       width: '200',
     },

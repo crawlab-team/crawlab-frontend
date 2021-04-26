@@ -19,7 +19,7 @@ import {
 import useProject from '@/components/project/project';
 
 // get new spider
-const getNewSpider = (): Spider => {
+export const getNewSpider = (): Spider => {
   return {
     mode: TASK_MODE_RANDOM,
   };

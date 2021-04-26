@@ -65,6 +65,11 @@ const useRequest = () => {
   };
 
   const getList = async <T = any>(url: string, params?: ListRequestParams, opts?: AxiosRequestConfig) => {
+    // normalize conditions
+    if (params && Array.isArray(params.conditions)) {
+      params.conditions = JSON.stringify(params.conditions);
+    }
+
     // get request
     const res = await get<T, ListResponseWithData<T>, ListRequestParams>(url, params, opts);
 

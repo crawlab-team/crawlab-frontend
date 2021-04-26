@@ -15,11 +15,13 @@
           :fetch-suggestions="fetchSuggestions"
           :placeholder="placeholder"
           :size="size"
+          popper-class="tag-input-item-popper"
           class="input"
+          value-key="name"
           @blur="onBlur"
           @focus="onFocus"
-          @input="onInput"
-          @keyup.enter="onBlur"
+          @select="onSelect"
+          @keyup.enter="onCheck"
       />
       <div class="actions">
         <font-awesome-icon
@@ -59,8 +61,12 @@
 <script lang="ts">
 import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
 import {ElInput} from 'element-plus';
-import {defaultTagInputValue, predefinedColors} from '@/components/input/TagInput.vue';
+import {predefinedColors} from '@/components/input/TagInput.vue';
 import {plainClone} from '@/utils/object';
+import useTagService from '@/services/tag/tagService';
+import {useStore} from 'vuex';
+import {FILTER_OP_CONTAINS, FILTER_OP_EQUAL} from '@/constants/filter';
+import {getNewTag} from '@/components/tag/tag';
 
 export default defineComponent({
   name: 'TagInputItem',
@@ -92,7 +98,9 @@ export default defineComponent({
     'delete',
   ],
   setup(props: TagInputItemProps, {emit}) {
-    const internalValue = ref<Tag>(plainClone(defaultTagInputValue));
+    const store = useStore();
+
+    const internalValue = ref<Tag>(getNewTag());
 
     const isFocus = ref<boolean>(false);
 
@@ -102,11 +110,24 @@ export default defineComponent({
 
     watch(() => props.modelValue, () => {
       if (!props.modelValue) {
-        internalValue.value = plainClone(defaultTagInputValue);
+        internalValue.value = getNewTag();
       } else {
         internalValue.value = plainClone(props.modelValue);
       }
     });
+
+    const isDisabled = (key: string) => {
+      switch (key) {
+        case 'check':
+          return !internalValue.value.name;
+        case 'close':
+          return false;
+        case 'delete':
+          return false;
+        default:
+          return false;
+      }
+    };
 
     const onInput = (name: string) => {
       const value = {...props.modelValue, name};
@@ -131,21 +152,8 @@ export default defineComponent({
       inputRef.value?.focus();
     };
 
-    const onKeyUpEnter = () => {
-      emit('keyup.enter');
-    };
-
-    const isDisabled = (key: string) => {
-      switch (key) {
-        case 'check':
-          return !internalValue.value.name;
-        case 'close':
-          return false;
-        case 'delete':
-          return false;
-        default:
-          return false;
-      }
+    const onSelect = (value: Tag) => {
+      internalValue.value = value;
     };
 
     const onCheck = () => {
@@ -166,20 +174,33 @@ export default defineComponent({
 
     const ctx = inject<ListStoreContext<BaseModel>>('store-context');
 
-    const fetchSuggestions = (queryString: string, callback: (data: Tag[]) => void) => {
-      const ns = ctx?.namespace;
-      if (!ns) return callback([]);
-      const allTags = ctx?.store?.getters[`${ctx?.namespace}/allTags`] || [] as Tag[];
-      let tags = allTags.filter((d: Tag) => d.name?.startsWith(queryString));
-      if (tags.length === 0) {
-        tags = allTags.filter((d: Tag) => d.name?.includes(queryString));
+    const fetchSuggestions = async (queryString: string, callback: (data: Tag[]) => void) => {
+      const {
+        getList,
+      } = useTagService(store);
+      const params = {
+        page: 1,
+        size: 50,
+        conditions: [
+          {key: 'col', op: FILTER_OP_EQUAL, value: `${ctx?.namespace}s`}
+        ]
+      } as ListRequestParams;
+      if (queryString) {
+        const conditions = params.conditions as FilterConditionData[];
+        conditions.push({key: 'name', op: FILTER_OP_CONTAINS, value: queryString});
       }
-      return callback(tags);
+      try {
+        const res = await getList(params);
+        return callback(res.data || []);
+      } catch (e) {
+        console.error(e);
+        callback([]);
+      }
     };
 
     onMounted(() => {
       if (!props.modelValue) {
-        internalValue.value = plainClone(defaultTagInputValue);
+        internalValue.value = getNewTag();
       } else {
         internalValue.value = plainClone(props.modelValue);
       }
@@ -196,10 +217,10 @@ export default defineComponent({
       onBlur,
       onFocus,
       focus,
-      onKeyUpEnter,
       onCheck,
       onClose,
       onDelete,
+      onSelect,
       isDisabled,
       fetchSuggestions,
     };
@@ -216,6 +237,7 @@ export default defineComponent({
   //height: 28px;
 
   .input-wrapper {
+    display: inherit;
     border: none;
     position: relative;
     height: 28px;
@@ -302,4 +324,14 @@ export default defineComponent({
   width: 28px;
 }
 
+.tag-input-item >>> .el-autocomplete-suggestion__list > li {
+  height: 28px;
+}
+
+</style>
+
+<style>
+.tag-input-item-popper >>> .el-autocomplete-suggestion__list > li {
+  height: 28px;
+}
 </style>

@@ -170,6 +170,9 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
       commit('setTableData', {data: res.data || [], total: res.total});
       return res;
     },
+    getListWithParams: async (_: StoreActionContext<BaseStoreState<T>>, params?: ListRequestParams) => {
+      return await getList(params);
+    },
     getAllList: async ({commit}: StoreActionContext<BaseStoreState<T>>) => {
       const res = await getAll();
       commit('setAllList', res.data || []);

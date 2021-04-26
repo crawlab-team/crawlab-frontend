@@ -58,7 +58,7 @@ import TableHeaderDialogFilter from '@/components/table/TableHeaderDialogFilter.
 import TableHeaderDialogSort from '@/components/table/TableHeaderDialogSort.vue';
 import variables from '@/styles/variables.scss';
 import {plainClone} from '@/utils/object';
-import {FILTER_CONDITION_TYPE_NOT_SET} from '@/constants/filter';
+import {FILTER_OP_NOT_SET} from '@/constants/filter';
 
 export default defineComponent({
   name: 'TableHeaderFilter',
@@ -111,7 +111,7 @@ export default defineComponent({
     const items = computed<string[]>(() => internalFilter.value?.items || []);
 
     const trueConditions = computed<FilterConditionData[]>(() => {
-      return conditions.value?.filter(d => d.type !== FILTER_CONDITION_TYPE_NOT_SET);
+      return conditions.value?.filter(d => d.op !== FILTER_OP_NOT_SET);
     });
 
     const isEmptyFilter = computed<boolean>(() => {

@@ -42,7 +42,7 @@ import TableHeaderAction from '@/components/table/TableHeaderAction.vue';
 import {conditionTypesMap} from '@/components/filter/FilterCondition.vue';
 import {ASCENDING, DESCENDING} from '@/constants/sort';
 import variables from '@/styles/variables.scss';
-import {FILTER_CONDITION_TYPE_NOT_SET} from '@/constants/filter';
+import {FILTER_OP_NOT_SET} from '@/constants/filter';
 import Icon from '@/components/icon/Icon.vue';
 
 export default defineComponent({
@@ -102,8 +102,8 @@ export default defineComponent({
 
         // filter conditions
         if (conditions && conditions.length > 0) {
-          filterTooltip += '<br>' + conditions.filter(d => d.type !== FILTER_CONDITION_TYPE_NOT_SET)
-              .map(d => `<span style="color: ${variables.primaryColor};margin-right: 5px">${conditionTypesMap[d.type || '']}:</span> <span style="color: ${variables.warningColor};">"${d.value}"</span>`)
+          filterTooltip += '<br>' + conditions.filter(d => d.op !== FILTER_OP_NOT_SET)
+              .map(d => `<span style="color: ${variables.primaryColor};margin-right: 5px">${conditionTypesMap[d.op || '']}:</span> <span style="color: ${variables.warningColor};">"${d.value}"</span>`)
               .join('<br>');
           filterIsHtml = true;
         }

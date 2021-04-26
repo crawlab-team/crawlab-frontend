@@ -1,6 +1,7 @@
 interface ListRequestParams {
   page?: number;
   size?: number;
+  conditions?: FilterConditionData[] | string;
 }
 
 interface BatchRequestPayload {

@@ -222,3 +222,9 @@ export default defineComponent({
   }
 }
 </style>
+<style scoped>
+.list-layout >>> .tag {
+  margin-right: 10px;
+}
+
+</style>

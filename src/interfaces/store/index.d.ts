@@ -91,6 +91,7 @@ declare global {
     updateById: StoreAction<BaseStoreState<T>, { id: string; form: T }>;
     deleteById: StoreAction<BaseStoreState<T>, string>;
     getList: StoreAction<BaseStoreState<T>>;
+    getListWithParams: StoreAction<BaseStoreState<T>, ListRequestParams>;
     getAllList: StoreAction<BaseStoreState<T>>;
     createList: StoreAction<BaseStoreState<T>, T[]>;
     updateList: StoreAction<BaseStoreState<T>, BatchRequestPayloadWithData<T>>;

@@ -15,7 +15,7 @@
         @mouseleave="$emit('mouseleave')"
     >
       <Icon :icon="icon" :spinning="spinning"/>
-      <span>{{ label }}</span>
+      <span>{{ label || tag?.name }}</span>
     </el-tag>
   </el-tooltip>
 </template>
@@ -34,7 +34,7 @@ export const tagProps = {
   },
   type: {
     type: String as PropType<BasicType>,
-    default: 'primary',
+    default: 'plain',
   },
   color: {
     type: String as PropType<string>,
@@ -73,6 +73,9 @@ export const tagProps = {
   disabled: {
     type: Boolean,
     default: false,
+  },
+  tag: {
+    type: Object as PropType<Tag>,
   },
 };
 
@@ -114,14 +117,17 @@ export default defineComponent({
     });
 
     const setStyle = () => {
-      const {color, borderColor, width} = props;
+      const {color, borderColor, width, tag} = props;
+
+      // normalize colors
+      const color_ = color ?? tag?.color;
+      const borderColor_ = borderColor ?? color_;
 
       // set style of tag
       const elTag = tagRef.value?.$el;
       if (!elTag) return;
       const styleTagList = [];
-      const borderColor_ = borderColor ?? color;
-      if (color) styleTagList.push(`color: ${color}`);
+      if (color_) styleTagList.push(`color: ${color_}`);
       if (borderColor_) styleTagList.push(`border-color: ${borderColor_}`);
       if (width) styleTagList.push(`width: ${width}`);
       const styleTag = styleTagList.join(';');
@@ -129,13 +135,11 @@ export default defineComponent({
 
       // set style of tag close
       const elTagClose = elTag.querySelector('.el-tag__close');
+      if (!elTagClose) return;
       const styleTagCloseList = [];
-      // const styleTagCloseHoverList = [];
-      if (color) {
-        styleTagCloseList.push(`color: ${color}`);
+      if (color_) {
+        styleTagCloseList.push(`color: ${color_}`);
         styleTagCloseList.push(`background-color: transparent`);
-        // styleTagCloseHoverList.push(`color: ${color}`);
-        // styleTagCloseHoverList.push(`background-color: transparent`);
       }
       const styleTagClose = styleTagCloseList.join(';');
       elTagClose.setAttribute('style', styleTagClose);
@@ -177,14 +181,14 @@ export default defineComponent({
       cursor: pointer;
     }
   }
-
-  .icon {
-    margin-right: 5px;
-  }
 }
 </style>
 <style scoped>
 .tag >>> .el-tag__close:hover {
   font-weight: bolder;
+}
+
+.tag >>> .icon {
+  margin-right: 5px;
 }
 </style>
