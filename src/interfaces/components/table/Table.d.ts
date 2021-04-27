@@ -1,5 +1,6 @@
 import {Ref, VNode} from 'vue';
-import {AnyObject, Store, StoreMutations, TableColumnCtx, Table} from 'element-plus/lib/el-table/src/table.type';
+import {AnyObject, Store, StoreMutations, TableColumnCtx} from 'element-plus/lib/el-table/src/table.type';
+import {TABLE_ACTION_CUSTOMIZE_COLUMNS, TABLE_ACTION_EXPORT,} from '@/constants/table';
 
 declare global {
   interface TableProps {
@@ -88,4 +89,9 @@ declare global {
     page: number;
     size: number;
   }
+
+  type TableActionName =
+    ActionName |
+    TABLE_ACTION_EXPORT |
+    TABLE_ACTION_CUSTOMIZE_COLUMNS;
 }
