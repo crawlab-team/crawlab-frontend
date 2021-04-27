@@ -75,7 +75,7 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
     });
 
     // auto width
-    const autoWidth = tableWidth ? (tableWidth - tableFixedTotalWidth - 40 - 2) : 0;
+    const autoWidth = tableWidth ? (tableWidth - tableFixedTotalWidth - 40 - 12) : 0;
 
     // columns to update
     const columnsToUpdate = selectionColumnKeys.concat(columnKeys).map(key => {
@@ -83,17 +83,23 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
       const column = columnsMap.value[key];
       if (column && column.width === 'auto') {
         if (autoWidth) {
-          columnCtx.width = autoWidth;
+          columnCtx.width = autoWidth > 400 ? autoWidth : 400;
         }
       }
       return columnCtx;
     });
 
+    // update columns
     if (isColumnsEqual(columnKeys)) {
       store.value?.commit('setColumns', columnsToUpdate);
       store.value?.updateColumns();
     }
     internalSelectedColumnKeys.value = columnKeys;
+
+    // set table width to 100%
+    // wrapper.value.querySelectorAll('.el-table__body').forEach((el: HTMLTableElement) => {
+    //   el.setAttribute('style', 'width: 100%');
+    // });
   };
 
   const onColumnsChange = (value: string[]) => {
@@ -113,7 +119,7 @@ const useColumns = (props: TableProps, ctx: SetupContext, table: Ref<Table | und
   });
 
   onMounted(() => {
-    setTimeout(updateColumns, 100);
+    setTimeout(updateColumns, 0);
   });
 
   return {

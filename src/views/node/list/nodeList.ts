@@ -82,7 +82,7 @@ const useNodeList = () => {
       key: 'description',
       label: 'Description',
       icon: ['fa', 'comment-alt'],
-      width: '400',
+      width: 'auto',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,

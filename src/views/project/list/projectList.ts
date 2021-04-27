@@ -67,7 +67,7 @@ const useProjectList = () => {
       key: 'description',
       label: 'Description',
       icon: ['fa', 'comment-alt'],
-      width: '300',
+      width: 'auto',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,
