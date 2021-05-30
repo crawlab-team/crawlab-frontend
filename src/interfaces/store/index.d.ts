@@ -50,6 +50,7 @@ declare global {
     sidebarCollapsed: boolean;
     actionsCollapsed: boolean;
     tabs: NavItem[];
+    afterSave: (() => Promise)[];
   }
 
   interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
@@ -83,6 +84,7 @@ declare global {
     collapseSidebar: StoreMutation<BaseStoreState<T>>;
     expandActions: StoreMutation<BaseStoreState<T>>;
     collapseActions: StoreMutation<BaseStoreState<T>>;
+    setAfterSave: StoreMutation<BaseStoreState<T>, (() => Promise)[]>;
   }
 
   interface BaseStoreActions<T = any> extends ActionTree<BaseStoreState<T>, RootStoreState> {

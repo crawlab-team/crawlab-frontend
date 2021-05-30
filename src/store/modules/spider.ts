@@ -24,6 +24,7 @@ const state = {
     {id: 'settings', title: 'Settings'},
   ],
   fileNavItems: [],
+  activeNavItem: undefined,
   fileContent: '',
 } as SpiderStoreState;
 
@@ -41,6 +42,12 @@ const mutations = {
   ...getDefaultStoreMutations<Spider>(),
   setFileNavItems: (state: SpiderStoreState, navItems: FileNavItem[]) => {
     state.fileNavItems = navItems;
+  },
+  setActiveFileNavItem: (state: SpiderStoreState, navItem: FileNavItem) => {
+    state.activeNavItem = navItem;
+  },
+  resetActiveFileNavItem: (state: SpiderStoreState) => {
+    state.activeNavItem = undefined;
   },
   setFileContent: (state: SpiderStoreState, content: string) => {
     state.fileContent = content;

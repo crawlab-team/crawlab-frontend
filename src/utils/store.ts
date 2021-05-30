@@ -22,6 +22,7 @@ export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreStat
     sidebarCollapsed: false,
     actionsCollapsed: false,
     tabs: [{id: 'overview', title: 'Overview'}],
+    afterSave: [],
   };
 };
 
@@ -129,6 +130,9 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     },
     collapseActions: (state: BaseStoreState<T>) => {
       state.actionsCollapsed = true;
+    },
+    setAfterSave: (state: BaseStoreState<T>, fnList) => {
+      state.afterSave = fnList;
     },
   };
 };

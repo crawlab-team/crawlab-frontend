@@ -63,6 +63,8 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
 
   const primaryRoutePath = computed<string>(() => getRoutePathByDepth(route.path));
 
+  const afterSave = computed<Function[]>(() => state.afterSave);
+
   const getForm = async () => {
     if (!activeId.value) return;
     return await store.dispatch(`${ns}/getById`, activeId.value);
@@ -117,6 +119,9 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
       store.dispatch(`${ns}/getAllList`),
       store.dispatch(`${ns}/getById`, activeId.value),
     ]);
+
+    // after save
+    await afterSave.value.map(fn => fn());
   };
 
   onBeforeMount(async () => {

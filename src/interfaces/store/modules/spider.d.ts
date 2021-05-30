@@ -2,6 +2,7 @@ type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreGetters, Spider
 
 interface SpiderStoreState extends BaseStoreState<Spider> {
   fileNavItems: FileNavItem[];
+  activeNavItem?: FileNavItem;
   fileContent: string;
 }
 
@@ -9,6 +10,8 @@ type SpiderStoreGetters = BaseStoreGetters<Spider>;
 
 interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
   setFileNavItems: StoreMutation<BaseStoreState<Spider>, FileNavItem[]>;
+  setActiveFileNavItem: StoreMutation<BaseStoreState<Spider>, FileNavItem>;
+  resetActiveFileNavItem: StoreMutation<BaseStoreState<Spider>>;
   setFileContent: StoreMutation<BaseStoreState<Spider>, string>;
 }
 

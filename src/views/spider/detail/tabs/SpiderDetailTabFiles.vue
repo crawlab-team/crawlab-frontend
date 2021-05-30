@@ -2,6 +2,7 @@
   <FileEditor
       ref="fileEditor"
       :nav-items="navItems"
+      :active-nav-item="activeNavItem"
       :content="content"
       @content-change="onContentChange"
       @save-file="onSaveFile"
@@ -55,6 +56,9 @@ export default defineComponent({
 
     // file nav items
     const navItems = computed<FileNavItem[]>(() => state.fileNavItems);
+
+    // active file nav item
+    const activeNavItem = computed<FileNavItem | undefined>(() => state.activeNavItem);
 
     // file content
     const content = computed<string>(() => state.fileContent);
@@ -162,6 +166,7 @@ export default defineComponent({
     return {
       id,
       navItems,
+      activeNavItem,
       content,
       fileEditor,
       onSaveFile,

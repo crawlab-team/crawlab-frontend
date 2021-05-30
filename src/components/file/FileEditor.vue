@@ -121,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, onUnmounted, ref, watch} from 'vue';
+import {computed, defineComponent, onMounted, onUnmounted, PropType, ref, watch} from 'vue';
 import CodeMirror, {Editor, EditorConfiguration, KeyMap} from 'codemirror';
 import {MimeType} from 'codemirror/mode/meta';
 import {useStore} from 'vuex';
@@ -164,6 +164,10 @@ export default defineComponent({
       required: true,
       default: '',
     },
+    activeNavItem: {
+      type: Object as PropType<FileNavItem>,
+      required: false,
+    },
     navItems: {
       type: Array,
       required: true,
@@ -186,6 +190,7 @@ export default defineComponent({
     'ctx-menu-delete',
   ],
   setup(props, {emit}) {
+    const ns = 'spider';
     const store = useStore();
     const {file} = store.state as RootStoreState;
 
@@ -195,7 +200,7 @@ export default defineComponent({
 
     const tabs = ref<FileNavItem[]>([]);
 
-    const activeFileItem = ref<FileNavItem>();
+    const activeFileItem = computed<FileNavItem | undefined>(() => props.activeNavItem);
 
     const style = ref<FileEditorStyle>({});
 
@@ -406,7 +411,7 @@ export default defineComponent({
       // add tab
       if (item && !tabs.value.find(t => t.path === item.path)) {
         if (tabs.value.length === 0) {
-          activeFileItem.value = item;
+          store.commit(`${ns}/setActiveFileNavItem`, item);
           editor?.focus();
         }
         tabs.value.push(item);
@@ -419,7 +424,7 @@ export default defineComponent({
     };
 
     const onNavItemDbClick = (item: FileNavItem) => {
-      activeFileItem.value = item;
+      store.commit(`${ns}/setActiveFileNavItem`, item);
       emit('node-db-click', item);
 
       // update tabs
@@ -464,7 +469,7 @@ export default defineComponent({
     };
 
     const onTabClick = (tab: FileNavItem) => {
-      activeFileItem.value = tab;
+      store.commit(`${ns}/setActiveFileNavItem`, tab);
       emit('tab-click', tab);
 
       // get from cache and update content
@@ -479,16 +484,18 @@ export default defineComponent({
       if (activeFileItem.value) {
         if (activeFileItem.value.path === tab.path) {
           if (idx === 0) {
-            activeFileItem.value = tabs.value[0];
+            store.commit(`${ns}/setActiveFileNavItem`, tabs.value[0]);
           } else {
-            activeFileItem.value = tabs.value[idx - 1];
+            store.commit(`${ns}/setActiveFileNavItem`, tabs.value[idx - 1]);
           }
         }
 
         // get from cache
-        if (activeFileItem.value) {
-          getContentCache(activeFileItem.value);
-        }
+        setTimeout(() => {
+          if (activeFileItem.value) {
+            getContentCache(activeFileItem.value);
+          }
+        }, 0);
       }
 
       // delete in cache
@@ -501,7 +508,7 @@ export default defineComponent({
 
     const onTabCloseOthers = (tab: FileNavItem) => {
       tabs.value = [tab];
-      activeFileItem.value = tab;
+      store.commit(`${ns}/setActiveFileNavItem`, tab);
 
       // clear cache and update current tab content
       deleteOtherContentCache(tab);
@@ -509,7 +516,7 @@ export default defineComponent({
 
     const onTabCloseAll = () => {
       tabs.value = [];
-      activeFileItem.value = undefined;
+      store.commit(`${ns}/resetActiveFileNavItem`);
 
       // clear cache
       clearContentCache();
@@ -528,7 +535,7 @@ export default defineComponent({
     };
 
     const onClickShowMoreContextMenuItem = (tab: FileNavItem) => {
-      activeFileItem.value = tab;
+      store.commit(`${ns}/setActiveFileNavItem`, tab);
       emit('tab-click', tab);
     };
 
