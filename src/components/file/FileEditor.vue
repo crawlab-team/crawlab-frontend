@@ -44,6 +44,11 @@
           @node-click="onNavItemClick"
           @node-db-click="onNavItemDbClick"
           @node-drop="onNavItemDrop"
+          @ctx-menu-new-file="onContextMenuNewFile"
+          @ctx-menu-new-directory="onContextMenuNewDirectory"
+          @ctx-menu-rename="onContextMenuRename"
+          @ctx-menu-clone="onContextMenuClone"
+          @ctx-menu-delete="onContextMenuDelete"
       />
     </div>
     <div class="file-editor-content">
@@ -117,7 +122,8 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, onUnmounted, ref, watch} from 'vue';
-import {Editor, EditorConfiguration} from 'codemirror';
+import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
+import {MimeType} from 'codemirror/mode/meta';
 import {useStore} from 'vuex';
 import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
 import variables from '@/styles/variables.scss';
@@ -127,13 +133,7 @@ import {FILE_ROOT} from '@/constants/file';
 import 'codemirror/lib/codemirror.css';
 
 // codemirror mode
-import 'codemirror/mode/go/go.js';
-import 'codemirror/mode/python/python.js';
-import 'codemirror/mode/javascript/javascript.js';
-import 'codemirror/mode/shell/shell.js';
-import 'codemirror/mode/markdown/markdown.js';
-import 'codemirror/mode/php/php.js';
-import 'codemirror/mode/yaml/yaml.js';
+import 'codemirror/mode/meta';
 
 // codemirror utils
 import '@/utils/codemirror';
@@ -143,6 +143,9 @@ import FileEditorNavMenu from '@/components/file/FileEditorNavMenu.vue';
 import FileEditorNavTabs from '@/components/file/FileEditorNavTabs.vue';
 import FileEditorSettingsDialog from '@/components/file/FileEditorSettingsDialog.vue';
 import FileEditorNavTabsShowMoreContextMenu from '@/components/file/FileEditorNavTabsShowMoreContextMenu.vue';
+
+// codemirror mode import cache
+const codeMirrorModeCache = new Set<string>();
 
 export default defineComponent({
   name: 'FileEditor',
@@ -172,6 +175,11 @@ export default defineComponent({
     'node-click',
     'node-db-click',
     'node-drop',
+    'ctx-menu-new-file',
+    'ctx-menu-new-directory',
+    'ctx-menu-rename',
+    'ctx-menu-clone',
+    'ctx-menu-delete',
   ],
   setup(props, {emit}) {
     const store = useStore();
@@ -213,39 +221,34 @@ export default defineComponent({
       return !!activeFileItem.value;
     });
 
-    const language = computed<string>(() => {
+    const language = computed<MimeType | undefined>(() => {
       const fileName = activeFileItem.value?.name;
-      if (!fileName) return '';
-      if (fileName.match(/\.js$/)) {
-        return 'text/javascript';
-      } else if (fileName.match(/\.py$/)) {
-        return 'text/x-python';
-      } else if (fileName.match(/\.go$/)) {
-        return 'text/x-go';
-      } else if (fileName.match(/\.sh$/)) {
-        return 'text/x-shell';
-      } else if (fileName.match(/\.php$/)) {
-        return 'text/x-php';
-      } else if (fileName.match(/\.md$/)) {
-        return 'text/x-markdown';
-      } else if (fileName.match('Spiderfile')) {
-        return 'text/x-yaml';
-      } else {
-        return 'text';
-      }
+      if (!fileName) return;
+      return CodeMirror.findModeByFileName(fileName);
+    });
+
+    const languageMime = computed<string | undefined>(() => language.value?.mime);
+
+    watch(() => language.value, async () => {
+      const mode = language.value?.mode;
+      if (!mode || codeMirrorModeCache.has(mode)) return;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      await import(`codemirror/mode/${mode}/${mode}.js`);
+      codeMirrorModeCache.add(mode);
     });
 
     const options = computed<FileEditorConfiguration>(() => {
       const {editorOptions} = file as FileStoreState;
       return {
-        mode: language.value,
+        mode: languageMime.value || 'text',
         ...editorOptions,
       };
     });
 
     const content = computed<string>(() => {
       const {content} = props as FileEditorProps;
-      return content;
+      return content || '';
     });
 
     const extraStyle = computed<string>(() => {
@@ -341,6 +344,26 @@ export default defineComponent({
       emit('node-drop', items);
     };
 
+    const onContextMenuNewFile = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-new-file', item, name);
+    };
+
+    const onContextMenuNewDirectory = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-new-directory', item, name);
+    };
+
+    const onContextMenuRename = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-rename', item, name);
+    };
+
+    const onContextMenuClone = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-clone', item, name);
+    };
+
+    const onContextMenuDelete = (item: FileNavItem) => {
+      emit('ctx-menu-delete', item);
+    };
+
     const onContentChange = (value: string) => {
       emit('content-change', value);
     };
@@ -402,7 +425,7 @@ export default defineComponent({
     };
 
     const updateEditorContent = () => {
-      editor?.setValue(content.value);
+      editor?.setValue(content.value || '');
     };
 
     const updateStyle = () => {
@@ -515,7 +538,7 @@ export default defineComponent({
       showCodeMirrorEditor,
       navTabs,
       showMoreContextMenuVisible,
-      language,
+      languageMime,
       options,
       style,
       files,
@@ -524,6 +547,11 @@ export default defineComponent({
       onNavItemClick,
       onNavItemDbClick,
       onNavItemDrop,
+      onContextMenuNewFile,
+      onContextMenuNewDirectory,
+      onContextMenuRename,
+      onContextMenuClone,
+      onContextMenuDelete,
       onContentChange,
       onTabClick,
       onTabClose,
@@ -534,6 +562,7 @@ export default defineComponent({
       onShowMoreShow,
       onShowMoreHide,
       onClickShowMoreContextMenuItem,
+      updateTabs,
     };
   },
 });

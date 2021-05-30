@@ -1,11 +1,24 @@
 type SpiderStoreModule = BaseModule<SpiderStoreState, SpiderStoreGetters, SpiderStoreMutations, SpiderStoreActions>;
 
-type SpiderStoreState = BaseStoreState<Spider>;
+interface SpiderStoreState extends BaseStoreState<Spider> {
+  fileNavItems: FileNavItem[];
+  fileContent: string;
+}
 
 type SpiderStoreGetters = BaseStoreGetters<Spider>;
 
-type SpiderStoreMutations = BaseStoreMutations<Spider>;
+interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
+  setFileNavItems: StoreMutation<BaseStoreState<Spider>, FileNavItem[]>;
+  setFileContent: StoreMutation<BaseStoreState<Spider>, string>;
+}
 
 interface SpiderStoreActions extends BaseStoreActions<Spider> {
-  runById: (id: string) => Promise<Response>;
+  // runById: StoreAction<BaseStoreState, { id: string }>;
+  listDir: StoreAction<BaseStoreState, FileRequestPayload>;
+  getFile: StoreAction<BaseStoreState, FileRequestPayload>;
+  getFileInfo: StoreAction<BaseStoreState, FileRequestPayload>;
+  saveFile: StoreAction<BaseStoreState, FileRequestPayload>;
+  renameFile: StoreAction<BaseStoreState, FileRequestPayload>;
+  deleteFile: StoreAction<BaseStoreState, FileRequestPayload>;
+  copyFile: StoreAction<BaseStoreState, FileRequestPayload>;
 }

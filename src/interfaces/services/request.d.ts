@@ -15,6 +15,13 @@ interface BatchRequestPayloadWithData<T = any> extends BatchRequestPayload {
 
 type BatchRequestPayloadWithJsonStringData = BatchRequestPayloadWithData<string>;
 
+interface FileRequestPayload {
+  id?: string;
+  path?: string;
+  new_path?: string;
+  data?: string;
+}
+
 interface Response {
   status: string;
   message: string;
@@ -27,7 +34,7 @@ interface ResponseWithData<T = any> extends Response {
   data?: T;
 }
 
-interface ListResponseWithData<T = any> extends ResponseWithData {
+interface ResponseWithListData<T = any> extends ResponseWithData {
   data?: T[];
   total: number;
 }

@@ -1,5 +1,5 @@
 <template>
-  <ContextMenu :placement="placement" :visible="visible" @hide="$emit('hide')">
+  <ContextMenu :clicking="clicking" :placement="placement" :visible="visible" @hide="$emit('hide')">
     <template #default>
       <ContextMenuList :items="items" @hide="$emit('hide')"/>
     </template>

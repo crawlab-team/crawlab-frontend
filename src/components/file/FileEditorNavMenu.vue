@@ -31,8 +31,15 @@
     >
       <template #default="{ data }">
         <FileEditorNavMenuContextMenu
+            :clicking="contextMenuClicking"
             :visible="isShowContextMenu(data)"
             @hide="onNodeContextMenuHide"
+            @clone="onNodeContextMenuClone(data)"
+            @delete="onNodeContextMenuDelete(data)"
+            @rename="onNodeContextMenuRename(data)"
+            @new-file="onNodeContextMenuNewFile(data)"
+            @new-directory="onNodeContextMenuNewDirectory(data)"
+
         >
           <div :class="getItemClass(data)" class="nav-item-wrapper">
             <div class="background"/>
@@ -59,6 +66,7 @@ import {DropType} from 'element-plus/lib/el-tree/src/tree.type';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import {KEY_CONTROL, KEY_META} from '@/constants/keyboard';
 import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
+import {ElMessageBox} from 'element-plus';
 
 export default defineComponent({
   name: 'FileEditorNavMenu',
@@ -98,6 +106,11 @@ export default defineComponent({
     'node-click',
     'node-db-click',
     'node-drop',
+    'ctx-menu-new-file',
+    'ctx-menu-new-directory',
+    'ctx-menu-rename',
+    'ctx-menu-clone',
+    'ctx-menu-delete',
   ],
   setup(props, ctx) {
     const {emit} = ctx;
@@ -116,6 +129,8 @@ export default defineComponent({
     const isCtrlKeyPressed = ref<boolean>(false);
 
     const activeContextMenuItem = ref<FileNavItem>();
+
+    const contextMenuClicking = ref<boolean>(false);
 
     const resetClickStatus = () => {
       clickStatus.clicked = false;
@@ -162,11 +177,40 @@ export default defineComponent({
     };
 
     const onNodeContextMenuShow = (ev: Event, item: FileNavItem) => {
+      contextMenuClicking.value = true;
       activeContextMenuItem.value = item;
+      setTimeout(() => {
+        contextMenuClicking.value = false;
+      }, 500);
     };
 
     const onNodeContextMenuHide = () => {
       activeContextMenuItem.value = undefined;
+    };
+
+    const onNodeContextMenuNewFile = async (item: FileNavItem) => {
+      const res = await ElMessageBox.prompt('Please enter the name of the new file', 'New File');
+      emit('ctx-menu-new-file', item, res.value);
+    };
+
+    const onNodeContextMenuNewDirectory = async (item: FileNavItem) => {
+      const res = await ElMessageBox.prompt('Please enter the name of the new directory', 'New Directory');
+      emit('ctx-menu-new-directory', item, res.value);
+    };
+
+    const onNodeContextMenuRename = async (item: FileNavItem) => {
+      const res = await ElMessageBox.prompt('Please enter the new name', 'Rename');
+      emit('ctx-menu-rename', item, res.value);
+    };
+
+    const onNodeContextMenuClone = async (item: FileNavItem) => {
+      const res = await ElMessageBox.prompt('Please enter the new name', 'Clone');
+      emit('ctx-menu-clone', item, res.value);
+    };
+
+    const onNodeContextMenuDelete = async (item: FileNavItem) => {
+      await ElMessageBox.confirm('Are you sure to delete?', 'Delete');
+      emit('ctx-menu-delete', item);
     };
 
     const onNodeDragEnter = (draggingNode: Node, dropNode: Node) => {
@@ -246,9 +290,15 @@ export default defineComponent({
     return {
       activeContextMenuItem,
       fileEditorNavMenu,
+      contextMenuClicking,
       onNodeClick,
       onNodeContextMenuShow,
       onNodeContextMenuHide,
+      onNodeContextMenuNewFile,
+      onNodeContextMenuNewDirectory,
+      onNodeContextMenuRename,
+      onNodeContextMenuClone,
+      onNodeContextMenuDelete,
       onNodeDragEnter,
       onNodeDragLeave,
       onNodeDragEnd,

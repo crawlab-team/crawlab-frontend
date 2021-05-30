@@ -71,7 +71,7 @@ const useRequest = () => {
     }
 
     // get request
-    const res = await get<T, ListResponseWithData<T>, ListRequestParams>(url, params, opts);
+    const res = await get<T, ResponseWithListData<T>, ListRequestParams>(url, params, opts);
 
     // normalize array data
     if (!res.data) {
@@ -89,7 +89,7 @@ const useRequest = () => {
     return await post<BatchRequestPayloadWithJsonStringData, R, PM>(url, data, params, opts);
   };
 
-  const putList = async <T = any, R = ListResponseWithData, PM = any>(url: string, data?: T[], params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
+  const putList = async <T = any, R = ResponseWithListData, PM = any>(url: string, data?: T[], params?: PM, opts?: AxiosRequestConfig): Promise<R> => {
     return await put<T[], R, PM>(url, data, params, opts);
   };
 

@@ -30,6 +30,10 @@ export const contextMenuDefaultProps = {
     type: String,
     default: 'right-start',
   },
+  clicking: {
+    type: Boolean,
+    default: false,
+  }
 };
 
 export const contextMenuDefaultEmits = [
@@ -45,6 +49,7 @@ export default defineComponent({
   props: contextMenuDefaultProps,
   setup(props, {emit}) {
     const onClickOutside = () => {
+      if (props.clicking) return;
       emit('hide');
     };
 
