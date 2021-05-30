@@ -15,6 +15,7 @@
     >
       <template v-slot="{item}">
         <FileEditorNavTabsContextMenu
+            :clicking="contextMenuClicking"
             :visible="isShowContextMenu(item)"
             @close="onClose(item)"
             @hide="onContextMenuHide"
@@ -100,6 +101,8 @@ export default defineComponent({
       return navTabsOverflowWidth.value > navTabsWidth.value;
     });
 
+    const contextMenuClicking = ref<boolean>(false);
+
     const tabs = computed<FileNavItem[]>(() => {
       const {tabs} = props as FileEditorNavTabsProps;
       return tabs;
@@ -130,7 +133,12 @@ export default defineComponent({
     };
 
     const onContextMenuShow = (item: FileNavItem) => {
+      contextMenuClicking.value = true;
       activeContextMenuItem.value = item;
+
+      setTimeout(() => {
+        contextMenuClicking.value = false;
+      }, 500);
     };
 
     const onContextMenuHide = () => {
@@ -169,6 +177,7 @@ export default defineComponent({
       navTabsWidth,
       navTabsOverflowWidth,
       showMoreVisible,
+      contextMenuClicking,
       getTitle,
       onClick,
       onClose,

@@ -405,6 +405,10 @@ export default defineComponent({
     const updateTabs = (item?: FileNavItem) => {
       // add tab
       if (item && !tabs.value.find(t => t.path === item.path)) {
+        if (tabs.value.length === 0) {
+          activeFileItem.value = item;
+          editor?.focus();
+        }
         tabs.value.push(item);
         getContentCache(item);
       }
