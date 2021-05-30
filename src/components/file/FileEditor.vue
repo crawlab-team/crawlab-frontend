@@ -122,7 +122,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, onUnmounted, ref, watch} from 'vue';
-import CodeMirror, {Editor, EditorConfiguration} from 'codemirror';
+import CodeMirror, {Editor, EditorConfiguration, KeyMap} from 'codemirror';
 import {MimeType} from 'codemirror/mode/meta';
 import {useStore} from 'vuex';
 import {getCodemirrorEditor, getCodeMirrorTemplate, initTheme} from '@/utils/codemirror';
@@ -146,6 +146,9 @@ import FileEditorNavTabsShowMoreContextMenu from '@/components/file/FileEditorNa
 
 // codemirror mode import cache
 const codeMirrorModeCache = new Set<string>();
+
+// codemirror tab content cache
+const codeMirrorTabContentCache = new Map<string, string>();
 
 export default defineComponent({
   name: 'FileEditor',
@@ -175,6 +178,7 @@ export default defineComponent({
     'node-click',
     'node-db-click',
     'node-drop',
+    'save-file',
     'ctx-menu-new-file',
     'ctx-menu-new-directory',
     'ctx-menu-rename',
@@ -276,137 +280,6 @@ export default defineComponent({
       return getCodeMirrorTemplate();
     });
 
-    const getFilteredFiles = (items: FileNavItem[]): FileNavItem[] => {
-      return items
-          .filter(d => {
-            if (!d.is_dir) {
-              return d.name?.toLowerCase().includes(fileSearchString.value.toLowerCase());
-            }
-            if (d.children) {
-              const children = getFilteredFiles(d.children);
-              if (children.length > 0) {
-                return true;
-              }
-            }
-            return false;
-          })
-          .map(d => {
-            if (!d.is_dir) return d;
-            d.children = getFilteredFiles(d.children || []);
-            return d;
-          });
-    };
-
-    const files = computed<FileNavItem[]>(() => {
-      const {navItems} = props as FileEditorProps;
-      const root: FileNavItem = {
-        path: FILE_ROOT,
-        name: FILE_ROOT,
-        is_dir: true,
-        children: fileSearchString.value ? getFilteredFiles(navItems) : navItems,
-      };
-      return [root];
-    });
-
-    const updateTabs = (item?: FileNavItem) => {
-      // add tab
-      if (item && !tabs.value.find(t => t.path === item.path)) {
-        tabs.value.push(item);
-      }
-    };
-
-    const onNavItemClick = (item: FileNavItem) => {
-      emit('node-click', item);
-    };
-
-    const onNavItemDbClick = (item: FileNavItem) => {
-      activeFileItem.value = item;
-      emit('node-db-click', item);
-
-      // update tabs
-      updateTabs(item);
-    };
-
-    const onNavItemDrop = (items: FileNavItem[]) => {
-      if (items.length > 0 && items[0].path === FILE_ROOT) {
-        emit('node-drop', items[0].children);
-        return;
-      }
-      emit('node-drop', items);
-    };
-
-    const onContextMenuNewFile = (item: FileNavItem, name: string) => {
-      emit('ctx-menu-new-file', item, name);
-    };
-
-    const onContextMenuNewDirectory = (item: FileNavItem, name: string) => {
-      emit('ctx-menu-new-directory', item, name);
-    };
-
-    const onContextMenuRename = (item: FileNavItem, name: string) => {
-      emit('ctx-menu-rename', item, name);
-    };
-
-    const onContextMenuClone = (item: FileNavItem, name: string) => {
-      emit('ctx-menu-clone', item, name);
-    };
-
-    const onContextMenuDelete = (item: FileNavItem) => {
-      emit('ctx-menu-delete', item);
-    };
-
-    const onContentChange = (value: string) => {
-      emit('content-change', value);
-    };
-
-    const onTabClick = (tab: FileNavItem) => {
-      activeFileItem.value = tab;
-      emit('tab-click', tab);
-    };
-
-    const onTabClose = (tab: FileNavItem) => {
-      const idx = tabs.value.findIndex(t => t.path === tab.path);
-      if (idx !== -1) {
-        tabs.value.splice(idx, 1);
-      }
-      if (activeFileItem.value) {
-        if (activeFileItem.value.path === tab.path) {
-          if (idx === 0) {
-            activeFileItem.value = tabs.value[0];
-          } else {
-            activeFileItem.value = tabs.value[idx - 1];
-          }
-        }
-      }
-    };
-
-    const onTabCloseOthers = (tab: FileNavItem) => {
-      tabs.value = [tab];
-      activeFileItem.value = tab;
-    };
-
-    const onTabCloseAll = () => {
-      tabs.value = [];
-      activeFileItem.value = undefined;
-    };
-
-    const onTabDragEnd = (newTabs: FileNavItem[]) => {
-      tabs.value = newTabs;
-    };
-
-    const onShowMoreShow = () => {
-      showMoreContextMenuVisible.value = true;
-    };
-
-    const onShowMoreHide = () => {
-      showMoreContextMenuVisible.value = false;
-    };
-
-    const onClickShowMoreContextMenuItem = (tab: FileNavItem) => {
-      activeFileItem.value = tab;
-      emit('tab-click', tab);
-    };
-
     const updateEditorOptions = () => {
       for (const k in options.value) {
         const key = k as keyof EditorConfiguration;
@@ -465,6 +338,216 @@ export default defineComponent({
       };
     };
 
+    const getContentCache = (tab: FileNavItem) => {
+      if (!tab.path) return;
+      const key = tab.path;
+      const content = codeMirrorTabContentCache.get(key);
+      emit('content-change', content as string);
+      setTimeout(updateEditorContent, 0);
+    };
+
+    const updateContentCache = (tab: FileNavItem, content: string) => {
+      if (!tab.path) return;
+      const key = tab.path as string;
+      codeMirrorTabContentCache.set(key, content as string);
+    };
+
+    const deleteContentCache = (tab: FileNavItem) => {
+      if (!tab.path) return;
+      const key = tab.path;
+      codeMirrorTabContentCache.delete(key);
+    };
+
+    const deleteOtherContentCache = (tab: FileNavItem) => {
+      if (!tab.path) return;
+      const key = tab.path;
+      const content = codeMirrorTabContentCache.get(key);
+      codeMirrorTabContentCache.clear();
+      codeMirrorTabContentCache.set(key, content as string);
+    };
+
+    const clearContentCache = () => {
+      codeMirrorTabContentCache.clear();
+    };
+
+    const getFilteredFiles = (items: FileNavItem[]): FileNavItem[] => {
+      return items
+          .filter(d => {
+            if (!d.is_dir) {
+              return d.name?.toLowerCase().includes(fileSearchString.value.toLowerCase());
+            }
+            if (d.children) {
+              const children = getFilteredFiles(d.children);
+              if (children.length > 0) {
+                return true;
+              }
+            }
+            return false;
+          })
+          .map(d => {
+            if (!d.is_dir) return d;
+            d.children = getFilteredFiles(d.children || []);
+            return d;
+          });
+    };
+
+    const files = computed<FileNavItem[]>(() => {
+      const {navItems} = props as FileEditorProps;
+      const root: FileNavItem = {
+        path: FILE_ROOT,
+        name: FILE_ROOT,
+        is_dir: true,
+        children: fileSearchString.value ? getFilteredFiles(navItems) : navItems,
+      };
+      return [root];
+    });
+
+    const updateTabs = (item?: FileNavItem) => {
+      // add tab
+      if (item && !tabs.value.find(t => t.path === item.path)) {
+        tabs.value.push(item);
+        getContentCache(item);
+      }
+    };
+
+    const onNavItemClick = (item: FileNavItem) => {
+      emit('node-click', item);
+    };
+
+    const onNavItemDbClick = (item: FileNavItem) => {
+      activeFileItem.value = item;
+      emit('node-db-click', item);
+
+      // update tabs
+      updateTabs(item);
+    };
+
+    const onNavItemDrop = (items: FileNavItem[]) => {
+      if (items.length > 0 && items[0].path === FILE_ROOT) {
+        emit('node-drop', items[0].children);
+        return;
+      }
+      emit('node-drop', items);
+    };
+
+    const onContextMenuNewFile = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-new-file', item, name);
+    };
+
+    const onContextMenuNewDirectory = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-new-directory', item, name);
+    };
+
+    const onContextMenuRename = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-rename', item, name);
+    };
+
+    const onContextMenuClone = (item: FileNavItem, name: string) => {
+      emit('ctx-menu-clone', item, name);
+    };
+
+    const onContextMenuDelete = (item: FileNavItem) => {
+      emit('ctx-menu-delete', item);
+    };
+
+    const onContentChange = (cm: Editor) => {
+      const content = cm.getValue();
+      if (!activeFileItem.value) return;
+      emit('content-change', content);
+
+      // update in cache
+      updateContentCache(activeFileItem.value, content);
+    };
+
+    const onTabClick = (tab: FileNavItem) => {
+      activeFileItem.value = tab;
+      emit('tab-click', tab);
+
+      // get from cache and update content
+      getContentCache(tab);
+    };
+
+    const closeTab = (tab: FileNavItem) => {
+      const idx = tabs.value.findIndex(t => t.path === tab.path);
+      if (idx !== -1) {
+        tabs.value.splice(idx, 1);
+      }
+      if (activeFileItem.value) {
+        if (activeFileItem.value.path === tab.path) {
+          if (idx === 0) {
+            activeFileItem.value = tabs.value[0];
+          } else {
+            activeFileItem.value = tabs.value[idx - 1];
+          }
+        }
+
+        // get from cache
+        if (activeFileItem.value) {
+          getContentCache(activeFileItem.value);
+        }
+      }
+
+      // delete in cache
+      deleteContentCache(tab);
+    };
+
+    const onTabClose = (tab: FileNavItem) => {
+      closeTab(tab);
+    };
+
+    const onTabCloseOthers = (tab: FileNavItem) => {
+      tabs.value = [tab];
+      activeFileItem.value = tab;
+
+      // clear cache and update current tab content
+      deleteOtherContentCache(tab);
+    };
+
+    const onTabCloseAll = () => {
+      tabs.value = [];
+      activeFileItem.value = undefined;
+
+      // clear cache
+      clearContentCache();
+    };
+
+    const onTabDragEnd = (newTabs: FileNavItem[]) => {
+      tabs.value = newTabs;
+    };
+
+    const onShowMoreShow = () => {
+      showMoreContextMenuVisible.value = true;
+    };
+
+    const onShowMoreHide = () => {
+      showMoreContextMenuVisible.value = false;
+    };
+
+    const onClickShowMoreContextMenuItem = (tab: FileNavItem) => {
+      activeFileItem.value = tab;
+      emit('tab-click', tab);
+    };
+
+    const keyMapSave = () => {
+      if (!activeFileItem.value) return;
+      emit('save-file', activeFileItem.value);
+    };
+
+    const keyMapClose = () => {
+      if (!activeFileItem.value) return;
+      closeTab(activeFileItem.value);
+    };
+
+    const addSaveKeyMap = (cm: Editor) => {
+      const map = {
+        'Cmd-S': keyMapSave,
+        'Ctrl-S': keyMapSave,
+        // 'Cmd-W': keyMapClose,
+        'Ctrl-W': keyMapClose,
+      } as KeyMap;
+      cm.addKeyMap(map);
+    };
+
     const onToggleNavMenu = () => {
       navMenuCollapsed.value = !navMenuCollapsed.value;
     };
@@ -479,10 +562,6 @@ export default defineComponent({
       document.onkeydown = null;
     };
 
-    watch(content, () => {
-      updateEditorContent();
-    });
-
     watch(options, async () => {
       await Promise.all([
         updateMode(),
@@ -496,6 +575,12 @@ export default defineComponent({
       // init codemirror editor
       const el = codeMirrorEditor.value as HTMLElement;
       editor = getCodemirrorEditor(el, options.value);
+
+      // add save key map
+      addSaveKeyMap(editor);
+
+      // on editor change
+      editor.on('change', onContentChange);
 
       // update editor options
       updateEditorOptions();
@@ -562,6 +647,8 @@ export default defineComponent({
       onShowMoreHide,
       onClickShowMoreContextMenuItem,
       updateTabs,
+      updateEditorContent,
+      updateContentCache,
     };
   },
 });

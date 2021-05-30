@@ -4,6 +4,7 @@
       :nav-items="navItems"
       :content="content"
       @content-change="onContentChange"
+      @save-file="onSaveFile"
       @node-db-click="onNavItemDbClick"
       @node-drop="onNavItemDrop"
       @ctx-menu-new-file="onContextMenuNewFile"
@@ -21,6 +22,7 @@ import {useRoute} from 'vue-router';
 import FileEditor from '@/components/file/FileEditor.vue';
 import {useStore} from 'vuex';
 import useSpiderService from '@/services/spider/spiderService';
+import {ElMessage} from 'element-plus';
 
 export default defineComponent({
   name: 'SpiderDetailTabFiles',
@@ -87,14 +89,22 @@ export default defineComponent({
       if (!res.data) return;
       const item = res.data;
       await getFile(id.value, path);
+      fileEditor.value?.updateEditorContent();
       fileEditor.value?.updateTabs(item);
+      fileEditor.value?.updateContentCache(item, content.value);
     };
 
     // const onNavItemClick = (item: FileNavItem) => {
     // };
 
+    const onSaveFile = async (item: FileNavItem) => {
+      if (!item.path) return;
+      await saveFile(id.value, item.path, content.value);
+      ElMessage.success('Saved successfully');
+    };
+
     const onNavItemDbClick = async (item: FileNavItem) => {
-      await getFile(id.value, item.path as string);
+      await openFile(item.path as string);
     };
 
     const onNavItemDrop = (items: FileNavItem[]) => {
@@ -154,6 +164,7 @@ export default defineComponent({
       navItems,
       content,
       fileEditor,
+      onSaveFile,
       onNavItemDbClick,
       onNavItemDrop,
       onContextMenuNewFile,

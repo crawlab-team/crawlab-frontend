@@ -64,23 +64,17 @@ const actions = {
     return await get(`${endpoint}/${id}/files/info`, {path});
   },
   saveFile: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path, data}: FileRequestPayload) => {
-    const res = await post(`${endpoint}/${id}/files/save`, {path, data});
-    commit('setFileContent', res.data);
-    return res;
+    return await post(`${endpoint}/${id}/files/save`, {path, data});
   },
   renameFile: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {
     id,
     path,
     new_path
   }: FileRequestPayload) => {
-    const res = await post(`${endpoint}/${id}/files/rename`, {path, new_path});
-    commit('setFileContent', res.data);
-    return res;
+    return await post(`${endpoint}/${id}/files/rename`, {path, new_path});
   },
   deleteFile: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path}: FileRequestPayload) => {
-    const res = await del(`${endpoint}/${id}/files`, {path});
-    commit('setFileContent', res.data);
-    return res;
+    return await del(`${endpoint}/${id}/files`, {path});
   },
   copyFile: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {
     id,
@@ -88,9 +82,7 @@ const actions = {
     new_path,
     data
   }: FileRequestPayload) => {
-    const res = await post(`${endpoint}/${id}/files/copy`, {path, new_path, data});
-    commit('setFileContent', res.data);
-    return res;
+    return await post(`${endpoint}/${id}/files/copy`, {path, new_path, data});
   },
 } as SpiderStoreActions;
 
