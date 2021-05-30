@@ -283,13 +283,17 @@ const optionsDefinitions: FileEditorOptionDefinition[] = [
   },
 ];
 
+const themeCache = new Set<string>();
+
 export const getCodemirrorEditor = (el: HTMLElement, options: EditorConfiguration): Editor => {
   return CodeMirror(el, options);
 };
 
-export const initTheme = (name?: string) => {
+export const initTheme = async (name?: string) => {
   if (!name) name = 'darcula';
-  import(`codemirror/theme/${name}.css`);
+  if (themeCache.has(name)) return;
+  await import(`codemirror/theme/${name}.css`);
+  themeCache.add(name);
 };
 
 export const getThemes = () => {

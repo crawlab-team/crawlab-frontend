@@ -229,15 +229,6 @@ export default defineComponent({
 
     const languageMime = computed<string | undefined>(() => language.value?.mime);
 
-    watch(() => language.value, async () => {
-      const mode = language.value?.mode;
-      if (!mode || codeMirrorModeCache.has(mode)) return;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      await import(`codemirror/mode/${mode}/${mode}.js`);
-      codeMirrorModeCache.add(mode);
-    });
-
     const options = computed<FileEditorConfiguration>(() => {
       const {editorOptions} = file as FileStoreState;
       return {
@@ -447,8 +438,17 @@ export default defineComponent({
       style.value.backgroundColorGutters = computedStyleGutters.backgroundColor;
     };
 
-    const updateTheme = () => {
-      initTheme(options.value.theme);
+    const updateTheme = async () => {
+      await initTheme(options.value.theme);
+    };
+
+    const updateMode = async () => {
+      const mode = language.value?.mode;
+      if (!mode || codeMirrorModeCache.has(mode)) return;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      await import(`codemirror/mode/${mode}/${mode}.js`);
+      codeMirrorModeCache.add(mode);
     };
 
     const updateSearchInput = () => {
@@ -483,15 +483,16 @@ export default defineComponent({
       updateEditorContent();
     });
 
-    watch(options, () => {
+    watch(options, async () => {
+      await Promise.all([
+        updateMode(),
+        updateTheme(),
+      ]);
       updateEditorOptions();
-      updateTheme();
-      setTimeout(() => {
-        updateStyle();
-      }, 100);
+      updateStyle();
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       // init codemirror editor
       const el = codeMirrorEditor.value as HTMLElement;
       editor = getCodemirrorEditor(el, options.value);
@@ -503,12 +504,10 @@ export default defineComponent({
       updateEditorContent();
 
       // update editor theme
-      updateTheme();
+      await updateTheme();
 
       // update styles
-      setTimeout(() => {
-        updateStyle();
-      }, 100);
+      updateStyle();
 
       // listen to keyboard events key
       listenToKeyboardEvents();
