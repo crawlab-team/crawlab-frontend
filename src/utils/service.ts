@@ -5,7 +5,7 @@ export const getDefaultService = <T>(ns: string, store: Store<RootStoreState>): 
 
   return {
     getById: (id: string) => dispatch(`${ns}/getById`, id),
-    create: (form: Project) => dispatch(`${ns}/create`, form),
+    create: (form: T) => dispatch(`${ns}/create`, form),
     updateById: (id: string, form: T) => dispatch(`${ns}/updateById`, {id, form}),
     deleteById: (id: string) => dispatch(`${ns}/deleteById`, id),
     getList: (params?: ListRequestParams) => {

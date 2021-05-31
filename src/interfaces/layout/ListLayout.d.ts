@@ -13,8 +13,8 @@ declare global {
   }
 
   interface ListLayoutComponentData<T = any> {
-    navActions: Ref<ListActionGroup[]>;
-    tableColumns: Ref<TableColumns<T>>;
+    navActions?: Ref<ListActionGroup[]>;
+    tableColumns?: Ref<TableColumns<T>>;
     tableData: Ref<TableData<T>>;
     tableTotal: Ref<number>;
     tablePagination: Ref<TablePagination>;
@@ -47,6 +47,7 @@ declare global {
     getList: () => Promise<void>;
     getAll: () => Promise<void>;
     deleteList: (ids: string[]) => Promise<Response>;
+    deleteByIdConfirm: (row: BaseModel) => Promise<void>;
   }
 
   type ListActionButtonDisabledFunc = (table: typeof Table) => boolean;

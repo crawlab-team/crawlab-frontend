@@ -18,6 +18,16 @@ const useSpiderList = () => {
   const {commit} = store;
   const state = store.state[ns];
 
+  // use list
+  const {
+    actionFunctions,
+  } = useList<Task>(ns, store);
+
+  // action functions
+  const {
+    deleteByIdConfirm,
+  } = actionFunctions;
+
   // nav actions
   const navActions = computed<ListActionGroup[]>(() => [
     {
@@ -39,6 +49,9 @@ const useSpiderList = () => {
 
   // all project list
   const allProjectList = computed<Project[]>(() => store.state.project.allList);
+
+  // all project dict
+  const allProjectDict = computed<Map<string, Project>>(() => store.getters['project/allDict']);
 
   // table columns
   const tableColumns = computed<TableColumns<Spider>>(() => [
@@ -80,7 +93,8 @@ const useSpiderList = () => {
         };
       }),
       value: (row: Spider) => {
-        const p = allProjectList.value.find(d => d._id === row.project_id);
+        if (!row.project_id) return;
+        const p = allProjectDict.value.get(row.project_id);
         return h(NavLink, {
           label: p?.name,
           path: `/projects/${row.project_id}`,
@@ -179,9 +193,7 @@ const useSpiderList = () => {
           size: 'mini',
           icon: ['fa', 'trash-alt'],
           tooltip: 'Delete',
-          onClick: (row) => {
-            console.log('delete', row);
-          }
+          onClick: deleteByIdConfirm,
         },
       ],
       disableTransfer: true,

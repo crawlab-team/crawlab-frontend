@@ -1,5 +1,6 @@
 <template>
   <Tag
+      :key="data"
       :icon="data.icon"
       :label="data.label"
       :spinning="data.spinning"
@@ -44,6 +45,7 @@ export default defineComponent({
             tooltip: 'Task is pending in the queue',
             type: 'primary',
             icon: ['fa', 'hourglass-start'],
+            spinning: true,
           };
         case TASK_STATUS_RUNNING:
           return {

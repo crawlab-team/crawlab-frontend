@@ -30,7 +30,7 @@ declare global {
     stats?: TaskStats;
 
     // view model
-    spider: Spider;
+    spider?: Spider;
   }
 
   type TaskStatus =

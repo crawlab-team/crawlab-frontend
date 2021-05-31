@@ -4,6 +4,11 @@ import {
   getDefaultStoreMutations,
   getDefaultStoreState
 } from '@/utils/store';
+import useRequest from '@/services/request';
+
+const {
+  put,
+} = useRequest();
 
 const state = {
   ...getDefaultStoreState<Task>('task'),
@@ -19,6 +24,9 @@ const mutations = {
 
 const actions = {
   ...getDefaultStoreActions<Task>('/tasks'),
+  create: async ({commit}: StoreActionContext<Task>, form: Task) => {
+    return await put(`/tasks/run`, form);
+  },
 } as TaskStoreActions;
 
 export default {

@@ -1,13 +1,8 @@
 import {computed, provide, readonly, watch} from 'vue';
 import {Store} from 'vuex';
+import {ElMessage, ElMessageBox} from 'element-plus';
 
-const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts: UseListOptions<T>): ListLayoutComponentData => {
-  // options
-  const {
-    tableColumns,
-    navActions,
-  } = opts;
-
+const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts?: UseListOptions<T>): ListLayoutComponentData => {
   // store state
   const state = store.state[ns] as BaseStoreState;
 
@@ -22,6 +17,15 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
     getList: () => store.dispatch(`${ns}/getList`),
     getAll: () => store.dispatch(`${ns}/getAllList`),
     deleteList: (ids: string[]) => store.dispatch(`${ns}/deleteList`, ids),
+    deleteByIdConfirm: async (row: BaseModel) => {
+      await ElMessageBox.confirm('Are you sure to delete?', 'Delete', {
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger'
+      });
+      await store.dispatch(`${ns}/deleteById`, row._id);
+      await ElMessage.success('Deleted successfully');
+      await store.dispatch(`${ns}/getList`);
+    },
   });
 
   // get list when pagination changes
@@ -35,8 +39,7 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
   });
 
   return {
-    navActions,
-    tableColumns,
+    ...opts,
     tableData,
     tableTotal,
     tablePagination,

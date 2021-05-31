@@ -58,6 +58,7 @@ declare global {
     isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
     formListIds: StoreGetter<BaseStoreState<T>, string[]>;
     allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
+    allDict: StoreGetter<BaseStoreState<BaseModel>, Map<string, T>>;
     tabName: StoreGetter<BaseStoreState<T>, string>;
     allTags: StoreGetter<BaseStoreState<T>, Tag[]>;
   }

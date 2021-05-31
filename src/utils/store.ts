@@ -44,6 +44,11 @@ export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOpt
         label: d[opts?.selectOptionLabelKey as string],
       };
     }),
+    allDict: (state: BaseStoreState<BaseModel>) => {
+      const dict = new Map<string, T>();
+      state.allList.forEach(d => dict.set(d._id as string, d as any));
+      return dict;
+    },
     tabName: () => {
       const arr = router.currentRoute.value.path.split('/');
       if (arr.length < 3) return '';
