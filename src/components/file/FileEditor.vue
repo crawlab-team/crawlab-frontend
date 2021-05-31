@@ -431,12 +431,8 @@ export default defineComponent({
       updateTabs(item);
     };
 
-    const onNavItemDrop = (items: FileNavItem[]) => {
-      if (items.length > 0 && items[0].path === FILE_ROOT) {
-        emit('node-drop', items[0].children);
-        return;
-      }
-      emit('node-drop', items);
+    const onNavItemDrop = (draggingItem: FileNavItem, dropItem: FileNavItem) => {
+      emit('node-drop', draggingItem, dropItem);
     };
 
     const onContextMenuNewFile = (item: FileNavItem, name: string) => {

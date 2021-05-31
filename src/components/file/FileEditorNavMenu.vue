@@ -8,6 +8,7 @@
       class="file-editor-nav-menu"
   >
     <el-tree
+        ref="tree"
         :render-after-expand="defaultExpandAll"
         :data="items"
         :expand-on-click-node="false"
@@ -20,7 +21,7 @@
           color: style.color,
         }"
         node-key="path"
-        :default-expanded-keys="['~']"
+        :default-expanded-keys="defaultExpandedKeys"
         draggable
         @node-drag-enter="onNodeDragEnter"
         @node-drag-leave="onNodeDragLeave"
@@ -28,6 +29,8 @@
         @node-drop="onNodeDrop"
         @node-click="onNodeClick"
         @node-contextmenu="onNodeContextMenuShow"
+        @node-expand="onNodeExpand"
+        @node-collapse="onNodeCollapse"
     >
       <template #default="{ data }">
         <FileEditorNavMenuContextMenu
@@ -59,14 +62,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {computed, defineComponent, onMounted, onUnmounted, reactive, ref} from 'vue';
 import {ClickOutside} from 'element-plus/lib/directives';
 import Node from 'element-plus/lib/el-tree/src/model/node';
 import {DropType} from 'element-plus/lib/el-tree/src/tree.type';
 import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import {KEY_CONTROL, KEY_META} from '@/constants/keyboard';
 import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
-import {ElMessageBox} from 'element-plus';
+import {ElMessageBox, ElTree} from 'element-plus';
 
 export default defineComponent({
   name: 'FileEditorNavMenu',
@@ -115,6 +118,8 @@ export default defineComponent({
   setup(props, ctx) {
     const {emit} = ctx;
 
+    const tree = ref<typeof ElTree>();
+
     const fileEditorNavMenu = ref<HTMLDivElement>();
 
     const clickStatus = reactive<FileEditorNavMenuClickStatus>({
@@ -131,6 +136,26 @@ export default defineComponent({
     const activeContextMenuItem = ref<FileNavItem>();
 
     const contextMenuClicking = ref<boolean>(false);
+
+    const expandedKeys = ref<string[]>([]);
+
+    const defaultExpandedKeys = computed<string[]>(() => {
+      return ['~'].concat(expandedKeys.value);
+    });
+
+    const addDefaultExpandedKey = (key: string) => {
+      if (!expandedKeys.value.includes(key)) expandedKeys.value.push(key);
+    };
+
+    const removeDefaultExpandedKey = (key: string) => {
+      if (!expandedKeys.value.includes(key)) return;
+      const idx = expandedKeys.value.indexOf(key);
+      expandedKeys.value.splice(idx, 1);
+    };
+
+    const resetDefaultExpandedKeys = () => {
+      expandedKeys.value = [];
+    };
 
     const resetClickStatus = () => {
       clickStatus.clicked = false;
@@ -231,9 +256,18 @@ export default defineComponent({
       }
     };
 
-    const onNodeDrop = () => {
-      const {items} = props as FileEditorNavMenuProps;
-      emit('node-drop', items);
+    const onNodeDrop = (draggingNode: Node, dropNode: Node) => {
+      const draggingItem = draggingNode.data as FileNavItem;
+      const dropItem = dropNode.data as FileNavItem;
+      emit('node-drop', draggingItem, dropItem);
+    };
+
+    const onNodeExpand = (data: FileNavItem) => {
+      addDefaultExpandedKey(data.path as string);
+    };
+
+    const onNodeCollapse = (data: FileNavItem) => {
+      removeDefaultExpandedKey(data.path as string);
     };
 
     const isSelected = (item: FileNavItem): boolean => {
@@ -288,9 +322,11 @@ export default defineComponent({
     });
 
     return {
+      tree,
       activeContextMenuItem,
       fileEditorNavMenu,
       contextMenuClicking,
+      defaultExpandedKeys,
       onNodeClick,
       onNodeContextMenuShow,
       onNodeContextMenuHide,
@@ -303,11 +339,16 @@ export default defineComponent({
       onNodeDragLeave,
       onNodeDragEnd,
       onNodeDrop,
+      onNodeExpand,
+      onNodeCollapse,
       isSelected,
       isDroppable,
       isShowContextMenu,
       allowDrop,
       getItemClass,
+      resetDefaultExpandedKeys,
+      addDefaultExpandedKey,
+      removeDefaultExpandedKey,
     };
   },
 });
@@ -323,7 +364,8 @@ export default defineComponent({
 
   .el-tree {
     height: 100%;
-    width: fit-content;
+    min-width: 100%;
+    max-width: fit-content;
 
     .el-tree-node {
       .nav-item-wrapper {

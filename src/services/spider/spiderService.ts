@@ -1,15 +1,10 @@
 import {Store} from 'vuex';
 import {getDefaultService} from '@/utils/service';
-import useRequest from '@/services/request';
 
 const useSpiderService = (store: Store<RootStoreState>): SpiderServices => {
   const ns = 'spider';
 
   const {dispatch} = store;
-
-  const {
-    get,
-  } = useRequest();
 
   const listDir = (id: string, path: string) => {
     return dispatch(`${ns}/listDir`, {id, path});
@@ -31,6 +26,10 @@ const useSpiderService = (store: Store<RootStoreState>): SpiderServices => {
     return dispatch(`${ns}/saveFile`, {id, path, data});
   };
 
+  const saveDir = (id: string, path: string) => {
+    return dispatch(`${ns}/saveDir`, {id, path});
+  };
+
   const renameFile = (id: string, path: string, new_path: string) => {
     return dispatch(`${ns}/renameFile`, {id, path, new_path});
   };
@@ -50,6 +49,7 @@ const useSpiderService = (store: Store<RootStoreState>): SpiderServices => {
     getFile,
     getFileInfo,
     saveFile,
+    saveDir,
     renameFile,
     deleteFile,
     copyFile,

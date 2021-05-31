@@ -43,6 +43,7 @@ export default defineComponent({
       getFile,
       getFileInfo,
       saveFile,
+      saveDir,
       renameFile,
       deleteFile,
       copyFile,
@@ -111,9 +112,11 @@ export default defineComponent({
       await openFile(item.path as string);
     };
 
-    const onNavItemDrop = (items: FileNavItem[]) => {
-      // TODO: implement
-      commit(`${ns}/setFileNavItems`, items);
+    const onNavItemDrop = async (draggingItem: FileNavItem, dropItem: FileNavItem) => {
+      const dirPath = dropItem.path !== '~' ? dropItem.path : '';
+      const newPath = `${dirPath}/${draggingItem.name}`;
+      await renameFile(id.value, draggingItem.path as string, newPath);
+      await listRootDir(id.value);
     };
 
     const onContextMenuNewFile = async (item: FileNavItem, name: string) => {
@@ -127,7 +130,7 @@ export default defineComponent({
     const onContextMenuNewDirectory = async (item: FileNavItem, name: string) => {
       if (!item.path) return;
       const path = getPath(item, name);
-      await saveFile(id.value, path, '');
+      await saveDir(id.value, path);
       await listRootDir(id.value);
     };
 
@@ -140,7 +143,8 @@ export default defineComponent({
 
     const onContextMenuClone = async (item: FileNavItem, name: string) => {
       if (!item.path) return;
-      const path = getPath(item, name);
+      const dirPath = getDirPath(item.path);
+      const path = `${dirPath}/${name}`;
       await copyFile(id.value, item.path, path);
       await listRootDir(id.value);
     };
