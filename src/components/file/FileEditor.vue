@@ -49,6 +49,7 @@
           @ctx-menu-rename="onContextMenuRename"
           @ctx-menu-clone="onContextMenuClone"
           @ctx-menu-delete="onContextMenuDelete"
+          @drop-files="onDropFiles"
       />
     </div>
     <div class="file-editor-content">
@@ -188,6 +189,7 @@ export default defineComponent({
     'ctx-menu-rename',
     'ctx-menu-clone',
     'ctx-menu-delete',
+    'drop-files',
   ],
   setup(props, {emit}) {
     const ns = 'spider';
@@ -578,6 +580,10 @@ export default defineComponent({
       updateStyle();
     });
 
+    const onDropFiles = (files: InputFile[]) => {
+      emit('drop-files', files);
+    };
+
     onMounted(async () => {
       // init codemirror editor
       const el = codeMirrorEditor.value as HTMLElement;
@@ -656,6 +662,7 @@ export default defineComponent({
       updateTabs,
       updateEditorContent,
       updateContentCache,
+      onDropFiles,
     };
   },
 });

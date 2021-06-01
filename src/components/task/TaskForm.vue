@@ -4,7 +4,7 @@
     <FormItem :offset="2" :span="2" label="Spider" prop="spider_id">
       <el-select
           v-model="form.spider_id"
-          :disabled="isFormItemDisabled('spider_id')"
+          :disabled="isFormItemDisabled('spider_id') || readonly"
       >
         <el-option
             v-for="op in allSpiderSelectOptions"
@@ -21,7 +21,7 @@
       <InputWithButton
           v-model="form.cmd"
           :button-icon="['fa', 'edit']"
-          :disabled="isFormItemDisabled('cmd')"
+          :disabled="isFormItemDisabled('cmd') || readonly"
           button-label="Edit"
           placeholder="Command"
       />
@@ -30,7 +30,7 @@
       <InputWithButton
           v-model="form.param"
           :button-icon="['fa', 'edit']"
-          :disabled="isFormItemDisabled('param')"
+          :disabled="isFormItemDisabled('param') || readonly"
           button-label="Edit"
           placeholder="Params"
       />
@@ -41,7 +41,7 @@
     <FormItem :offset="2" :span="2" label="Mode" prop="mode" required>
       <el-select
           v-model="form.mode"
-          :disabled="isFormItemDisabled('mode')"
+          :disabled="isFormItemDisabled('mode') || readonly"
       >
         <el-option
             v-for="op in modeOptions"
@@ -62,7 +62,7 @@
     >
       <CheckTagGroup
           v-model="form.node_tags"
-          :disabled="isFormItemDisabled('node_tags')"
+          :disabled="isFormItemDisabled('node_tags') || readonly"
           :options="allNodeTags"
       />
     </FormItem>
@@ -75,17 +75,8 @@
     >
       <CheckTagGroup
           v-model="form.node_ids"
-          :disabled="form.mode === TASK_MODE_SELECTED_NODE_TAGS && isFormItemDisabled('node_ids')"
+          :disabled="(form.mode === TASK_MODE_SELECTED_NODE_TAGS && isFormItemDisabled('node_ids')) || readonly"
           :options="allNodeSelectOptions"
-      />
-    </FormItem>
-
-    <FormItem :span="4" label="Description" prop="description">
-      <el-input
-          v-model="form.description"
-          :disabled="isFormItemDisabled('description')"
-          placeholder="Description"
-          type="textarea"
       />
     </FormItem>
   </Form>
@@ -112,6 +103,12 @@ export default defineComponent({
     InputWithButton,
     CheckTagGroup,
   },
+  props: {
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     // store
     const store = useStore();
@@ -130,6 +127,8 @@ export default defineComponent({
     // use task
     const {
       form,
+      allSpiderDict,
+      modeOptionsDict,
     } = useTask(store);
 
     // use request
@@ -149,6 +148,16 @@ export default defineComponent({
       task.param = res.data.param;
     });
 
+    const getSpiderName = (id: string) => {
+      const spider = allSpiderDict.value.get(id) as Spider;
+      return spider?.name;
+    };
+
+    const getModeName = (id: string) => {
+      const op = modeOptionsDict.value.get(id) as SelectOption;
+      return op?.label;
+    };
+
     return {
       ...useTask(store),
 
@@ -158,6 +167,8 @@ export default defineComponent({
       allNodeSelectOptions,
       allNodeTags,
       allSpiderSelectOptions,
+      getSpiderName,
+      getModeName,
     };
   },
 });

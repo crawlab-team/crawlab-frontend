@@ -32,8 +32,15 @@ const useTask = (store: Store<RootStoreState>) => {
     {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
   ];
 
+  const modeOptionsDict = computed(() => {
+    const dict = new Map<string, SelectOption>();
+    modeOptions.forEach(op => dict.set(op.value, op));
+    return dict;
+  });
+
   const {
     allListSelectOptions: allSpiderListSelectOptions,
+    allDict: allSpiderDict,
   } = useSpider(store);
 
   // batch form fields
@@ -80,9 +87,11 @@ const useTask = (store: Store<RootStoreState>) => {
 
   return {
     ...useForm('task', store, useTaskService(store), formComponentData),
+    allSpiderDict,
     batchFormFields,
     id,
     modeOptions,
+    modeOptionsDict,
   };
 };
 

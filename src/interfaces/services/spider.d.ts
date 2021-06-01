@@ -4,6 +4,7 @@ interface SpiderServices extends Services<Spider> {
   getFile: (id: string, path: string) => Promise<ResponseWithData<string>>;
   getFileInfo: (id: string, path: string) => Promise<ResponseWithData<FileNavItem>>;
   saveFile: (id: string, path: string, data: string) => Promise<Response>;
+  saveFileBinary: (id: string, path: string, file: File) => Promise<Response>;
   saveDir: (id: string, path: string) => Promise<Response>;
   renameFile: (id: string, path: string, new_path: string) => Promise<Response>;
   deleteFile: (id: string, path: string) => Promise<Response>;

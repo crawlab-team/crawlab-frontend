@@ -26,6 +26,10 @@ const useSpiderService = (store: Store<RootStoreState>): SpiderServices => {
     return dispatch(`${ns}/saveFile`, {id, path, data});
   };
 
+  const saveFileBinary = (id: string, path: string, file: File) => {
+    return dispatch(`${ns}/saveFileBinary`, {id, path, file});
+  };
+
   const saveDir = (id: string, path: string) => {
     return dispatch(`${ns}/saveDir`, {id, path});
   };
@@ -49,6 +53,7 @@ const useSpiderService = (store: Store<RootStoreState>): SpiderServices => {
     getFile,
     getFileInfo,
     saveFile,
+    saveFileBinary,
     saveDir,
     renameFile,
     deleteFile,

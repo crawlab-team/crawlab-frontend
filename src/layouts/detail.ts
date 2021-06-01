@@ -98,7 +98,7 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
 
   const onNavTabsSelect = (tabName: string) => {
     if (tabName === 'toggle') {
-      store.commit(`${ns}/setSidebarCollapsed`, false);
+      store.commit(`${ns}/expandSidebar`);
       return;
     }
     router.push(`${primaryRoutePath.value}/${activeId.value}/${tabName}`);

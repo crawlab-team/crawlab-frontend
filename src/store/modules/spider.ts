@@ -73,6 +73,20 @@ const actions = {
   saveFile: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path, data}: FileRequestPayload) => {
     return await post(`${endpoint}/${id}/files/save`, {path, data});
   },
+  saveFileBinary: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {
+    id,
+    path,
+    file
+  }: FileRequestPayload) => {
+    const data = new FormData();
+    data.set('path', path as string);
+    data.set('file', file as File, file?.name);
+    return await post(`${endpoint}/${id}/files/save`, data, null, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+  },
   saveDir: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path}: FileRequestPayload) => {
     return await post(`${endpoint}/${id}/files/save/dir`, {path});
   },

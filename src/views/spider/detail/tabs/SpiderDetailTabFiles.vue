@@ -13,6 +13,7 @@
       @ctx-menu-rename="onContextMenuRename"
       @ctx-menu-clone="onContextMenuClone"
       @ctx-menu-delete="onContextMenuDelete"
+      @drop-files="onDropFiles"
       @tab-click="onTabClick"
   />
 </template>
@@ -43,6 +44,7 @@ export default defineComponent({
       getFile,
       getFileInfo,
       saveFile,
+      saveFileBinary,
       saveDir,
       renameFile,
       deleteFile,
@@ -159,6 +161,13 @@ export default defineComponent({
       commit(`${ns}/setFileContent`, value);
     };
 
+    const onDropFiles = async (files: InputFile[]) => {
+      await Promise.all(files.map(f => {
+        return saveFileBinary(id.value, f.path as string, f as File);
+      }));
+      await listRootDir(id.value);
+    };
+
     const onTabClick = async (tab: FileNavItem) => {
       await getFile(id.value, tab.path as string);
     };
@@ -182,6 +191,7 @@ export default defineComponent({
       onContextMenuClone,
       onContextMenuDelete,
       onContentChange,
+      onDropFiles,
       onTabClick,
     };
   },

@@ -44,7 +44,11 @@
             @new-directory="onNodeContextMenuNewDirectory(data)"
 
         >
-          <div :class="getItemClass(data)" class="nav-item-wrapper">
+          <div
+              v-bind="getBindDir(data)"
+              :class="getItemClass(data)"
+              class="nav-item-wrapper"
+          >
             <div class="background"/>
             <div class="nav-item">
               <span class="icon">
@@ -70,6 +74,7 @@ import AtomMaterialIcon from '@/components/icon/AtomMaterialIcon.vue';
 import {KEY_CONTROL, KEY_META} from '@/constants/keyboard';
 import FileEditorNavMenuContextMenu from '@/components/file/FileEditorNavMenuContextMenu.vue';
 import {ElMessageBox, ElTree} from 'element-plus';
+import {useDropzone} from 'vue3-dropzone';
 
 export default defineComponent({
   name: 'FileEditorNavMenu',
@@ -114,6 +119,7 @@ export default defineComponent({
     'ctx-menu-rename',
     'ctx-menu-clone',
     'ctx-menu-delete',
+    'drop-files',
   ],
   setup(props, ctx) {
     const {emit} = ctx;
@@ -299,6 +305,35 @@ export default defineComponent({
       return cls;
     };
 
+    const {
+      getRootProps,
+    } = useDropzone({
+      onDrop: (files: InputFile[]) => {
+        emit('drop-files', files);
+      },
+    });
+
+    const getBindDir = (item: FileNavItem) => getRootProps({
+      onDragEnter: (ev: DragEvent) => {
+        console.log('onDragEnter', item, ev);
+        ev.stopPropagation();
+        if (!item.is_dir || !item.path) return;
+        dragCache[item.path] = true;
+      },
+      onDragLeave: (ev: DragEvent) => {
+        console.log('onDragLeave', item, ev);
+        ev.stopPropagation();
+        if (!item.is_dir || !item.path) return;
+        dragCache[item.path] = false;
+      },
+      onDrop: () => {
+        for (const key in dragCache) {
+          dragCache[key] = false;
+        }
+      },
+    });
+
+
     onMounted(() => {
       // listen to keyboard events
       document.onkeydown = (ev: KeyboardEvent) => {
@@ -349,6 +384,7 @@ export default defineComponent({
       resetDefaultExpandedKeys,
       addDefaultExpandedKey,
       removeDefaultExpandedKey,
+      getBindDir,
     };
   },
 });
@@ -369,6 +405,8 @@ export default defineComponent({
 
     .el-tree-node {
       .nav-item-wrapper {
+        z-index: 2;
+
         &.selected {
           .background {
             background-color: $fileEditorMaskBg;

@@ -20,6 +20,7 @@ interface FileRequestPayload {
   path?: string;
   new_path?: string;
   data?: string;
+  file?: File;
 }
 
 interface Response {

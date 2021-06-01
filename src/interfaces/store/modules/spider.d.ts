@@ -21,6 +21,8 @@ interface SpiderStoreActions extends BaseStoreActions<Spider> {
   getFile: StoreAction<BaseStoreState, FileRequestPayload>;
   getFileInfo: StoreAction<BaseStoreState, FileRequestPayload>;
   saveFile: StoreAction<BaseStoreState, FileRequestPayload>;
+  saveFileBinary: StoreAction<BaseStoreState, FileRequestPayload>;
+  saveDir: StoreAction<BaseStoreState, FileRequestPayload>;
   renameFile: StoreAction<BaseStoreState, FileRequestPayload>;
   deleteFile: StoreAction<BaseStoreState, FileRequestPayload>;
   copyFile: StoreAction<BaseStoreState, FileRequestPayload>;

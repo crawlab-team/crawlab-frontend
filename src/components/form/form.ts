@@ -105,6 +105,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   // all list select options
   const allListSelectOptions = computed<SelectOption[]>(() => store.getters[`${ns}/allListSelectOptions`]);
 
+  // all dict
+  const allDict = computed<Map<string, BaseModel>>(() => store.getters[`${ns}/allDict`]);
+
   // all tags
   const allTags = computed<string[]>(() => store.getters[`${ns}/allTags`]);
 
@@ -248,6 +251,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     createEditDialogTabName,
     createEditDialogVisible,
     allListSelectOptions,
+    allDict,
     allTags,
     confirmDisabled,
     confirmLoading,
