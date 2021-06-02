@@ -1,5 +1,5 @@
 import {RouteRecordRaw} from 'vue-router';
-import {TAB_NAME_OVERVIEW} from '@/constants/tab';
+import {TAB_NAME_LOGS, TAB_NAME_OVERVIEW} from '@/constants/tab';
 
 const endpoint = 'tasks';
 
@@ -18,6 +18,10 @@ export default [
       {
         path: TAB_NAME_OVERVIEW,
         component: () => import('@/views/task/detail/tabs/TaskDetailTabOverview.vue'),
+      },
+      {
+        path: TAB_NAME_LOGS,
+        component: () => import('@/views/task/detail/tabs/TaskDetailTabLogs.vue'),
       },
     ]
   },

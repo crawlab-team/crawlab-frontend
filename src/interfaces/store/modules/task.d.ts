@@ -1,9 +1,21 @@
 type TaskStoreModule = BaseModule<TaskStoreState, TaskStoreGetters, TaskStoreMutations, TaskStoreActions>;
 
-type TaskStoreState = BaseStoreState<Task>;
+interface TaskStoreState extends BaseStoreState<Task> {
+  logContent: string;
+  logPagination: TablePagination;
+  logTotal: number;
+}
 
 type TaskStoreGetters = BaseStoreGetters<Task>;
 
-type TaskStoreMutations = BaseStoreMutations<Task>;
+interface TaskStoreMutations extends BaseStoreMutations<Task> {
+  setLogContent: StoreMutation<TaskStoreState, string>;
+  resetLogContent: StoreMutation<TaskStoreState>;
+  setLogPagination: StoreMutation<TaskStoreState, TablePagination>;
+  resetLogPagination: StoreMutation<TaskStoreState>;
+  setLogTotal: StoreMutation<TaskStoreState, number>;
+}
 
-type TaskStoreActions = BaseStoreActions<Task>;
+interface TaskStoreActions extends BaseStoreActions<Task> {
+  getLogs: StoreAction<BaseStoreState, string>;
+}
