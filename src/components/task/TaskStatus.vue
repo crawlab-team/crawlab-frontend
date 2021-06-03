@@ -6,6 +6,7 @@
       :spinning="data.spinning"
       :tooltip="data.tooltip"
       :type="data.type"
+      :size="size"
       width="80px"
       @click="$emit('click')"
   />
@@ -32,7 +33,12 @@ export default defineComponent({
     status: {
       type: String as PropType<TaskStatus>,
       required: false,
-    }
+    },
+    size: {
+      type: String as PropType<BasicSize>,
+      required: false,
+      default: 'mini',
+    },
   },
   emits: ['click'],
   setup(props: TaskStatusProps, {emit}) {

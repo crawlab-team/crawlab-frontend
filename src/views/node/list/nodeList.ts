@@ -1,17 +1,22 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
 import {getDefaultUseListOptions} from '@/utils/list';
-import {computed, h} from 'vue';
+import {computed, h, onBeforeUnmount, onMounted} from 'vue';
 import NodeType from '@/components/node/NodeType.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {ElMessageBox} from 'element-plus';
 import useNodeService from '@/services/node/nodeService';
 import NavLink from '@/components/nav/NavLink.vue';
 import TagList from '@/components/tag/TagList.vue';
+import {useRouter} from 'vue-router';
+import NodeRunners from '@/components/node/NodeRunners.vue';
 
 type Node = CNode;
 
 const useNodeList = () => {
+  // router
+  const router = useRouter();
+
   // store
   const ns = 'node';
   const store = useStore<RootStoreState>();
@@ -79,6 +84,16 @@ const useNodeList = () => {
       width: '200',
     },
     {
+      key: 'runners',
+      label: 'Runners',
+      icon: ['fa', 'play'],
+      width: '160',
+      value: (row: Node) => {
+        if (row.max_runners === undefined) return;
+        return h(NodeRunners, {available: row.available_runners, max: row.max_runners} as NodeRunnersProps);
+      },
+    },
+    {
       key: 'description',
       label: 'Description',
       icon: ['fa', 'comment-alt'],
@@ -94,14 +109,8 @@ const useNodeList = () => {
           type: 'primary',
           icon: ['fa', 'search'],
           tooltip: 'View',
-        },
-        {
-          type: 'warning',
-          icon: ['fa', 'edit'],
-          tooltip: 'Edit',
           onClick: (row) => {
-            store.commit(`${ns}/setForm`, row);
-            store.commit(`${ns}/showDialog`, 'edit');
+            router.push(`/nodes/${row._id}`);
           },
         },
         {
@@ -134,6 +143,17 @@ const useNodeList = () => {
 
   // options
   const opts = getDefaultUseListOptions<Node>(navActions, tableColumns);
+
+  // auto update
+  let autoUpdateHandle: NodeJS.Timeout;
+  onMounted(() => {
+    autoUpdateHandle = setInterval(async () => {
+      await store.dispatch(`${ns}/getList`);
+    }, 5000);
+  });
+  onBeforeUnmount(() => {
+    clearInterval(autoUpdateHandle);
+  });
 
   return {
     ...useList<Node>(ns, store, opts)

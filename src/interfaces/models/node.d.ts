@@ -8,4 +8,6 @@ interface CNode extends BaseModel {
   is_master?: boolean;
   enabled?: boolean;
   active?: boolean;
+  available_runners?: number;
+  max_runners?: number;
 }

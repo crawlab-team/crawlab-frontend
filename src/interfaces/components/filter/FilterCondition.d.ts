@@ -5,5 +5,5 @@ interface FilterConditionProps {
 interface FilterConditionData {
   key?: string;
   op?: string;
-  value?: string;
+  value?: any;
 }

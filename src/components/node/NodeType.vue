@@ -1,7 +1,7 @@
 <template>
   <el-tag :type="type" class="node-type" size="mini">
     <font-awesome-icon :icon="icon" class="icon"/>
-    <span>{{ label }}</span>
+    <span>{{ computedLabel }}</span>
   </el-tag>
 </template>
 
@@ -14,6 +14,9 @@ export default defineComponent({
     isMaster: {
       type: Boolean,
     },
+    label: {
+      type: String,
+    },
   },
   setup(props: NodeTypeProps, {emit}) {
     const type = computed<string>(() => {
@@ -21,8 +24,9 @@ export default defineComponent({
       return isMaster ? 'primary' : 'warning';
     });
 
-    const label = computed<string>(() => {
-      const {isMaster} = props;
+    const computedLabel = computed<string>(() => {
+      const {isMaster, label} = props;
+      if (label) return label;
       return isMaster ? 'Master' : 'Worker';
     });
 
@@ -33,7 +37,7 @@ export default defineComponent({
 
     return {
       type,
-      label,
+      computedLabel,
       icon,
     };
   },
@@ -42,6 +46,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .node-type {
+  cursor: pointer;
+
   .icon {
     margin-right: 5px;
   }

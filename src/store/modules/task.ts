@@ -50,6 +50,12 @@ const mutations = {
 
 const actions = {
   ...getDefaultStoreActions<Task>('/tasks'),
+  getList: async ({state, commit}: StoreActionContext<TaskStoreState>) => {
+    const payload = {...state.tablePagination, stats: true};
+    const res = await getList(`/tasks`, payload);
+    commit('setTableData', {data: res.data || [], total: res.total});
+    return res;
+  },
   create: async ({state, commit}: StoreActionContext<TaskStoreState>, form: Task) => {
     return await put(`/tasks/run`, form);
   },

@@ -1139,6 +1139,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/humanize-duration@^3.25.0":
+  version "3.25.0"
+  resolved "https://registry.nlark.com/@types/humanize-duration/download/@types/humanize-duration-3.25.0.tgz#bb451b247dad36424d1581cf040d26d4d1cbfc70"
+  integrity sha1-u0UbJH2tNkJNFYHPBA0m1NHL/HA=
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/@types/istanbul-lib-coverage/download/@types/istanbul-lib-coverage-2.0.3.tgz?cache=0&sync_timestamp=1605053724780&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fistanbul-lib-coverage%2Fdownload%2F%40types%2Fistanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
@@ -1157,6 +1162,11 @@
   integrity sha1-UIsTqjRPpJdiNOdd3cw0klc32CE=
   dependencies:
     "@types/istanbul-lib-report" "*"
+
+"@types/javascript-time-ago@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.nlark.com/@types/javascript-time-ago/download/@types/javascript-time-ago-2.0.2.tgz#875569ced6fa170dea36e6b6efe3c9f498e3d553"
+  integrity sha1-h1Vpztb6Fw3qNua27+PJ9Jjj1VM=
 
 "@types/jest@^26.0.19":
   version "26.0.19"
@@ -5136,6 +5146,11 @@ human-signals@^1.1.1:
   resolved "https://registry.npm.taobao.org/human-signals/download/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha1-xbHNFPUK6uCatsWf5jujOV/k36M=
 
+humanize-duration@^3.26.0:
+  version "3.26.0"
+  resolved "https://registry.nlark.com/humanize-duration/download/humanize-duration-3.26.0.tgz#4d77f6b3d2fe0ca1ff14623ccc2b2f8b48ab1aaf"
+  integrity sha1-TXf2s9L+DKH/FGI8zCsvi0irGq8=
+
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"
   resolved "https://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -5643,6 +5658,13 @@ javascript-stringify@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/javascript-stringify/download/javascript-stringify-2.0.1.tgz#6ef358035310e35d667c675ed63d3eb7c1aa19e5"
   integrity sha1-bvNYA1MQ411mfGde1j0+t8GqGeU=
+
+javascript-time-ago@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.nlark.com/javascript-time-ago/download/javascript-time-ago-2.3.6.tgz#a78fd16b214c6b8d91e0f2cc0955648eecd92a7a"
+  integrity sha1-p4/RayFMa42R4PLMCVVkjuzZKno=
+  dependencies:
+    relative-time-format "^1.0.5"
 
 jest-diff@^26.0.0:
   version "26.6.2"
@@ -7891,6 +7913,11 @@ relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.npm.taobao.org/relateurl/download/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
   integrity sha1-VNvzd+UUQKypCkzSdGANP/LYiKk=
+
+relative-time-format@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.nlark.com/relative-time-format/download/relative-time-format-1.0.5.tgz#3fb7c76ae39156afe0a3a7ff0cb7bf30aa0f0fb6"
+  integrity sha1-P7fHauORVq/go6f/DLe/MKoPD7Y=
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

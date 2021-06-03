@@ -12,6 +12,7 @@ const useTaskDetail = () => {
   onBeforeMount(async () => {
     await Promise.all([
       store.dispatch(`spider/getAllList`),
+      store.dispatch(`node/getAllList`),
     ]);
   });
 

@@ -27,7 +27,8 @@ declare global {
     cmd?: string;
     param?: string;
     error?: string;
-    stats?: TaskStats;
+    stat?: TaskStat;
+    priority?: number;
 
     // view model
     spider?: Spider;
@@ -41,7 +42,10 @@ declare global {
     | TASK_STATUS_CANCELLED
     | TASK_STATUS_ABNORMAL;
 
-  interface TaskStats {
+  interface TaskStat {
+    create_ts?: string;
+    start_ts?: string;
+    end_ts?: string;
     result_count?: number;
     error_log_count?: number;
     wait_duration?: number;

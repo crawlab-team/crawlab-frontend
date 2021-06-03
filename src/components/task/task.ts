@@ -12,11 +12,13 @@ import useTaskService from '@/services/task/taskService';
 import {getDefaultFormComponentData} from '@/utils/form';
 import {FORM_FIELD_TYPE_INPUT_WITH_BUTTON, FORM_FIELD_TYPE_SELECT} from '@/constants/form';
 import useSpider from '@/components/spider/spider';
+import {getPriorityLabel} from '@/utils/task';
 
 // get new task
 export const getNewTask = (): Task => {
   return {
     mode: TASK_MODE_RANDOM,
+    priority: 5,
   };
 };
 
@@ -31,12 +33,23 @@ const useTask = (store: Store<RootStoreState>) => {
     {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
     {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
   ];
-
   const modeOptionsDict = computed(() => {
     const dict = new Map<string, SelectOption>();
     modeOptions.forEach(op => dict.set(op.value, op));
     return dict;
   });
+
+  // priority options
+  const priorityOptions = (() => {
+    const opts = [] as SelectOption[];
+    for (let i = 1; i <= 10; i++) {
+      opts.push({
+        label: getPriorityLabel(i),
+        value: i,
+      });
+    }
+    return opts;
+  })();
 
   const {
     allListSelectOptions: allSpiderListSelectOptions,
@@ -92,6 +105,8 @@ const useTask = (store: Store<RootStoreState>) => {
     id,
     modeOptions,
     modeOptionsDict,
+    priorityOptions,
+    getPriorityLabel,
   };
 };
 
