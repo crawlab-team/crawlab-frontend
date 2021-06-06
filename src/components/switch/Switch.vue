@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, watch} from 'vue';
+import {defineComponent, onBeforeMount, ref, watch} from 'vue';
 import variables from '@/styles/variables.scss';
 
 export default defineComponent({
@@ -77,6 +77,11 @@ export default defineComponent({
       emit('update:model-value', value);
       emit('change', value);
     };
+
+    onBeforeMount(() => {
+      const {modelValue} = props;
+      internalValue.value = modelValue;
+    });
 
     return {
       variables,

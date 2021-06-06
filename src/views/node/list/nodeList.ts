@@ -10,6 +10,7 @@ import NavLink from '@/components/nav/NavLink.vue';
 import TagList from '@/components/tag/TagList.vue';
 import {useRouter} from 'vue-router';
 import NodeRunners from '@/components/node/NodeRunners.vue';
+import Switch from '@/components/switch/Switch.vue';
 
 type Node = CNode;
 
@@ -73,15 +74,7 @@ const useNodeList = () => {
       label: 'IP',
       icon: ['fa', 'map-marker-alt'],
       width: '150',
-    },
-    {
-      key: 'tags',
-      label: 'Tags',
-      icon: ['fa', 'hashtag'],
-      value: ({tags}: Node) => {
-        return h(TagList, {tags});
-      },
-      width: '200',
+      defaultHidden: true,
     },
     {
       key: 'runners',
@@ -92,6 +85,30 @@ const useNodeList = () => {
         if (row.max_runners === undefined) return;
         return h(NodeRunners, {available: row.available_runners, max: row.max_runners} as NodeRunnersProps);
       },
+    },
+    {
+      key: 'enabled',
+      label: 'Enabled',
+      icon: ['fa', 'toggle-on'],
+      width: '120',
+      value: (row: Node) => {
+        return h(Switch, {
+          modelValue: row.enabled,
+          'onUpdate:modelValue': async (value: boolean) => {
+            row.enabled = value;
+            await store.dispatch(`${ns}/updateById`, {id: row._id, form: row});
+          },
+        });
+      },
+    },
+    {
+      key: 'tags',
+      label: 'Tags',
+      icon: ['fa', 'hashtag'],
+      value: ({tags}: Node) => {
+        return h(TagList, {tags});
+      },
+      width: '150',
     },
     {
       key: 'description',
@@ -113,15 +130,15 @@ const useNodeList = () => {
             router.push(`/nodes/${row._id}`);
           },
         },
-        {
-          type: 'info',
-          size: 'mini',
-          icon: ['fa', 'clone'],
-          tooltip: 'Clone',
-          onClick: (row) => {
-            console.log('clone', row);
-          }
-        },
+        // {
+        //   type: 'info',
+        //   size: 'mini',
+        //   icon: ['fa', 'clone'],
+        //   tooltip: 'Clone',
+        //   onClick: (row) => {
+        //     console.log('clone', row);
+        //   }
+        // },
         {
           type: 'danger',
           size: 'mini',
