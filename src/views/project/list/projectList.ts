@@ -7,6 +7,7 @@ import useProjectService from '@/services/project/projectService';
 import NavLink from '@/components/nav/NavLink.vue';
 import {useRouter} from 'vue-router';
 import TagList from '@/components/tag/TagList.vue';
+import {TAB_NAME_SPIDERS} from '@/constants/tab';
 
 const useProjectList = () => {
   // router
@@ -53,6 +54,16 @@ const useProjectList = () => {
         path: `/projects/${row._id}`,
         label: row.name,
       }),
+    },
+    {
+      key: 'spiders',
+      label: 'Spiders',
+      icon: ['fa', 'spider'],
+      value: (row: Project) => h(NavLink, {
+        path: `/projects/${row._id}/${TAB_NAME_SPIDERS}`,
+        label: row.spiders,
+      }),
+      width: '120',
     },
     {
       key: 'tags',

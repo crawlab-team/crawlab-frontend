@@ -4,9 +4,14 @@ import {
   getDefaultStoreMutations,
   getDefaultStoreState
 } from '@/utils/store';
+import {TAB_NAME_OVERVIEW, TAB_NAME_SPIDERS} from '@/constants/tab';
 
 const state = {
   ...getDefaultStoreState<Project>('project'),
+  tabs: [
+    {id: TAB_NAME_OVERVIEW, title: 'Overview'},
+    {id: TAB_NAME_SPIDERS, title: 'Spiders'},
+  ],
   // TODO: dummy data
   allProjectSelectOptions: [
     {label: 'Taobao', value: '000000000000000000000000'},

@@ -7,6 +7,7 @@
       :table-data="tableData"
       :table-total="tableTotal"
       :table-actions-prefix="tableActionsPrefix"
+      :no-actions="noActions"
       class="spider-list"
   >
     <template #extra>
@@ -25,6 +26,11 @@ import useSpiderList from '@/views/spider/list/spiderList';
 
 export default defineComponent({
   name: 'SpiderList',
+  props: {
+    noActions: {
+      type: Boolean,
+    }
+  },
   components: {
     ListLayout,
     CreateSpiderDialog,

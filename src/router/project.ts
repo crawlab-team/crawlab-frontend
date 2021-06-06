@@ -1,5 +1,5 @@
 import {RouteRecordRaw} from 'vue-router';
-import {TAB_NAME_OVERVIEW} from '@/constants/tab';
+import {TAB_NAME_OVERVIEW, TAB_NAME_SPIDERS} from '@/constants/tab';
 
 const endpoint = 'projects';
 
@@ -18,6 +18,10 @@ export default [
       {
         path: TAB_NAME_OVERVIEW,
         component: () => import('@/views/project/detail/tabs/ProjectDetailTabOverview.vue'),
+      },
+      {
+        path: TAB_NAME_SPIDERS,
+        component: () => import('@/views/project/detail/tabs/ProjectDetailTabSpiders.vue'),
       },
     ]
   },
