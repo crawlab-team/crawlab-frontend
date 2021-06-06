@@ -8,7 +8,7 @@ import {defineComponent} from 'vue';
 import NodeForm from '@/components/node/NodeForm.vue';
 
 export default defineComponent({
-  name: 'ProjectDetailTabOverview',
+  name: 'NodeDetailTabOverview',
   components: {
     NodeForm,
   },

@@ -10,6 +10,7 @@ declare global {
     tableActionsPrefix: ListActionButton[];
     tableActionsSuffix: ListActionButton[];
     actionFunctions: ListLayoutActionFunctions;
+    noActions: boolean;
   }
 
   interface ListLayoutComponentData<T = any> {

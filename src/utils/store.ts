@@ -18,6 +18,7 @@ export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreStat
     tableData: [],
     tableTotal: 0,
     tablePagination: getDefaultPagination(),
+    tableListFilter: [],
     allList: [],
     sidebarCollapsed: false,
     actionsCollapsed: false,
@@ -118,6 +119,15 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     setTablePagination: (state: BaseStoreState<T>, pagination: TablePagination) => {
       state.tablePagination = pagination;
     },
+    resetTablePagination: (state: BaseStoreState<T>) => {
+      state.tablePagination = getDefaultPagination();
+    },
+    setTableListFilter: (state: BaseStoreState<T>, filter: FilterConditionData[]) => {
+      state.tableListFilter = filter;
+    },
+    resetTableListFilter: (state: BaseStoreState<T>) => {
+      state.tableListFilter = [];
+    },
     setAllList: (state: BaseStoreState<T>, value: T[]) => {
       state.allList = value;
     },
@@ -174,8 +184,12 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
       return res;
     },
     getList: async ({state, commit}: StoreActionContext<BaseStoreState<T>>) => {
-      // TODO: filter
-      const res = await getList(state.tablePagination);
+      const {page, size} = state.tablePagination;
+      const res = await getList({
+        page,
+        size,
+        conditions: JSON.stringify(state.tableListFilter),
+      } as ListRequestParams);
       commit('setTableData', {data: res.data || [], total: res.total});
       return res;
     },

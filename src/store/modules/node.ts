@@ -4,9 +4,14 @@ import {
   getDefaultStoreMutations,
   getDefaultStoreState
 } from '@/utils/store';
+import {TAB_NAME_OVERVIEW, TAB_NAME_TASKS} from '@/constants/tab';
 
 const state = {
   ...getDefaultStoreState<CNode>('node'),
+  tabs: [
+    {id: TAB_NAME_OVERVIEW, title: 'Overview'},
+    {id: TAB_NAME_TASKS, title: 'Tasks'},
+  ],
   // TODO: dummy data
   allNodeSelectOptions: [
     {label: 'Master', value: 'master'},

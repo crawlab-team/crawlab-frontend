@@ -2,7 +2,7 @@
   <div class="list-layout">
     <div class="content">
       <!-- Nav Actions -->
-      <NavActions ref="navActions" class="nav-actions">
+      <NavActions v-if="!noActions" ref="navActions" class="nav-actions">
         <NavActionGroup
             v-for="(grp, i) in navActions"
             :key="i"
@@ -142,6 +142,10 @@ export default defineComponent({
       type: Object as PropType<ListLayoutActionFunctions>,
       default: emptyObjectFunc,
     },
+    noActions: {
+      type: Boolean,
+      default: false,
+    }
   },
   emits: [
     'select',

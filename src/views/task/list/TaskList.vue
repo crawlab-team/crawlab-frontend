@@ -6,6 +6,7 @@
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
+      :no-actions="noActions"
       class="task-list"
   >
     <template #extra>
@@ -24,6 +25,12 @@ import CreateTaskDialog from '@/components/task/CreateTaskDialog.vue';
 
 export default defineComponent({
   name: 'TaskList',
+  props: {
+    noActions: {
+      type: Boolean,
+      default: false,
+    }
+  },
   components: {
     ListLayout,
     CreateTaskDialog,

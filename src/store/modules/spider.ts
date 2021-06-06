@@ -6,6 +6,7 @@ import {
   getDefaultStoreState
 } from '@/utils/store';
 import useRequest from '@/services/request';
+import {TAB_NAME_FILES, TAB_NAME_OVERVIEW, TAB_NAME_SETTINGS, TAB_NAME_TASKS} from '@/constants/tab';
 
 const endpoint = '/spiders';
 
@@ -18,10 +19,10 @@ const {
 const state = {
   ...getDefaultStoreState<Spider>('spider'),
   tabs: [
-    {id: 'overview', title: 'Overview'},
-    {id: 'files', title: 'Files'},
-    {id: 'tasks', title: 'Tasks'},
-    {id: 'settings', title: 'Settings'},
+    {id: TAB_NAME_OVERVIEW, title: 'Overview'},
+    {id: TAB_NAME_FILES, title: 'Files'},
+    {id: TAB_NAME_TASKS, title: 'Tasks'},
+    {id: TAB_NAME_SETTINGS, title: 'Settings'},
   ],
   fileNavItems: [],
   activeNavItem: undefined,

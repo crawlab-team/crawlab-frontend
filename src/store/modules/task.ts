@@ -5,6 +5,7 @@ import {
   getDefaultStoreState
 } from '@/utils/store';
 import useRequest from '@/services/request';
+import {TAB_NAME_LOGS, TAB_NAME_OVERVIEW} from '@/constants/tab';
 
 const {
   put,
@@ -14,8 +15,8 @@ const {
 const state = {
   ...getDefaultStoreState<Task>('task'),
   tabs: [
-    {id: 'overview', title: 'Overview'},
-    {id: 'logs', title: 'Logs'},
+    {id: TAB_NAME_OVERVIEW, title: 'Overview'},
+    {id: TAB_NAME_LOGS, title: 'Logs'},
   ],
   logContent: '',
   logPagination: {
@@ -51,7 +52,11 @@ const mutations = {
 const actions = {
   ...getDefaultStoreActions<Task>('/tasks'),
   getList: async ({state, commit}: StoreActionContext<TaskStoreState>) => {
-    const payload = {...state.tablePagination, stats: true};
+    const payload = {
+      ...state.tablePagination,
+      conditions: JSON.stringify(state.tableListFilter),
+      stats: true,
+    };
     const res = await getList(`/tasks`, payload);
     commit('setTableData', {data: res.data || [], total: res.total});
     return res;
