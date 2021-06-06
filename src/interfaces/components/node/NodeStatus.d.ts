@@ -1,4 +1,4 @@
-interface TaskStatusProps {
+interface NodeStatusProps {
   status?: TaskStatus;
   size?: BasicSize;
 }

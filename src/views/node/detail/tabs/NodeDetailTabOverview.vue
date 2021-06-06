@@ -1,6 +1,6 @@
 <template>
   <div class="node-detail-tab-overview">
-    <NodeForm/>
+    <NodeForm readonly/>
   </div>
 </template>
 <script lang="ts">

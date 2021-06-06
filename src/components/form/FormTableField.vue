@@ -43,6 +43,11 @@
           v-model="internalValue"
           @change="onInputChange"
       />
+      <Switch
+          v-else-if="fieldType === FORM_FIELD_TYPE_SWITCH"
+          v-model="internalValue"
+          @change="onInputChange"
+      />
       <!-- TODO: implement more field types -->
     </el-form-item>
   </el-form>
@@ -67,6 +72,7 @@ import {
   FORM_FIELD_TYPE_INPUT_TEXTAREA,
   FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
   FORM_FIELD_TYPE_SELECT,
+  FORM_FIELD_TYPE_SWITCH,
   FORM_FIELD_TYPE_TAG_INPUT,
   FORM_FIELD_TYPE_TAG_SELECT,
 } from '@/constants/form';
@@ -74,10 +80,12 @@ import TagInput from '@/components/input/TagInput.vue';
 import {emptyArrayFunc, voidFunc} from '@/utils/func';
 import {ElForm} from 'element-plus';
 import InputWithButton from '@/components/input/InputWithButton.vue';
+import Switch from '@/components/switch/Switch.vue';
 
 export default defineComponent({
   name: 'FormTableField',
   components: {
+    Switch,
     InputWithButton,
     TagInput,
   },
@@ -169,6 +177,7 @@ export default defineComponent({
       FORM_FIELD_TYPE_TAG_INPUT,
       FORM_FIELD_TYPE_TAG_SELECT,
       FORM_FIELD_TYPE_CHECK_TAG_GROUP,
+      FORM_FIELD_TYPE_SWITCH,
       formRef,
       internalValue,
       onInputChange,

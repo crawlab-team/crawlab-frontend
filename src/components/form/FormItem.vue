@@ -75,10 +75,6 @@ export default defineComponent({
       required: false,
       default: 0,
     },
-    isPlaceholder: {
-      type: Boolean,
-      default: false,
-    },
     rules: {
       type: [Object, Array] as PropType<RuleItem | RuleItem[]>,
     },

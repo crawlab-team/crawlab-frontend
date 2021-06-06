@@ -3,7 +3,7 @@ import {Store} from 'vuex';
 import useForm from '@/components/form/form';
 import useNodeService from '@/services/node/nodeService';
 import {getDefaultFormComponentData} from '@/utils/form';
-import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_SWITCH} from '@/constants/form';
+import {FORM_FIELD_TYPE_INPUT, FORM_FIELD_TYPE_INPUT_TEXTAREA, FORM_FIELD_TYPE_SWITCH} from '@/constants/form';
 
 type Node = CNode;
 
@@ -11,6 +11,8 @@ type Node = CNode;
 export const getNewNode = (): Node => {
   return {
     tags: [],
+    max_runners: 8,
+    enabled: true,
   };
 };
 
@@ -33,10 +35,16 @@ const useNode = (store: Store<RootStoreState>) => {
       placeholder: 'Name',
     },
     {
-      prop: 'is_master',
-      label: 'Is Master',
-      width: '100',
+      prop: 'enabled',
+      label: 'Enabled',
+      width: '120',
       fieldType: FORM_FIELD_TYPE_SWITCH,
+    },
+    {
+      prop: 'description',
+      label: 'Description',
+      width: '200',
+      fieldType: FORM_FIELD_TYPE_INPUT_TEXTAREA,
     },
   ];
 

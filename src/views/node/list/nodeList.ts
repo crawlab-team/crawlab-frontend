@@ -11,6 +11,8 @@ import TagList from '@/components/tag/TagList.vue';
 import {useRouter} from 'vue-router';
 import NodeRunners from '@/components/node/NodeRunners.vue';
 import Switch from '@/components/switch/Switch.vue';
+import NodeStatus from '@/components/node/NodeStatus.vue';
+import {NODE_STATUS_OFFLINE, NODE_STATUS_ONLINE} from '@/constants/node';
 
 type Node = CNode;
 
@@ -70,8 +72,31 @@ const useNodeList = () => {
       },
     },
     {
+      key: 'status',
+      label: 'Status',
+      icon: ['fa', 'heartbeat'],
+      width: '150',
+      value: (row: Node) => {
+        return h(NodeStatus, {status: row.status} as NodeStatusProps);
+      },
+    },
+    {
       key: 'ip',
       label: 'IP',
+      icon: ['fa', 'map-marker-alt'],
+      width: '150',
+      defaultHidden: true,
+    },
+    {
+      key: 'mac',
+      label: 'MAC Address',
+      icon: ['fa', 'map-marker-alt'],
+      width: '150',
+      defaultHidden: true,
+    },
+    {
+      key: 'hostname',
+      label: 'Hostname',
       icon: ['fa', 'map-marker-alt'],
       width: '150',
       defaultHidden: true,
@@ -82,7 +107,10 @@ const useNodeList = () => {
       icon: ['fa', 'play'],
       width: '160',
       value: (row: Node) => {
-        if (row.max_runners === undefined) return;
+        if (row.max_runners === undefined ||
+          !row.status ||
+          ![NODE_STATUS_ONLINE, NODE_STATUS_OFFLINE].includes(row.status)
+        ) return;
         return h(NodeRunners, {available: row.available_runners, max: row.max_runners} as NodeRunnersProps);
       },
     },
@@ -98,7 +126,7 @@ const useNodeList = () => {
             row.enabled = value;
             await store.dispatch(`${ns}/updateById`, {id: row._id, form: row});
           },
-        });
+        } as SwitchProps);
       },
     },
     {

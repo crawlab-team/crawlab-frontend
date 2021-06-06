@@ -10,7 +10,6 @@ declare global {
     span: number;
     offset: number;
     required: boolean;
-    isPlaceholder: boolean;
     rules?: RuleItem | RuleItem[];
     notEditable?: boolean;
   }

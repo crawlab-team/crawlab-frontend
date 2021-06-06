@@ -6,6 +6,7 @@ interface CNode extends BaseModel {
   description?: string;
   key?: string;
   is_master?: boolean;
+  status?: string;
   enabled?: boolean;
   active?: boolean;
   available_runners?: number;
