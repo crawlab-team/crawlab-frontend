@@ -13,6 +13,7 @@ interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
   setActiveFileNavItem: StoreMutation<BaseStoreState<Spider>, FileNavItem>;
   resetActiveFileNavItem: StoreMutation<BaseStoreState<Spider>>;
   setFileContent: StoreMutation<BaseStoreState<Spider>, string>;
+  resetFileContent: StoreMutation<BaseStoreState<Spider>>;
 }
 
 interface SpiderStoreActions extends BaseStoreActions<Spider> {

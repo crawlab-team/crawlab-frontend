@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip :content="tooltip" :disabled="!tooltip">
+  <el-tooltip :content="tooltip" :disabled="!tooltip && !$slots.tooltip">
     <el-tag
         ref="tagRef"
         :closable="closable"
@@ -17,6 +17,9 @@
       <Icon :icon="icon" :spinning="spinning"/>
       <span>{{ label || tag?.name }}</span>
     </el-tag>
+    <template #content>
+      <slot name="tooltip"></slot>
+    </template>
   </el-tooltip>
 </template>
 

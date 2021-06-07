@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onBeforeMount, onBeforeUnmount, ref} from 'vue';
 import {useRoute} from 'vue-router';
 import FileEditor from '@/components/file/FileEditor.vue';
 import {useStore} from 'vuex';
@@ -172,8 +172,12 @@ export default defineComponent({
       await getFile(id.value, tab.path as string);
     };
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
       await listRootDir(id.value);
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(`${ns}/resetFileContent`);
     });
 
     return {

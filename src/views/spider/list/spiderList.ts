@@ -7,6 +7,8 @@ import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
 import Table from '@/components/table/Table.vue';
 import NavLink from '@/components/nav/NavLink.vue';
+import Time from '@/components/time/Time.vue';
+import SpiderStat from '@/components/spider/SpiderStat.vue';
 
 const useSpiderList = () => {
   // router
@@ -120,39 +122,61 @@ const useSpiderList = () => {
       width: '120',
       hasFilter: true,
       value: (row: Spider) => {
-        return h(TaskStatus, {status: row.last_status} as TaskStatusProps);
+        const status = row.stat?.last_task?.status;
+        if (!status) return;
+        return h(TaskStatus, {status} as TaskStatusProps);
       }
     },
     {
       key: 'last_run_ts',
-      label: 'Last Run',
+      label: 'Last Run At',
       icon: ['fa', 'clock'],
       width: '160',
+      value: (row: Spider) => {
+        const time = row.stat?.last_task?.stat?.start_ts;
+        if (!time) return;
+        return h(Time, {time} as TaskStatusProps);
+      },
+    },
+    {
+      key: 'stats',
+      label: 'Stats',
+      icon: ['fa', 'chart-pie'],
+      width: '180',
+      hasFilter: true,
+      value: (row: Spider) => {
+        const stat = row.stat;
+        if (!stat || !stat.tasks) return;
+        return h(SpiderStat, {stat} as SpiderStatProps);
+      }
     },
     {
       key: 'create_ts',
       label: 'Created At',
       icon: ['far', 'calendar-plus'],
       width: '160',
+      defaultHidden: true,
     },
     {
       key: 'update_ts',
       label: 'Updated At',
       icon: ['far', 'calendar-check'],
       width: '160',
+      defaultHidden: true,
     },
+    // {
+    //   key: 'create_username',
+    //   label: 'Created By',
+    //   icon: ['fa', 'user'],
+    //   width: '100',
+    //   hasFilter: true,
+    //   defaultHidden: true,
+    // },
     {
-      key: 'create_username',
-      label: 'Created By',
-      icon: ['fa', 'user'],
-      width: '100',
-      hasFilter: true,
-    },
-    {
-      key: 'remark',
-      label: 'Remark',
+      key: 'description',
+      label: 'Description',
       icon: ['fa', 'comment-alt'],
-      width: '140',
+      width: '200',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,

@@ -14,6 +14,7 @@ const {
   get,
   post,
   del,
+  getList,
 } = useRequest();
 
 const state = {
@@ -53,10 +54,23 @@ const mutations = {
   setFileContent: (state: SpiderStoreState, content: string) => {
     state.fileContent = content;
   },
+  resetFileContent: (state: SpiderStoreState) => {
+    state.fileContent = '';
+  },
 } as SpiderStoreMutations;
 
 const actions = {
   ...getDefaultStoreActions<Spider>(endpoint),
+  getList: async ({state, commit}: StoreActionContext<SpiderStoreState>) => {
+    const payload = {
+      ...state.tablePagination,
+      conditions: JSON.stringify(state.tableListFilter),
+      stats: true,
+    };
+    const res = await getList(`/spiders`, payload);
+    commit('setTableData', {data: res.data || [], total: res.total});
+    return res;
+  },
   listDir: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path}: FileRequestPayload) => {
     const res = await get(`${endpoint}/${id}/files/list`, {path});
     const navItems = res.data as FileNavItem[];

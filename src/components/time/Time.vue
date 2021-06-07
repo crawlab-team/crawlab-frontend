@@ -21,6 +21,11 @@ export default defineComponent({
       required: false,
       default: () => new Date(),
     },
+    ago: {
+      type: Boolean,
+      required: false,
+      default: true,
+    }
   },
   setup(props: TimeProps, {emit}) {
     const timeAgo = new TimeAgo();
