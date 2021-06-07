@@ -7,6 +7,12 @@
         type="primary"
     />
     <Tag
+        :icon="['fa', 'database']"
+        :label="labels.results"
+        :tooltip="tooltips.results"
+        type="success"
+    />
+    <Tag
         :icon="['fa', 'stopwatch']"
         :label="labels.duration"
         type="warning"
@@ -40,6 +46,7 @@ export default defineComponent({
       const {stat} = props;
       const {
         tasks,
+        results,
         // average_wait_duration,
         // average_runtime_duration,
         average_total_duration,
@@ -47,6 +54,7 @@ export default defineComponent({
 
       return {
         tasks: `${tasks}`,
+        results: `${results}`,
         duration: `${average_total_duration}`
       };
     });
@@ -55,6 +63,7 @@ export default defineComponent({
       const {stat} = props;
       const {
         tasks,
+        results,
         average_wait_duration,
         average_runtime_duration,
         average_total_duration,
@@ -62,6 +71,7 @@ export default defineComponent({
 
       return {
         tasks: `Total Tasks: ${tasks}`,
+        results: `Total Results: ${results}`,
         duration: `
 <span class="label">Average Wait Duration:</span>
 <span class="value" style="color: ${colors.blue}">${humanizeDuration(average_wait_duration * 1000, {spacer: ' '})}</span><br>
