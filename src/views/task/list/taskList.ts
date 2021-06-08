@@ -20,7 +20,6 @@ const {
 const useTaskList = () => {
   const ns = 'task';
   const store = useStore<RootStoreState>();
-  const {task: state} = store.state as RootStoreState;
   const {commit} = store;
 
   // router
