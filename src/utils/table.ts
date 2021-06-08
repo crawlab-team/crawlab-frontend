@@ -45,11 +45,13 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
     buttons: [],
   } as TableColumn;
 
+  const buttons = typeof column.buttons === 'function' ? column.buttons() : column.buttons as TableColumnButton[];
+
   actionNames.forEach(name => {
-    if (!column.buttons) return;
+    if (!buttons) return;
     switch (name) {
       case ACTION_VIEW:
-        column.buttons.push({
+        buttons.push({
           type: 'primary',
           icon: ['fa', 'search'],
           tooltip: 'View',
@@ -59,7 +61,7 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
         });
         break;
       case ACTION_EDIT:
-        column.buttons.push({
+        buttons.push({
           type: 'warning',
           icon: ['fa', 'edit'],
           tooltip: 'Edit',
@@ -70,7 +72,7 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
         },);
         break;
       case ACTION_CLONE:
-        column.buttons.push({
+        buttons.push({
           type: 'info',
           size: 'mini',
           icon: ['fa', 'clone'],
@@ -82,7 +84,7 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
         });
         break;
       case ACTION_DELETE:
-        column.buttons.push({
+        buttons.push({
           type: 'danger',
           size: 'mini',
           icon: ['fa', 'trash-alt'],
@@ -97,7 +99,7 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
         });
         break;
       case ACTION_RUN:
-        column.buttons.push({
+        buttons.push({
           type: 'success',
           size: 'mini',
           icon: ['fa', 'play'],
@@ -109,7 +111,7 @@ export const getActionColumn = (endpoint: string, ns: ListStoreNamespace, action
         });
         break;
       case ACTION_CANCEL:
-        column.buttons.push({
+        buttons.push({
           type: 'info',
           size: 'mini',
           icon: ['fa', 'pause'],

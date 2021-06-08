@@ -11,7 +11,8 @@ import TaskPriority from '@/components/task/TaskPriority.vue';
 import NodeType from '@/components/node/NodeType.vue';
 import Time from '@/components/time/Time.vue';
 import Duration from '@/components/time/Duration.vue';
-import {initListComponent} from '@/utils/list';
+import {setupListComponent} from '@/utils/list';
+import {isCancellable} from '@/utils/task';
 
 const {
   post,
@@ -181,7 +182,7 @@ const useTaskList = () => {
       icon: ['fa', 'tools'],
       width: '180',
       fixed: 'right',
-      buttons: [
+      buttons: (row) => [
         {
           type: 'primary',
           size: 'mini',
@@ -203,13 +204,27 @@ const useTaskList = () => {
             await store.dispatch(`task/getList`);
           }
         },
-        {
-          type: 'danger',
-          size: 'mini',
-          icon: ['fa', 'trash-alt'],
-          tooltip: 'Delete',
-          onClick: deleteByIdConfirm,
-        },
+        isCancellable(row.status) ?
+          {
+            type: 'info',
+            size: 'mini',
+            icon: ['fa', 'pause'],
+            tooltip: 'Cancel',
+            onClick: async (row: Task) => {
+              await ElMessageBox.confirm('Are you sure to cancel?', 'Cancel', {type: 'warning'});
+              await ElMessage.info('Attempt to cancel');
+              await post(`/tasks/${row._id}/cancel`);
+              await store.dispatch(`task/getList`);
+            },
+          }
+          :
+          {
+            type: 'danger',
+            size: 'mini',
+            icon: ['fa', 'trash-alt'],
+            tooltip: 'Delete',
+            onClick: deleteByIdConfirm,
+          },
       ],
       disableTransfer: true,
     },
@@ -222,7 +237,7 @@ const useTaskList = () => {
   } as UseListOptions<Task>;
 
   // init
-  initListComponent(ns, store, ['node', 'project', 'spider']);
+  setupListComponent(ns, store, ['node', 'project', 'spider']);
 
   return {
     ...useList<Task>(ns, store, opts),

@@ -1,6 +1,6 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
-import {getDefaultUseListOptions, initListComponent} from '@/utils/list';
+import {getDefaultUseListOptions, setupListComponent} from '@/utils/list';
 import {computed, h} from 'vue';
 import NodeType from '@/components/node/NodeType.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
@@ -190,7 +190,7 @@ const useNodeList = () => {
   const opts = getDefaultUseListOptions<Node>(navActions, tableColumns);
 
   // init
-  initListComponent(ns, store, []);
+  setupListComponent(ns, store, []);
 
   return {
     ...useList<Node>(ns, store, opts)

@@ -6,7 +6,6 @@
       :spinning="data.spinning"
       :type="data.type"
       :size="size"
-      width="80px"
       @click="$emit('click')"
   >
     <template #tooltip>

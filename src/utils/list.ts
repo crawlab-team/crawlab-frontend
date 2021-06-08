@@ -1,5 +1,6 @@
-import {onBeforeMount, onBeforeUnmount, onMounted, Ref} from 'vue';
+import {onBeforeMount, Ref} from 'vue';
 import {Store} from 'vuex';
+import {setupAutoUpdate} from '@/utils/auto';
 
 export const getDefaultUseListOptions = <T = any>(navActions: Ref<ListActionGroup[]>, tableColumns: Ref<TableColumns<T>>): UseListOptions<T> => {
   return {
@@ -8,22 +9,20 @@ export const getDefaultUseListOptions = <T = any>(navActions: Ref<ListActionGrou
   };
 };
 
-export const initListComponent = (ns: ListStoreNamespace, store: Store<RootStoreState>, allListNamespaces?: ListStoreNamespace[]) => {
-  if (!allListNamespaces) allListNamespaces = [];
-
-  // get all list
+export const setupGetAllList = (store: Store<RootStoreState>, allListNamespaces: ListStoreNamespace[]) => {
   onBeforeMount(async () => {
     await Promise.all(allListNamespaces?.map(ns => store.dispatch(`${ns}/getAllList`)) || []);
   });
+};
+
+export const setupListComponent = (ns: ListStoreNamespace, store: Store<RootStoreState>, allListNamespaces?: ListStoreNamespace[]) => {
+  if (!allListNamespaces) allListNamespaces = [];
+
+  // get all list
+  setupGetAllList(store, allListNamespaces);
 
   // auto update
-  let autoUpdateHandle: NodeJS.Timeout;
-  onMounted(() => {
-    autoUpdateHandle = setInterval(async () => {
-      await store.dispatch(`${ns}/getList`);
-    }, 5000);
-  });
-  onBeforeUnmount(() => {
-    clearInterval(autoUpdateHandle);
+  setupAutoUpdate(async () => {
+    await store.dispatch(`${ns}/getList`);
   });
 };

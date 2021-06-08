@@ -1,3 +1,5 @@
+import {TASK_STATUS_PENDING, TASK_STATUS_RUNNING} from '@/constants/task';
+
 export const getPriorityLabel = (priority: number): string => {
   if (priority <= 2) {
     return `High - ${priority}`;
@@ -9,5 +11,15 @@ export const getPriorityLabel = (priority: number): string => {
     return `Lower - ${priority}`;
   } else {
     return `Low - ${priority}`;
+  }
+};
+
+export const isCancellable = (status: TaskStatus): boolean => {
+  switch (status) {
+    case TASK_STATUS_PENDING:
+    case TASK_STATUS_RUNNING:
+      return true;
+    default:
+      return false;
   }
 };

@@ -9,7 +9,7 @@ import Table from '@/components/table/Table.vue';
 import NavLink from '@/components/nav/NavLink.vue';
 import Time from '@/components/time/Time.vue';
 import SpiderStat from '@/components/spider/SpiderStat.vue';
-import {initListComponent} from '@/utils/list';
+import {setupListComponent} from '@/utils/list';
 
 const useSpiderList = () => {
   // router
@@ -265,7 +265,7 @@ const useSpiderList = () => {
   } as UseListOptions<Spider>;
 
   // init
-  initListComponent(ns, store, ['node', 'project']);
+  setupListComponent(ns, store, ['node', 'project']);
 
   return {
     ...useList<Spider>(ns, store, opts),

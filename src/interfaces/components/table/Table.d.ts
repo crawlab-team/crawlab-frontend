@@ -27,7 +27,7 @@ declare global {
     sortable?: boolean;
     fixed?: string | boolean;
     rowKey?: string;
-    buttons?: TableColumnButton[];
+    buttons?: TableColumnButton[] | TableColumnButtonsFunction;
     value?: TableValueFunction<T> | any;
     disableTransfer?: boolean;
     defaultHidden?: boolean;
@@ -66,6 +66,8 @@ declare global {
     disabled?: TableButtonDisabledFunction;
     onClick?: TableButtonOnClickFunction;
   }
+
+  type TableColumnButtonsFunction<T = any> = (row?: T) => TableColumnButton[];
 
   type TableValueFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => VNode;
   type TableButtonOnClickFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => void;

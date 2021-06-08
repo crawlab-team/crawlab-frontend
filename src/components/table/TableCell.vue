@@ -24,21 +24,30 @@ export default defineComponent({
   setup: function (props) {
     const getChildren = () => {
       const {row, column, rowIndex} = props as TableCellProps;
+      const {value, buttons} = column;
 
       // value
-      if (column.value !== undefined) {
-        if (typeof column.value === 'function') {
-          return [column.value(row, rowIndex, column)];
+      if (value !== undefined) {
+        if (typeof value === 'function') {
+          return [value(row, rowIndex, column)];
         } else {
-          return column.value;
+          return value;
         }
       }
 
       // buttons
-      if (column.buttons !== undefined && column.buttons?.length > 0) {
-        return column.buttons.map(btn => {
+      if (buttons) {
+        let _buttons: TableColumnButton[] = [];
+        if (typeof buttons === 'function') {
+          _buttons = buttons(row);
+        } else if (Array.isArray(buttons) && buttons.length > 0) {
+          _buttons = buttons;
+        }
+
+        return _buttons.map(btn => {
           const {tooltip, type, size, icon, onClick} = btn;
           const props = {
+            key: JSON.stringify({tooltip, type, size, icon}),
             tooltip,
             type,
             size,

@@ -25,7 +25,9 @@
 
     <!-- Row -->
     <FormItem v-if="readonly" :offset="2" :span="2" label="Node" prop="node_id">
+      <el-input v-if="noNodeId" disabled placeholder="Unassigned"/>
       <el-select
+          v-else
           v-model="form.node_id"
           disabled
       >
@@ -41,6 +43,7 @@
           :icon="['fa', 'external-link-alt']"
           class="nav-btn"
           tooltip="Go to Spider"
+          :disabled="noNodeId"
           @click="onGoToNode"
       />
     </FormItem>
@@ -57,6 +60,17 @@
           size="small"
           tooltip="Task error message"
           type="danger"
+      />
+      <Tag
+          v-else-if="cancellable"
+          :icon="['fa', 'pause']"
+          class="cancel-btn"
+          clickable
+          label="Cancel"
+          size="small"
+          tooltip="Cancel task"
+          type="info"
+          @click="onCancel"
       />
     </FormItem>
     <!-- ./Row -->
@@ -141,7 +155,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, watch} from 'vue';
+import {computed, defineComponent, watch} from 'vue';
 import {useStore} from 'vuex';
 import useSpider from '@/components/spider/spider';
 import useNode from '@/components/node/node';
@@ -156,6 +170,14 @@ import TaskStatus from '@/components/task/TaskStatus.vue';
 import Tag from '@/components/tag/Tag.vue';
 import FaIconButton from '@/components/button/FaIconButton.vue';
 import {useRouter} from 'vue-router';
+import {isCancellable} from '@/utils/task';
+import {ElMessage, ElMessageBox} from 'element-plus';
+import {isZeroObjectId} from '@/utils/mongo';
+import useTaskDetail from '@/views/task/detail/taskDetail';
+
+const {
+  post,
+} = useRequest();
 
 export default defineComponent({
   name: 'TaskForm',
@@ -179,6 +201,7 @@ export default defineComponent({
     const router = useRouter();
 
     // store
+    const ns = 'task';
     const store = useStore();
 
     // use node
@@ -198,6 +221,11 @@ export default defineComponent({
       allSpiderDict,
       modeOptionsDict,
     } = useTask(store);
+
+    // use task detail
+    const {
+      activeId,
+    } = useTaskDetail();
 
     // use request
     const {
@@ -234,6 +262,20 @@ export default defineComponent({
       router.push(`/nodes/${form.value.node_id}`);
     };
 
+    const cancellable = computed<boolean>(() => isCancellable(form.value.status));
+
+    const onCancel = async () => {
+      await ElMessageBox.confirm('Are you sure to cancel?', 'Cancel', {type: 'warning'});
+      await ElMessage.info('Attempt to cancel');
+      try {
+        await post(`/tasks/${activeId.value}/cancel`);
+      } finally {
+        await store.dispatch(`${ns}/getById`, activeId.value);
+      }
+    };
+
+    const noNodeId = computed<boolean>(() => isZeroObjectId(form.value.node_id));
+
     return {
       ...useTask(store),
 
@@ -247,6 +289,9 @@ export default defineComponent({
       getModeName,
       onGoToSpider,
       onGoToNode,
+      cancellable,
+      onCancel,
+      noNodeId,
     };
   },
 });
@@ -267,7 +312,12 @@ export default defineComponent({
   padding-left: 10px;
 }
 
-.task-form >>> .error-message {
+.task-form >>> .error-message,
+.task-form >>> .cancel-btn {
   margin-left: 10px;
+}
+
+.task-form >>> .cancel-btn:hover {
+  opacity: 0.8;
 }
 </style>

@@ -124,11 +124,9 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
     await afterSave.value.map(fn => fn());
   };
 
+  onBeforeMount(getForm);
   onBeforeMount(async () => {
-    await Promise.all([
-      getForm(),
-      store.dispatch(`${ns}/getAllList`),
-    ]);
+    await store.dispatch(`${ns}/getAllList`);
   });
 
   onMounted(() => {
