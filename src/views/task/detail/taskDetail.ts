@@ -2,7 +2,7 @@ import {useStore} from 'vuex';
 import useDetail from '@/layouts/detail';
 import {setupGetAllList} from '@/utils/list';
 import useTask from '@/components/task/task';
-import {onBeforeMount} from 'vue';
+import {onBeforeMount, onBeforeUnmount} from 'vue';
 import {isCancellable} from '@/utils/task';
 import {sleep} from '@/utils/sleep';
 
@@ -19,17 +19,18 @@ const useTaskDetail = () => {
     form,
   } = useTask(store);
 
+  // auto update
+  let autoUpdateHandle: NodeJS.Timeout;
   const setupDetail = () => {
     if (isCancellable(form.value?.status)) {
-      const handle = setInterval(async () => {
+      autoUpdateHandle = setInterval(async () => {
         const res = await store.dispatch(`${ns}/getById`, activeId.value);
         if (!isCancellable(res.data.status)) {
-          clearInterval(handle);
+          clearInterval(autoUpdateHandle);
         }
       }, 5000);
     }
   };
-
   onBeforeMount(async () => {
     // wait until form is ready
     for (let i = 0; i < 10; i++) {
@@ -40,6 +41,7 @@ const useTaskDetail = () => {
       }
     }
   });
+  onBeforeUnmount(() => clearInterval(autoUpdateHandle));
 
   setupGetAllList(store, [
     'node',

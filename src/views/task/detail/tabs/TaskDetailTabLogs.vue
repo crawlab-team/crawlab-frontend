@@ -25,21 +25,28 @@ import {useStore} from 'vuex';
 
 // codemirror css
 import 'codemirror/lib/codemirror.css';
-import {useRoute} from 'vue-router';
+import useTaskDetail from '@/views/task/detail/taskDetail';
 
 export default defineComponent({
   name: 'TaskDetailTabLogs',
-  setup(props, {emit}) {
-    const route = useRoute();
-
+  setup() {
+    // store
     const ns = 'task';
     const store = useStore();
     const {task: state} = store.state as RootStoreState;
 
+    // use task
+    const {
+      activeId,
+    } = useTaskDetail();
+
+    // log div element
     const log = ref<HTMLDivElement>();
 
+    // codemirror editor
     let cm: Editor | null = null;
 
+    // codemirror options
     const options = computed<EditorConfiguration>(() => {
       return {
         mode: 'text',
@@ -49,13 +56,17 @@ export default defineComponent({
       };
     });
 
+    // content
     const content = computed<string>(() => state.logContent);
 
+    // pagination
     const pagination = computed<TablePagination>(() => state.logPagination);
 
+    // total
     const total = computed<number>(() => state.logTotal);
 
-    const id = computed<string>(() => route.params.id as string);
+    // id
+    const id = computed<string>(() => activeId.value);
 
     watch(content, () => {
       cm?.setValue(content.value);
