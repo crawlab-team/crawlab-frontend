@@ -41,7 +41,7 @@
     <!-- ./Row -->
 
     <!-- Row -->
-    <FormItem :offset="2" :span="2" label="Default Mode" prop="mode" required>
+    <FormItem :span="2" label="Default Mode" prop="mode" required>
       <el-select
           v-model="form.mode"
           :disabled="isFormItemDisabled('mode')"
@@ -53,6 +53,14 @@
             :value="op.value"
         />
       </el-select>
+    </FormItem>
+    <FormItem :span="2" label="Results Collection" prop="col" required>
+      <el-input
+          v-model="form.col"
+          :disabled="isFormItemDisabled('col')"
+          placeholder="Results Collection"
+          @input="onColInput"
+      />
     </FormItem>
     <!-- ./Row -->
 
@@ -95,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref, watch} from 'vue';
 import {useStore} from 'vuex';
 import useSpider from '@/components/spider/spider';
 import useNode from '@/components/node/node';
@@ -105,6 +113,7 @@ import FormItem from '@/components/form/FormItem.vue';
 import InputWithButton from '@/components/input/InputWithButton.vue';
 import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
 import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
+import pinyin, {STYLE_NORMAL} from 'pinyin';
 
 export default defineComponent({
   name: 'SpiderForm',
@@ -129,6 +138,30 @@ export default defineComponent({
       allListSelectOptions: allProjectSelectOptions,
     } = useProject(store);
 
+    // use spider
+    const {
+      form,
+    } = useSpider(store);
+
+    // whether col field of form has been changed
+    const isFormColChanged = ref<boolean>(false);
+
+    const onColInput = () => {
+      isFormColChanged.value = true;
+    };
+
+    watch(() => form.value?.name, () => {
+      if (isFormColChanged.value) return;
+      if (!form.value.name) {
+        form.value.col = '';
+      } else {
+        const name = pinyin(form.value.name, {style: STYLE_NORMAL})
+            .map(d => d.join('_'))
+            .join('_');
+        form.value.col = `results_${name}`;
+      }
+    });
+
     return {
       ...useSpider(store),
 
@@ -138,6 +171,7 @@ export default defineComponent({
       allNodeSelectOptions,
       allNodeTags,
       allProjectSelectOptions,
+      onColInput,
     };
   },
 });
