@@ -20,7 +20,6 @@ export default defineComponent({
     const route = useRoute();
 
     // store
-    const ns = 'node';
     const store = useStore();
 
     // id
@@ -47,5 +46,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .node-detail-tab-overview {
   margin: 20px;
+}
+</style>
+
+<style scoped>
+.node-detail-tab-tasks >>> .el-table {
+  border: none;
 }
 </style>
