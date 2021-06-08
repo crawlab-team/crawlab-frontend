@@ -11,6 +11,8 @@ declare global {
     confirmLoading?: boolean;
     actionFunctions?: CreateEditDialogActionFunctions;
     tabName?: CreateEditTabName;
+    title?: string;
+    noBatch?: boolean;
   }
 
   type CreateEditDialogType = 'create' | 'edit';

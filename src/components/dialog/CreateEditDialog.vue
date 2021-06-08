@@ -1,6 +1,6 @@
 <template>
   <Dialog
-      :title="title"
+      :title="computedTitle"
       :visible="visible"
       :width="width"
       :confirm-loading="confirmLoading"
@@ -17,7 +17,7 @@
       <el-tab-pane label="Single" name="single">
         <slot/>
       </el-tab-pane>
-      <el-tab-pane label="Batch" name="batch">
+      <el-tab-pane v-if="!noBatch" label="Batch" name="batch">
         <CreateDialogContentBatch
             :data="batchFormData"
             :fields="batchFormFields"
@@ -76,11 +76,20 @@ export default defineComponent({
     tabName: {
       type: String as PropType<CreateEditTabName>,
       default: 'single',
+    },
+    title: {
+      type: String,
+      default: undefined,
+    },
+    noBatch: {
+      type: Boolean,
+      default: false,
     }
   },
   setup(props: CreateEditDialogProps, ctx: SetupContext) {
-    const title = computed<string>(() => {
-      const {visible, type} = props;
+    const computedTitle = computed<string>(() => {
+      const {visible, type, title} = props;
+      if (title) return title;
       if (!visible) return '';
       switch (type) {
         case 'create':
@@ -115,7 +124,7 @@ export default defineComponent({
     provide<CreateEditDialogActionFunctions | undefined>('action-functions', props.actionFunctions);
 
     return {
-      title,
+      computedTitle,
       onClose,
       onConfirm,
       internalTabName,

@@ -1,4 +1,4 @@
-import {Ref} from 'vue';
+import {ComputedRef, Ref} from 'vue';
 import Table from '@/components/table/Table.vue';
 
 declare global {
@@ -20,6 +20,7 @@ declare global {
     tableTotal: Ref<number>;
     tablePagination: Ref<TablePagination>;
     actionFunctions: ListLayoutActionFunctions;
+    activeDialogKey: ComputedRef<DialogKey | undefined>;
   }
 
   interface UseListOptions<T> {

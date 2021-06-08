@@ -1,6 +1,6 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
-import {computed, h, onBeforeMount} from 'vue';
+import {computed, h} from 'vue';
 import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
@@ -9,6 +9,7 @@ import Table from '@/components/table/Table.vue';
 import NavLink from '@/components/nav/NavLink.vue';
 import Time from '@/components/time/Time.vue';
 import SpiderStat from '@/components/spider/SpiderStat.vue';
+import {initListComponent} from '@/utils/list';
 
 const useSpiderList = () => {
   // router
@@ -191,8 +192,9 @@ const useSpiderList = () => {
           icon: ['fa', 'play'],
           tooltip: 'Run',
           onClick: (row) => {
-            console.log('run', row);
-          }
+            store.commit(`${ns}/setForm`, row);
+            store.commit(`${ns}/showDialog`, 'run');
+          },
         },
         {
           type: 'primary',
@@ -262,11 +264,8 @@ const useSpiderList = () => {
     tableColumns,
   } as UseListOptions<Spider>;
 
-  onBeforeMount(async () => {
-    await Promise.all([
-      store.dispatch(`project/getAllList`),
-    ]);
-  });
+  // init
+  initListComponent(ns, store, ['node', 'project']);
 
   return {
     ...useList<Spider>(ns, store, opts),

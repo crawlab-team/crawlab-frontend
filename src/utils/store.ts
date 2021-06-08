@@ -13,6 +13,7 @@ export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreStat
     form: {} as T,
     isSelectiveForm: false,
     selectedFormFields: [],
+    readonlyFormFields: [],
     formList: [],
     confirmLoading: false,
     tableData: [],
@@ -99,10 +100,18 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     resetSelectedFormFields: (state: BaseStoreState<T>) => {
       state.selectedFormFields = [];
     },
+    setReadonlyFormFields: (state: BaseStoreState<T>, value: string[]) => {
+      state.readonlyFormFields = value;
+    },
+    resetReadonlyFormFields: (state: BaseStoreState<T>) => {
+      state.readonlyFormFields = [];
+    },
     setFormList: (state: BaseStoreState<T>, value: T[]) => {
+      console.log('setFormList', value);
       state.formList = value;
     },
     resetFormList: (state: BaseStoreState<T>) => {
+      console.log('resetFormList');
       state.formList = [];
     },
     setConfirmLoading: (state: BaseStoreState<T>, value: boolean) => {

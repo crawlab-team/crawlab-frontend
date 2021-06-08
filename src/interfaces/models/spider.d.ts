@@ -28,3 +28,13 @@ interface SpiderStat {
   average_runtime_duration: number;
   average_total_duration: number;
 }
+
+interface SpiderRunOptions {
+  mode?: string;
+  node_ids?: string[];
+  node_tags?: string[];
+  cmd?: string;
+  param?: string;
+  schedule_id?: string;
+  priority?: number;
+}

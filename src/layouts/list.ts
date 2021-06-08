@@ -28,6 +28,9 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
     },
   });
 
+  // active dialog key
+  const activeDialogKey = computed<DialogKey | undefined>(() => state.activeDialogKey);
+
   // get list when pagination changes
   watch(() => tablePagination.value, actionFunctions.getList);
 
@@ -44,6 +47,7 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
     tableTotal,
     tablePagination,
     actionFunctions,
+    activeDialogKey,
   };
 };
 

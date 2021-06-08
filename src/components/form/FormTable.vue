@@ -51,6 +51,7 @@ export default defineComponent({
           options,
           required,
           placeholder,
+          disabled,
         } = f;
         return {
           key: prop,
@@ -64,6 +65,7 @@ export default defineComponent({
             options,
             required,
             placeholder,
+            disabled: typeof disabled === 'function' ? disabled(row) : disabled,
             onChange: (value: any) => {
               emit('field-change', rowIndex, prop, value);
             },

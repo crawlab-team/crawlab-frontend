@@ -8,6 +8,7 @@ declare global {
     options?: SelectOption[];
     required?: boolean;
     placeholder?: string;
+    disabled?: boolean;
     onChange?: (value: any) => void;
     onRegister?: (formRef: Ref) => void;
   }

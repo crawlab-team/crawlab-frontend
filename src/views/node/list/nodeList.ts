@@ -1,7 +1,7 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
-import {getDefaultUseListOptions} from '@/utils/list';
-import {computed, h, onBeforeUnmount, onMounted} from 'vue';
+import {getDefaultUseListOptions, initListComponent} from '@/utils/list';
+import {computed, h} from 'vue';
 import NodeType from '@/components/node/NodeType.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import {ElMessageBox} from 'element-plus';
@@ -189,16 +189,8 @@ const useNodeList = () => {
   // options
   const opts = getDefaultUseListOptions<Node>(navActions, tableColumns);
 
-  // auto update
-  let autoUpdateHandle: NodeJS.Timeout;
-  onMounted(() => {
-    autoUpdateHandle = setInterval(async () => {
-      await store.dispatch(`${ns}/getList`);
-    }, 5000);
-  });
-  onBeforeUnmount(() => {
-    clearInterval(autoUpdateHandle);
-  });
+  // init
+  initListComponent(ns, store, []);
 
   return {
     ...useList<Node>(ns, store, opts)

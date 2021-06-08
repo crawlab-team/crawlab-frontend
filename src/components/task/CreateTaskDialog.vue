@@ -8,6 +8,8 @@
       :tab-name="createEditDialogTabName"
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
+      :no-batch="noBatch"
+      :title="title"
   >
     <template #default>
       <TaskForm/>
@@ -27,6 +29,14 @@ export default defineComponent({
   components: {
     TaskForm,
     CreateEditDialog,
+  },
+  props: {
+    title: {
+      type: String,
+    },
+    noBatch: {
+      type: Boolean,
+    },
   },
   setup() {
     // store

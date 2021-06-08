@@ -71,6 +71,13 @@ const actions = {
     commit('setTableData', {data: res.data || [], total: res.total});
     return res;
   },
+  runById: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {
+    id,
+    options
+  }: { id: string; options: SpiderRunOptions }) => {
+    const res = await post(`/spiders/${id}/run`, options);
+    return res;
+  },
   listDir: async ({commit}: StoreActionContext<BaseStoreState<Spider>>, {id, path}: FileRequestPayload) => {
     const res = await get(`${endpoint}/${id}/files/list`, {path});
     const navItems = res.data as FileNavItem[];

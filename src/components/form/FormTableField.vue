@@ -6,6 +6,7 @@
           v-model="internalValue"
           :placeholder="placeholder"
           size="mini"
+          :disabled="disabled"
           @input="onInputChange"
       />
       <el-input
@@ -14,6 +15,7 @@
           :placeholder="placeholder"
           size="mini"
           type="textarea"
+          :disabled="disabled"
           @input="onInputChange"
       />
       <el-select
@@ -21,6 +23,7 @@
           v-model="internalValue"
           :placeholder="placeholder"
           size="mini"
+          :disabled="disabled"
           @change="onInputChange"
       >
         <el-option
@@ -36,16 +39,19 @@
           :placeholder="placeholder"
           button-label="Edit"
           size="mini"
+          :disabled="disabled"
           @input="onInputChange"
       />
       <TagInput
           v-else-if="fieldType === FORM_FIELD_TYPE_TAG_INPUT"
           v-model="internalValue"
+          :disabled="disabled"
           @change="onInputChange"
       />
       <Switch
           v-else-if="fieldType === FORM_FIELD_TYPE_SWITCH"
           v-model="internalValue"
+          :disabled="disabled"
           @change="onInputChange"
       />
       <!-- TODO: implement more field types -->
@@ -113,6 +119,10 @@ export default defineComponent({
     placeholder: {
       type: String,
       default: 'Please enter value',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
     onChange: {
       type: Function as PropType<(value: any) => void>,

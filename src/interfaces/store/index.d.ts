@@ -41,6 +41,7 @@ declare global {
     form: T;
     isSelectiveForm: boolean;
     selectedFormFields: string[];
+    readonlyFormFields: string[];
     formList: T[];
     confirmLoading: boolean;
     tableData: TableData<T>;
@@ -74,6 +75,8 @@ declare global {
     setIsSelectiveForm: StoreMutation<BaseStoreState<T>, boolean>;
     setSelectedFormFields: StoreMutation<BaseStoreState<T>, string[]>;
     resetSelectedFormFields: StoreMutation<BaseStoreState<T>>;
+    setReadonlyFormFields: StoreMutation<BaseStoreState<T>, string[]>;
+    resetReadonlyFormFields: StoreMutation<BaseStoreState<T>>;
     setFormList: StoreMutation<BaseStoreState<T>, T[]>;
     resetFormList: StoreMutation<BaseStoreState<T>>;
     setConfirmLoading: StoreMutation<BaseStoreState<T>, boolean>;

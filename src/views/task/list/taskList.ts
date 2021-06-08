@@ -1,6 +1,6 @@
 import useList from '@/layouts/list';
 import {useStore} from 'vuex';
-import {computed, h, onBeforeMount, onBeforeUnmount, onMounted} from 'vue';
+import {computed, h} from 'vue';
 import NavLink from '@/components/nav/NavLink.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
@@ -11,6 +11,7 @@ import TaskPriority from '@/components/task/TaskPriority.vue';
 import NodeType from '@/components/node/NodeType.vue';
 import Time from '@/components/time/Time.vue';
 import Duration from '@/components/time/Duration.vue';
+import {initListComponent} from '@/utils/list';
 
 const {
   post,
@@ -221,25 +222,8 @@ const useTaskList = () => {
     tableColumns,
   } as UseListOptions<Task>;
 
-  // fetch all list
-  onBeforeMount(async () => {
-    await Promise.all([
-      store.dispatch(`node/getAllList`),
-      store.dispatch(`project/getAllList`),
-      store.dispatch(`spider/getAllList`),
-    ]);
-  });
-
-  // auto update
-  let autoUpdateHandle: NodeJS.Timeout;
-  onMounted(() => {
-    autoUpdateHandle = setInterval(async () => {
-      await store.dispatch(`${ns}/getList`);
-    }, 5000);
-  });
-  onBeforeUnmount(() => {
-    clearInterval(autoUpdateHandle);
-  });
+  // init
+  initListComponent(ns, store, ['node', 'project', 'spider']);
 
   return {
     ...useList<Task>(ns, store, opts),

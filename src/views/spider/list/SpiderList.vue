@@ -13,6 +13,7 @@
     <template #extra>
       <!-- Dialogs (handled by store) -->
       <CreateSpiderDialog/>
+      <RunSpiderDialog v-if="activeDialogKey === 'run'"/>
       <!-- ./Dialogs -->
     </template>
   </ListLayout>
@@ -23,6 +24,7 @@ import {defineComponent} from 'vue';
 import CreateSpiderDialog from '@/components/spider/CreateEditSpiderDialog.vue';
 import ListLayout from '@/layouts/ListLayout.vue';
 import useSpiderList from '@/views/spider/list/spiderList';
+import RunSpiderDialog from '@/components/spider/RunSpiderDialog.vue';
 
 export default defineComponent({
   name: 'SpiderList',
@@ -32,6 +34,7 @@ export default defineComponent({
     }
   },
   components: {
+    RunSpiderDialog,
     ListLayout,
     CreateSpiderDialog,
   },
@@ -44,6 +47,7 @@ export default defineComponent({
       tablePagination,
       actionFunctions,
       tableActionsPrefix,
+      activeDialogKey,
     } = useSpiderList();
 
     return {
@@ -54,6 +58,7 @@ export default defineComponent({
       tablePagination,
       actionFunctions,
       tableActionsPrefix,
+      activeDialogKey,
     };
   },
 });

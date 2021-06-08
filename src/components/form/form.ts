@@ -1,13 +1,11 @@
 import {computed, provide, watch} from 'vue';
 import {Store} from 'vuex';
-import {cloneArray} from '@/utils/object';
 import useFormTable from '@/components/form/formTable';
 
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form: newForm,
     formRef,
-    formList,
     formTableFieldRefsMap,
   } = data;
 
@@ -29,6 +27,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   // form
   const form = computed<BaseModel>(() => state.form);
 
+  // form list
+  const formList = computed<BaseModel[]>(() => state.formList);
+
   // active dialog key
   const activeDialogKey = computed<DialogKey | undefined>(() => state.activeDialogKey);
 
@@ -37,6 +38,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // selected form fields
   const selectedFormFields = computed<string[]>(() => state.selectedFormFields);
+
+  // readonly form fields
+  const readonlyFormFields = computed<string[]>(() => state.readonlyFormFields);
 
   // is batch form getters
   const isBatchForm = computed<boolean>(() => store.getters[`${ns}/isBatchForm`]);
@@ -61,36 +65,32 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
   };
 
   const resetForm = () => {
-    if (isBatchForm.value) {
-      switch (activeDialogKey.value) {
-        case 'create':
-          formList.value = getNewFormList();
-          break;
-        case 'edit':
-          formList.value = cloneArray(state.formList);
-          break;
-      }
-    } else {
+    if (activeDialogKey.value) {
       switch (activeDialogKey.value) {
         case 'create':
           store.commit(`${ns}/setForm`, getNewForm());
+          store.commit(`${ns}/setFormList`, getNewFormList());
           break;
         case 'edit':
           // store.commit(`${ns}/setForm`, plainClone(state.form))
           formRef.value?.clearValidate();
           break;
       }
+    } else {
       formRef.value?.resetFields();
+      formTableFieldRefsMap.value = new Map();
     }
-    formTableFieldRefsMap.value = new Map();
   };
 
   // reset form when activeDialogKey is changed
   watch(() => state.activeDialogKey, resetForm);
-  watch(() => isBatchForm.value, resetForm);
+  // watch(() => isBatchForm.value, resetForm);
 
   // whether form item is disabled
   const isFormItemDisabled = (prop: string) => {
+    if (readonlyFormFields.value.includes(prop)) {
+      return true;
+    }
     if (!isSelectiveForm.value) return false;
     if (!prop) return false;
     return !selectedFormFields.value.includes(prop);
@@ -208,9 +208,9 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // dialog tab change
   const onTabChange = (tabName: CreateEditTabName) => {
-    if (tabName === 'batch') {
-      formList.value = getNewFormList();
-    }
+    // if (tabName === 'batch') {
+    //   store.commit(`${ns}/setFormList`, getNewFormList());
+    // }
     store.commit(`${ns}/setCreateEditDialogTabName`, tabName);
   };
 
@@ -238,6 +238,8 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   return {
     ...formTable,
+    getNewForm,
+    getNewFormList,
     form,
     formRef,
     isSelectiveForm,

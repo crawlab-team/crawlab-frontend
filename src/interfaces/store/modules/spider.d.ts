@@ -17,7 +17,7 @@ interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
 }
 
 interface SpiderStoreActions extends BaseStoreActions<Spider> {
-  // runById: StoreAction<BaseStoreState, { id: string }>;
+  runById: StoreAction<BaseStoreState, { id: string; options: SpiderRunOptions }>;
   listDir: StoreAction<BaseStoreState, FileRequestPayload>;
   getFile: StoreAction<BaseStoreState, FileRequestPayload>;
   getFileInfo: StoreAction<BaseStoreState, FileRequestPayload>;

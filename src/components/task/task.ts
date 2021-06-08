@@ -26,6 +26,11 @@ export const getNewTask = (): Task => {
 const formComponentData = getDefaultFormComponentData<Task>(getNewTask);
 
 const useTask = (store: Store<RootStoreState>) => {
+  // store state
+  const {
+    task: state,
+  } = store.state as RootStoreState;
+
   // options for default mode
   const modeOptions: SelectOption[] = [
     {value: TASK_MODE_RANDOM, label: 'Random Node'},
@@ -56,6 +61,9 @@ const useTask = (store: Store<RootStoreState>) => {
     allDict: allSpiderDict,
   } = useSpider(store);
 
+  // readonly form fields
+  const readonlyFormFields = computed<string[]>(() => state.readonlyFormFields);
+
   // batch form fields
   const batchFormFields = computed<FormTableField[]>(() => [
     {
@@ -65,6 +73,7 @@ const useTask = (store: Store<RootStoreState>) => {
       placeholder: 'Spider',
       fieldType: FORM_FIELD_TYPE_SELECT,
       options: allSpiderListSelectOptions.value,
+      disabled: () => readonlyFormFields.value.includes('spider_id'),
       required: true,
     },
     {

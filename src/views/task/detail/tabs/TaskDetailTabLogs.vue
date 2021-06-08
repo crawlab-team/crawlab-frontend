@@ -97,8 +97,8 @@ export default defineComponent({
       }
     });
 
-    onUnmounted(async () => {
-      await store.dispatch(`${ns}/resetLogPagination`);
+    onUnmounted(() => {
+      store.commit(`${ns}/resetLogPagination`);
     });
 
     return {
