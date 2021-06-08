@@ -206,7 +206,7 @@ export default defineComponent({
 
     // use node
     const {
-      allListSelectOptions: allNodeSelectOptions,
+      allListSelectOptionsWithEmpty: allNodeSelectOptions,
       allTags: allNodeTags,
     } = useNode(store);
 

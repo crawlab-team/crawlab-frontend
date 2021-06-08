@@ -1,6 +1,7 @@
 import {computed, provide, watch} from 'vue';
 import {Store} from 'vuex';
 import useFormTable from '@/components/form/formTable';
+import {EMPTY_OBJECT_ID} from '@/utils/mongo';
 
 const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
@@ -104,6 +105,12 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
 
   // all list select options
   const allListSelectOptions = computed<SelectOption[]>(() => store.getters[`${ns}/allListSelectOptions`]);
+
+  // all list select options with empty
+  const allListSelectOptionsWithEmpty = computed<SelectOption[]>(() => allListSelectOptions.value.concat({
+    label: 'Unassigned',
+    value: EMPTY_OBJECT_ID,
+  }));
 
   // all dict
   const allDict = computed<Map<string, BaseModel>>(() => store.getters[`${ns}/allDict`]);
@@ -253,6 +260,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
     createEditDialogTabName,
     createEditDialogVisible,
     allListSelectOptions,
+    allListSelectOptionsWithEmpty,
     allDict,
     allTags,
     confirmDisabled,

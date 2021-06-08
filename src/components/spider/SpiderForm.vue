@@ -135,7 +135,7 @@ export default defineComponent({
 
     // use project
     const {
-      allListSelectOptions: allProjectSelectOptions,
+      allListSelectOptionsWithEmpty: allProjectSelectOptions,
     } = useProject(store);
 
     // use spider

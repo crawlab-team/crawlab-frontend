@@ -12,13 +12,17 @@ const useTaskDetail = () => {
   const store = useStore();
 
   const {
+    activeId,
+  } = useDetail('task');
+
+  const {
     form,
   } = useTask(store);
 
   const setupDetail = () => {
     if (isCancellable(form.value?.status)) {
       const handle = setInterval(async () => {
-        const res = await store.dispatch(`${ns}/getById`, form.value._id);
+        const res = await store.dispatch(`${ns}/getById`, activeId.value);
         if (!isCancellable(res.data.status)) {
           clearInterval(handle);
         }

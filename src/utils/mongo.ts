@@ -1,3 +1,5 @@
+export const EMPTY_OBJECT_ID = '000000000000000000000000';
+
 export const isZeroObjectId = (id: string): boolean => {
-  return !id || id === '000000000000000000000000';
+  return !id || id === EMPTY_OBJECT_ID;
 };

@@ -13,6 +13,9 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
   // store state
   const store = useStore();
   const state = store.state[ns] as BaseStoreState;
+  const {
+    form,
+  } = state;
 
   const navSidebar = ref<NavSidebar | null>(null);
 
@@ -29,7 +32,7 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
 
   const activeId = computed<string>(() => {
     const {id} = route.params;
-    return id as string || '';
+    return id as string || form._id || '';
   });
 
   const activeTabName = computed<SpiderTabName>(() => store.getters[`${ns}/tabName`]);
