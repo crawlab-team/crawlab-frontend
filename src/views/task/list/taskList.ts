@@ -110,7 +110,7 @@ const useTaskList = () => {
       icon: ['fa', 'check-square'],
       width: '120',
       value: (row: Task) => {
-        return h(TaskStatus, {status: row.status} as TaskStatusProps);
+        return h(TaskStatus, {status: row.status, error: row.error} as TaskStatusProps);
       },
     },
     {

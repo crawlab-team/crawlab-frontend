@@ -4,12 +4,15 @@
       :icon="data.icon"
       :label="data.label"
       :spinning="data.spinning"
-      :tooltip="data.tooltip"
       :type="data.type"
       :size="size"
       width="80px"
       @click="$emit('click')"
-  />
+  >
+    <template #tooltip>
+      <div v-html="data.tooltip"/>
+    </template>
+  </Tag>
 </template>
 
 <script lang="ts">
@@ -23,6 +26,7 @@ import {
   TASK_STATUS_RUNNING
 } from '@/constants/task';
 import Tag from '@/components/tag/Tag.vue';
+import colors from '@/styles/color.scss';
 
 export default defineComponent({
   name: 'TaskStatus',
@@ -39,11 +43,15 @@ export default defineComponent({
       required: false,
       default: 'mini',
     },
+    error: {
+      type: String,
+      required: false,
+    }
   },
   emits: ['click'],
   setup(props: TaskStatusProps, {emit}) {
     const data = computed<TagData>(() => {
-      const {status} = props;
+      const {status, error} = props;
       switch (status) {
         case TASK_STATUS_PENDING:
           return {
@@ -71,7 +79,7 @@ export default defineComponent({
         case TASK_STATUS_ERROR:
           return {
             label: 'Error',
-            tooltip: 'Task ended with an error',
+            tooltip: `Task ended with an error:<br><span style="color: ${colors.red}">${error}</span>`,
             type: 'danger',
             icon: ['fa', 'times'],
           };
