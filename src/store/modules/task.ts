@@ -6,6 +6,7 @@ import {
 } from '@/utils/store';
 import useRequest from '@/services/request';
 import {TAB_NAME_LOGS, TAB_NAME_OVERVIEW} from '@/constants/tab';
+import {Editor} from 'codemirror';
 
 const {
   put,
@@ -24,6 +25,8 @@ const state = {
     size: 1000,
   },
   logTotal: 0,
+  logAutoUpdate: false,
+  logCodeMirrorEditor: undefined,
 } as TaskStoreState;
 
 const getters = {
@@ -46,6 +49,18 @@ const mutations = {
   },
   setLogTotal: (state: TaskStoreState, total: number) => {
     state.logTotal = total;
+  },
+  resetLogTotal: (state: TaskStoreState) => {
+    state.logTotal = 0;
+  },
+  enableLogAutoUpdate: (state: TaskStoreState) => {
+    state.logAutoUpdate = true;
+  },
+  disableLogAutoUpdate: (state: TaskStoreState) => {
+    state.logAutoUpdate = false;
+  },
+  setLogCodeMirrorEditor: (state: TaskStoreState, cm: Editor) => {
+    state.logCodeMirrorEditor = cm;
   },
 } as TaskStoreMutations;
 

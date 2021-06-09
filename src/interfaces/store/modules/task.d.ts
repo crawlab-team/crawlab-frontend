@@ -1,21 +1,31 @@
-type TaskStoreModule = BaseModule<TaskStoreState, TaskStoreGetters, TaskStoreMutations, TaskStoreActions>;
+import {Editor} from 'codemirror';
 
-interface TaskStoreState extends BaseStoreState<Task> {
-  logContent: string;
-  logPagination: TablePagination;
-  logTotal: number;
-}
+declare global {
+  type TaskStoreModule = BaseModule<TaskStoreState, TaskStoreGetters, TaskStoreMutations, TaskStoreActions>;
 
-type TaskStoreGetters = BaseStoreGetters<Task>;
+  interface TaskStoreState extends BaseStoreState<Task> {
+    logContent: string;
+    logPagination: TablePagination;
+    logTotal: number;
+    logAutoUpdate: boolean;
+    logCodeMirrorEditor?: Editor;
+  }
 
-interface TaskStoreMutations extends BaseStoreMutations<Task> {
-  setLogContent: StoreMutation<TaskStoreState, string>;
-  resetLogContent: StoreMutation<TaskStoreState>;
-  setLogPagination: StoreMutation<TaskStoreState, TablePagination>;
-  resetLogPagination: StoreMutation<TaskStoreState>;
-  setLogTotal: StoreMutation<TaskStoreState, number>;
-}
+  type TaskStoreGetters = BaseStoreGetters<Task>;
 
-interface TaskStoreActions extends BaseStoreActions<Task> {
-  getLogs: StoreAction<BaseStoreState, string>;
+  interface TaskStoreMutations extends BaseStoreMutations<Task> {
+    setLogContent: StoreMutation<TaskStoreState, string>;
+    resetLogContent: StoreMutation<TaskStoreState>;
+    setLogPagination: StoreMutation<TaskStoreState, TablePagination>;
+    resetLogPagination: StoreMutation<TaskStoreState>;
+    setLogTotal: StoreMutation<TaskStoreState, number>;
+    resetLogTotal: StoreMutation<TaskStoreState>;
+    enableLogAutoUpdate: StoreMutation<TaskStoreState>;
+    disableLogAutoUpdate: StoreMutation<TaskStoreState>;
+    setLogCodeMirrorEditor: StoreMutation<TaskStoreState, Editor>;
+  }
+
+  interface TaskStoreActions extends BaseStoreActions<Task> {
+    getLogs: StoreAction<BaseStoreState, string>;
+  }
 }

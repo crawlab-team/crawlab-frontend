@@ -2,14 +2,17 @@ import {useStore} from 'vuex';
 import useDetail from '@/layouts/detail';
 import {setupGetAllList} from '@/utils/list';
 import useTask from '@/components/task/task';
-import {onBeforeMount, onBeforeUnmount} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount} from 'vue';
 import {isCancellable} from '@/utils/task';
-import {sleep} from '@/utils/sleep';
+import {Editor} from 'codemirror';
 
 const useTaskDetail = () => {
   // store
   const ns = 'task';
   const store = useStore();
+  const {
+    task: state,
+  } = store.state as RootStoreState;
 
   const {
     activeId,
@@ -19,12 +22,45 @@ const useTaskDetail = () => {
     form,
   } = useTask(store);
 
+  // codemirror editor
+  const logCodeMirrorEditor = computed<Editor | undefined>(() => state.logCodeMirrorEditor);
+
+  const updateLogs = async () => {
+    // update logs
+    await store.dispatch(`${ns}/getLogs`, activeId.value);
+
+    // update pagination
+    const {logPagination, logTotal} = state;
+    const {page, size} = logPagination;
+    if (logTotal > size * page) {
+      const maxPage = Math.ceil(logTotal / size);
+      store.commit(`${ns}/setLogPagination`, {
+        page: maxPage,
+        size,
+      });
+    }
+
+    // scroll to bottom
+    setTimeout(() => {
+      const info = logCodeMirrorEditor.value?.getScrollInfo();
+      logCodeMirrorEditor.value?.scrollTo(null, info?.height);
+    }, 100);
+  };
+
   // auto update
   let autoUpdateHandle: NodeJS.Timeout;
   const setupDetail = () => {
     if (isCancellable(form.value?.status)) {
       autoUpdateHandle = setInterval(async () => {
+        // form data
         const res = await store.dispatch(`${ns}/getById`, activeId.value);
+
+        // logs
+        if (state.logAutoUpdate) {
+          await updateLogs();
+        }
+
+        // dispose
         if (!isCancellable(res.data.status)) {
           clearInterval(autoUpdateHandle);
         }
@@ -32,16 +68,20 @@ const useTaskDetail = () => {
     }
   };
   onBeforeMount(async () => {
-    // wait until form is ready
-    for (let i = 0; i < 10; i++) {
-      await sleep(1000);
-      if (form.value._id) {
-        setupDetail();
-        return;
-      }
-    }
+    // logs
+    await updateLogs();
+
+    // setup
+    setupDetail();
   });
   onBeforeUnmount(() => clearInterval(autoUpdateHandle));
+
+  // dispose
+  onBeforeUnmount(() => {
+    store.commit(`${ns}/resetLogContent`);
+    store.commit(`${ns}/resetLogPagination`);
+    store.commit(`${ns}/resetLogTotal`);
+  });
 
   setupGetAllList(store, [
     'node',
@@ -50,6 +90,7 @@ const useTaskDetail = () => {
 
   return {
     ...useDetail('task'),
+    logCodeMirrorEditor,
   };
 };
 

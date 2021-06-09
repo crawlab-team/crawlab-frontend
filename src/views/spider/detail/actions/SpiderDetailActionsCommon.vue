@@ -1,6 +1,6 @@
 <template>
   <NavActionGroup>
-    <NavActionFaIcon :icon="['fa', 'tools']" tooltip="Spider Actions"/>
+    <NavActionFaIcon :icon="['fa', 'tools']"/>
     <NavActionItem>
       <FaIconButton :icon="['fa', 'play']" tooltip="Run" type="success" @click="onRun"/>
     </NavActionItem>
@@ -12,7 +12,7 @@
     </NavActionItem>
   </NavActionGroup>
   <NavActionGroup>
-    <NavActionFaIcon :icon="['fab', 'git-alt']" tooltip="Git"/>
+    <NavActionFaIcon :icon="['fab', 'git-alt']"/>
     <NavActionItem>
       <FaIconButton :icon="['fa', 'upload']" tooltip="Upload File" type="primary"/>
     </NavActionItem>

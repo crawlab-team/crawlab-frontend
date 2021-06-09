@@ -1,6 +1,6 @@
 <template>
   <NavActionItem class="nav-action-fa-icon" is-label>
-    <el-tooltip :content="tooltip">
+    <el-tooltip :content="tooltip" :disabled="!tooltip">
       <font-awesome-icon :icon="icon" class="title"/>
     </el-tooltip>
   </NavActionItem>

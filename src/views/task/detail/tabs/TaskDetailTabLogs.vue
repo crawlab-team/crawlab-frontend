@@ -2,8 +2,8 @@
   <div class="task-detail-tab-logs">
     <div class="pagination">
       <el-pagination
-          :page="pagination.page"
-          :page-size="pagination.size"
+          :current-page="page"
+          :page-size="size"
           :page-sizes="pageSizes"
           :total="total"
           layout="total, sizes, prev, pager, next"
@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeMount, onMounted, onUnmounted, ref, watch} from 'vue';
-import {Editor, EditorConfiguration} from 'codemirror';
+import {computed, defineComponent, onMounted, onUnmounted, ref, watch} from 'vue';
+import {EditorConfiguration} from 'codemirror';
 import {getCodemirrorEditor, initTheme} from '@/utils/codemirror';
 import {useStore} from 'vuex';
 
@@ -35,16 +35,14 @@ export default defineComponent({
     const store = useStore();
     const {task: state} = store.state as RootStoreState;
 
-    // use task
+    // use task detail
     const {
       activeId,
+      logCodeMirrorEditor: cm,
     } = useTaskDetail();
 
     // log div element
     const log = ref<HTMLDivElement>();
-
-    // codemirror editor
-    let cm: Editor | null = null;
 
     // codemirror options
     const options = computed<EditorConfiguration>(() => {
@@ -60,7 +58,8 @@ export default defineComponent({
     const content = computed<string>(() => state.logContent);
 
     // pagination
-    const pagination = computed<TablePagination>(() => state.logPagination);
+    const page = computed<number>(() => state.logPagination.page);
+    const size = computed<number>(() => state.logPagination.size);
 
     // total
     const total = computed<number>(() => state.logTotal);
@@ -68,22 +67,23 @@ export default defineComponent({
     // id
     const id = computed<string>(() => activeId.value);
 
+    // set editor content
     watch(content, () => {
-      cm?.setValue(content.value);
+      cm.value?.setValue(content.value);
     });
 
+    // pagination change
     const onPageChange = (page: number) => {
-      store.commit(`${ns}/setLogPagination`, {...pagination.value, page});
+      store.commit(`${ns}/setLogPagination`, {...state.logPagination, page});
     };
-
     const onSizeChange = (size: number) => {
-      store.commit(`${ns}/setLogPagination`, {...pagination.value, size});
+      store.commit(`${ns}/setLogPagination`, {...state.logPagination, size});
     };
-
-    watch(pagination, async () => {
+    watch(() => state.logPagination, async () => {
       await store.dispatch(`${ns}/getLogs`, id.value);
     });
 
+    // page sizes
     const pageSizes = ref<number[]>([
       1000,
       2000,
@@ -93,28 +93,27 @@ export default defineComponent({
       50000,
     ]);
 
-    onBeforeMount(async () => {
-      await store.dispatch(`${ns}/getLogs`, id.value);
-    });
-
+    // initialize
     onMounted(async () => {
       const el = log.value as HTMLElement;
-      cm = getCodemirrorEditor(el, options.value);
+      store.commit(`${ns}/setLogCodeMirrorEditor`, getCodemirrorEditor(el, options.value));
 
       await initTheme('darcula');
 
       if (content.value) {
-        cm?.setValue(content.value);
+        cm.value?.setValue(content.value);
       }
     });
 
+    // dispose
     onUnmounted(() => {
       store.commit(`${ns}/resetLogPagination`);
     });
 
     return {
       log,
-      pagination,
+      page,
+      size,
       total,
       pageSizes,
       onPageChange,

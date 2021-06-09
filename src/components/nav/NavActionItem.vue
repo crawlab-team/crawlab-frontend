@@ -1,5 +1,8 @@
 <template>
   <div :class="[isLabel ? 'is-label' : '']" class="nav-action-item">
+    <span v-if="label" class="nav-action-item-label">
+      {{ label }}
+    </span>
     <slot></slot>
   </div>
 </template>
@@ -13,7 +16,10 @@ export default defineComponent({
     isLabel: {
       type: Boolean,
       default: false,
-    }
+    },
+    label: {
+      type: String,
+    },
   },
   setup() {
     return {};
@@ -62,5 +68,11 @@ export default defineComponent({
 
 .nav-action-item >>> .el-button .icon + span {
   margin-left: 5px;
+}
+
+.nav-action-item >>> .nav-action-item-label {
+  color: inherit;
+  font-size: 12px;
+  margin-right: 5px;
 }
 </style>

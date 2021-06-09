@@ -1,4 +1,4 @@
-import {computed, provide, readonly, watch} from 'vue';
+import {computed, onBeforeUnmount, provide, readonly, watch} from 'vue';
 import {Store} from 'vuex';
 import {ElMessage, ElMessageBox} from 'element-plus';
 
@@ -39,6 +39,12 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
     namespace: ns,
     store,
     state,
+  });
+
+  onBeforeUnmount(() => {
+    store.commit(`${ns}/resetTableData`);
+    store.commit(`${ns}/resetTablePagination`);
+    store.commit(`${ns}/resetTableListFilter`);
   });
 
   return {

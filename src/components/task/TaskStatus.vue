@@ -1,5 +1,6 @@
 <template>
   <Tag
+      class="task-status"
       :key="data"
       :icon="data.icon"
       :label="data.label"
@@ -115,12 +116,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .task-status {
-  width: 80px;
-  cursor: default;
-
-  .icon {
-    width: 10px;
-    margin-right: 5px;
-  }
 }
 </style>

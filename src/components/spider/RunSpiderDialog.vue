@@ -95,6 +95,7 @@ import useTask from '@/components/task/task';
 import FormItem from '@/components/form/FormItem.vue';
 import InputWithButton from '@/components/input/InputWithButton.vue';
 import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
+import {ElMessage} from 'element-plus';
 
 export default defineComponent({
   name: 'RunSpiderDialog',
@@ -158,6 +159,7 @@ export default defineComponent({
       await formRef.value?.validate();
       await store.dispatch(`${ns}/runById`, {id: spider.value?._id, options: options.value});
       store.commit(`${ns}/hideDialog`);
+      await ElMessage.success('Scheduled task successfully');
       await store.dispatch(`${ns}/getList`);
     };
 
