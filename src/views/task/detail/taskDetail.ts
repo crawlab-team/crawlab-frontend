@@ -71,6 +71,13 @@ const useTaskDetail = () => {
     // logs
     await updateLogs();
 
+    // initialize logs auto update
+    setTimeout(() => {
+      if (isCancellable(form.value?.status)) {
+        store.commit(`${ns}/enableLogAutoUpdate`);
+      }
+    }, 500);
+
     // setup
     setupDetail();
   });
@@ -81,6 +88,7 @@ const useTaskDetail = () => {
     store.commit(`${ns}/resetLogContent`);
     store.commit(`${ns}/resetLogPagination`);
     store.commit(`${ns}/resetLogTotal`);
+    store.commit(`${ns}/disableLogAutoUpdate`);
   });
 
   setupGetAllList(store, [

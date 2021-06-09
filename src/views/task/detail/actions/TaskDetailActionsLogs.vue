@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, watch} from 'vue';
 import NavActionGroup from '@/components/nav/NavActionGroup.vue';
 import NavActionItem from '@/components/nav/NavActionItem.vue';
 import NavActionFaIcon from '@/components/nav/NavActionFaIcon.vue';
@@ -39,6 +39,11 @@ export default defineComponent({
 
     // internal auto update
     const internalAutoUpdate = ref<boolean>(state.logAutoUpdate);
+
+    // watch log auto update
+    watch(() => state.logAutoUpdate, () => {
+      internalAutoUpdate.value = state.logAutoUpdate;
+    });
 
     // auto update change
     const onAutoUpdateChange = (value: boolean) => {
