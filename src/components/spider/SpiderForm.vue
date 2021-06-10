@@ -8,6 +8,7 @@
       <el-select
           v-model="form.project_id"
           :disabled="isFormItemDisabled('project_id')"
+          filterable
       >
         <el-option
             v-for="op in allProjectSelectOptions"
