@@ -17,6 +17,12 @@ import {
   FORM_FIELD_TYPE_SELECT
 } from '@/constants/form';
 import useProject from '@/components/project/project';
+import useRequest from '@/services/request';
+import {FILTER_OP_CONTAINS} from '@/constants/filter';
+
+const {
+  getList,
+} = useRequest();
 
 // get new spider
 export const getNewSpider = (): Spider => {
@@ -96,11 +102,37 @@ const useSpider = (store: Store<RootStoreState>) => {
   // spider id
   const id = computed(() => route.params.id);
 
+  // fetch data collections
+  const fetchDataCollection = async (query: string) => {
+    const conditions = [{
+      key: 'name',
+      op: FILTER_OP_CONTAINS,
+      value: query,
+    }] as FilterConditionData[];
+    const res = await getList(`/data/collections`, {conditions});
+    return res.data;
+  };
+
+  // fetch data collection suggestions
+  const fetchDataCollectionSuggestions = (query: string, cb: Function) => {
+    fetchDataCollection(query)
+      .then(data => {
+        cb(data?.map((d: DataCollection) => {
+          return {
+            _id: d._id,
+            value: d.name,
+          };
+        }));
+      });
+  };
+
   return {
     ...useForm('spider', store, useSpiderService(store), formComponentData),
     batchFormFields,
     id,
     modeOptions,
+    fetchDataCollection,
+    fetchDataCollectionSuggestions,
   };
 };
 

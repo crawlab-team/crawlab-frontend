@@ -7,6 +7,7 @@ import spider from '@/store/modules/spider';
 import task from '@/store/modules/task';
 import file from '@/store/modules/file';
 import tag from '@/store/modules/tag';
+import dataCollection from '@/store/modules/dataCollection';
 
 export default createStore<RootStoreState>({
   modules: {
@@ -18,5 +19,6 @@ export default createStore<RootStoreState>({
     task,
     file,
     tag,
+    dataCollection,
   },
 }) as Store<RootStoreState>;

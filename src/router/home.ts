@@ -5,6 +5,6 @@ const endpoint = '';
 export default [
   {
     path: endpoint,
-    component: import('@/views/home/Home.vue'),
+    component: () => import('@/views/home/Home.vue'),
   },
 ] as Array<RouteRecordRaw>;

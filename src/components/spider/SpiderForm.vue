@@ -54,12 +54,14 @@
         />
       </el-select>
     </FormItem>
-    <FormItem :span="2" label="Results Collection" prop="col" required>
-      <el-input
-          v-model="form.col"
-          :disabled="isFormItemDisabled('col')"
+    <FormItem :span="2" label="Results Collection" prop="col_name" required>
+      <el-autocomplete
+          v-model="form.col_name"
+          :disabled="isFormItemDisabled('col_name')"
           placeholder="Results Collection"
-          @input="onColInput"
+          :fetch-suggestions="fetchDataCollectionSuggestions"
+          @input="onDataCollectionInput"
+          @select="onDataCollectionSuggestionSelect"
       />
     </FormItem>
     <!-- ./Row -->
@@ -114,6 +116,7 @@ import InputWithButton from '@/components/input/InputWithButton.vue';
 import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
 import {TASK_MODE_SELECTED_NODE_TAGS, TASK_MODE_SELECTED_NODES} from '@/constants/task';
 import pinyin, {STYLE_NORMAL} from 'pinyin';
+import {isZeroObjectId} from '@/utils/mongo';
 
 export default defineComponent({
   name: 'SpiderForm',
@@ -152,15 +155,25 @@ export default defineComponent({
 
     watch(() => form.value?.name, () => {
       if (isFormColChanged.value) return;
+      if (form.value?._id && isZeroObjectId(form.value?._id)) return;
       if (!form.value.name) {
-        form.value.col = '';
+        form.value.col_name = '';
       } else {
         const name = pinyin(form.value.name, {style: STYLE_NORMAL})
             .map(d => d.join('_'))
             .join('_');
-        form.value.col = `results_${name}`;
+        form.value.col_name = `results_${name}`;
       }
     });
+
+    const onDataCollectionSuggestionSelect = ({_id}: { _id: string; value: string }) => {
+      form.value.col_id = _id;
+    };
+
+    const onDataCollectionInput = (value: string) => {
+      form.value.col_name = value;
+      form.value.col_id = undefined;
+    };
 
     return {
       ...useSpider(store),
@@ -172,6 +185,8 @@ export default defineComponent({
       allNodeTags,
       allProjectSelectOptions,
       onColInput,
+      onDataCollectionSuggestionSelect,
+      onDataCollectionInput,
     };
   },
 });

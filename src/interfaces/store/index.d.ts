@@ -10,6 +10,7 @@ declare global {
     task: TaskStoreState;
     file: FileStoreState;
     tag: TagStoreState;
+    dataCollection: DataCollectionStoreState;
   }
 
   type StoreGetter<S, T> = (state: S, getters: StoreGetter<S, T>, rootState: RootStoreState, rootGetters: any) => T;
@@ -110,8 +111,18 @@ declare global {
 
   type StoreActionContext<S = BaseStoreState> = ActionContext<S, RootStoreState>;
 
-  type StoreNamespace = 'login' | 'layout' | 'node' | 'project' | 'spider' | 'task' | 'schedule' | 'file' | 'tag';
-  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task' | 'tag';
+  type StoreNamespace =
+    'login'
+    | 'layout'
+    | 'node'
+    | 'project'
+    | 'spider'
+    | 'task'
+    | 'schedule'
+    | 'file'
+    | 'tag'
+    | 'dataCollection';
+  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task' | 'tag' | 'dataCollection';
 
   interface StoreContext<T> {
     namespace: StoreNamespace;

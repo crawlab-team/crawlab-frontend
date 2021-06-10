@@ -203,6 +203,7 @@ export default defineComponent({
 </style>
 <style scoped>
 .form-item >>> .form-item-content > .el-select,
+.form-item >>> .form-item-content > .el-autocomplete,
 .form-item >>> .form-item-content > .el-input {
   width: 100%;
 }

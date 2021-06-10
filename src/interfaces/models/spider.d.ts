@@ -4,7 +4,8 @@ interface Spider extends BaseModel {
   spider_type?: string;
   cmd?: string;
   param?: string;
-  col?: string;
+  col_id?: string;
+  col_name?: string;
   mode?: TaskMode;
   node_ids?: string[];
   node_tags?: string[];
