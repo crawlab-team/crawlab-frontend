@@ -11,7 +11,7 @@ declare global {
     logCodeMirrorEditor?: Editor;
   }
 
-  type TaskStoreGetters = BaseStoreGetters<Task>;
+  type TaskStoreGetters = BaseStoreGetters<TaskStoreState>;
 
   interface TaskStoreMutations extends BaseStoreMutations<Task> {
     setLogContent: StoreMutation<TaskStoreState, string>;

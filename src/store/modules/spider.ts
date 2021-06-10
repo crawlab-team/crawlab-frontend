@@ -1,4 +1,3 @@
-import router from '@/router';
 import {
   getDefaultStoreActions,
   getDefaultStoreGetters,
@@ -6,7 +5,7 @@ import {
   getDefaultStoreState
 } from '@/utils/store';
 import useRequest from '@/services/request';
-import {TAB_NAME_FILES, TAB_NAME_OVERVIEW, TAB_NAME_SETTINGS, TAB_NAME_TASKS} from '@/constants/tab';
+import {TAB_NAME_DATA, TAB_NAME_FILES, TAB_NAME_OVERVIEW, TAB_NAME_SETTINGS, TAB_NAME_TASKS} from '@/constants/tab';
 
 const endpoint = '/spiders';
 
@@ -23,6 +22,7 @@ const state = {
     {id: TAB_NAME_OVERVIEW, title: 'Overview'},
     {id: TAB_NAME_FILES, title: 'Files'},
     {id: TAB_NAME_TASKS, title: 'Tasks'},
+    {id: TAB_NAME_DATA, title: 'Data'},
     {id: TAB_NAME_SETTINGS, title: 'Settings'},
   ],
   fileNavItems: [],
@@ -32,12 +32,6 @@ const state = {
 
 const getters = {
   ...getDefaultStoreGetters<Spider>(),
-  // tab name for spider detail
-  tabName: () => {
-    const arr = router.currentRoute.value.path.split('/');
-    if (arr.length < 3) return null;
-    return arr[3];
-  },
 } as SpiderStoreGetters;
 
 const mutations = {

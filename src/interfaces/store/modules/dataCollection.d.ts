@@ -1,9 +1,22 @@
 type DataCollectionStoreModule = BaseModule<DataCollectionStoreState, DataCollectionStoreGetters, DataCollectionStoreMutations, DataCollectionStoreActions>;
 
-type DataCollectionStoreState = BaseStoreState<DataCollection>;
+interface DataCollectionStoreState extends BaseStoreState<DataCollection> {
+  resultTableData: TableData<Result>;
+  resultTableTotal: number;
+  resultTablePagination: TablePagination;
+}
 
-type DataCollectionStoreGetters = BaseStoreGetters<DataCollection>;
+interface DataCollectionStoreGetters extends BaseStoreGetters<DataCollectionStoreState> {
+  resultFields: StoreGetter<DataCollectionStoreState, ResultField[]>;
+}
 
-type DataCollectionStoreMutations = BaseStoreMutations<DataCollection>;
+interface DataCollectionStoreMutations extends BaseStoreMutations<DataCollection> {
+  setResultTableData: StoreMutation<DataCollectionStoreState, TableDataWithTotal<Result>>;
+  resetResultTableData: StoreMutation<DataCollectionStoreState>;
+  setResultTablePagination: StoreMutation<DataCollectionStoreState, TablePagination>;
+  resetResultTablePagination: StoreMutation<DataCollectionStoreState>;
+}
 
-type DataCollectionStoreActions = BaseStoreActions<DataCollection>;
+interface DataCollectionStoreActions extends BaseStoreActions<DataCollection> {
+  getResultList: StoreAction<DataCollectionStoreState, { string; ListRequestParams }>;
+}

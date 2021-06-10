@@ -56,14 +56,14 @@ declare global {
     afterSave: (() => Promise)[];
   }
 
-  interface BaseStoreGetters<T = any> extends GetterTree<BaseStoreState<T>, RootStoreState> {
-    dialogVisible: StoreGetter<BaseStoreState<T>, boolean>;
-    isBatchForm: StoreGetter<BaseStoreState<T>, boolean>;
-    formListIds: StoreGetter<BaseStoreState<T>, string[]>;
-    allListSelectOptions: StoreGetter<BaseStoreState<T>, SelectOption[]>;
-    allDict: StoreGetter<BaseStoreState<BaseModel>, Map<string, T>>;
-    tabName: StoreGetter<BaseStoreState<T>, string>;
-    allTags: StoreGetter<BaseStoreState<T>, Tag[]>;
+  interface BaseStoreGetters<S = BaseStoreState> extends GetterTree<S, RootStoreState> {
+    dialogVisible: StoreGetter<BaseStoreState, boolean>;
+    isBatchForm: StoreGetter<BaseStoreState, boolean>;
+    formListIds: StoreGetter<BaseStoreState, string[]>;
+    allListSelectOptions: StoreGetter<BaseStoreState, SelectOption[]>;
+    allDict: StoreGetter<BaseStoreState, Map<string, T>>;
+    tabName: StoreGetter<BaseStoreState, string>;
+    allTags: StoreGetter<BaseStoreState, Tag[]>;
   }
 
   interface BaseStoreMutations<T = any> extends MutationTree<BaseStoreState<T>> {

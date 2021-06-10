@@ -28,7 +28,7 @@ export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreStat
   };
 };
 
-export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOptions): BaseStoreGetters<T> => {
+export const getDefaultStoreGetters = <T = any>(opts?: GetDefaultStoreGettersOptions): BaseStoreGetters<BaseStoreState<T>> => {
   if (!opts) opts = {};
   if (!opts.selectOptionValueKey) opts.selectOptionValueKey = '_id';
   if (!opts.selectOptionLabelKey) opts.selectOptionLabelKey = 'name';

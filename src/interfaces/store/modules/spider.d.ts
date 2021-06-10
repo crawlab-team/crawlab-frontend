@@ -6,7 +6,7 @@ interface SpiderStoreState extends BaseStoreState<Spider> {
   fileContent: string;
 }
 
-type SpiderStoreGetters = BaseStoreGetters<Spider>;
+type SpiderStoreGetters = BaseStoreGetters<SpiderStoreState>;
 
 interface SpiderStoreMutations extends BaseStoreMutations<Spider> {
   setFileNavItems: StoreMutation<BaseStoreState<Spider>, FileNavItem[]>;
