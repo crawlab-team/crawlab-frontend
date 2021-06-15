@@ -13,6 +13,7 @@ import Time from '@/components/time/Time.vue';
 import Duration from '@/components/time/Duration.vue';
 import {setupListComponent} from '@/utils/list';
 import {isCancellable} from '@/utils/task';
+import TaskResults from '@/components/task/TaskResults.vue';
 
 const {
   post,
@@ -174,6 +175,16 @@ const useTaskList = () => {
       value: (row: Task) => {
         if (!row.stat?.total_duration) return;
         return h(Duration, {duration: row.stat?.total_duration as number} as DurationProps);
+      },
+    },
+    {
+      key: 'stat.result_count',
+      label: 'Results',
+      icon: ['fa', 'table'],
+      width: '150',
+      value: (row: Task) => {
+        if (row.stat?.result_count === undefined) return;
+        return h(TaskResults, {results: row.stat.result_count, status: row.status} as TaskResultsProps);
       },
     },
     {

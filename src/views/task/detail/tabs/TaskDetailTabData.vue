@@ -1,45 +1,42 @@
 <template>
-  <ListLayout
-      :action-functions="actionFunctions"
-      :no-actions="noActions"
-      :pagination="tablePagination"
-      :table-columns="tableColumns"
-      :table-data="tableData"
-      :table-total="tableTotal"
-      class="result-list"
-  >
-    <template #extra>
-    </template>
-  </ListLayout>
+  <div class="task-detail-tab-data">
+    <ListLayout
+        :action-functions="actionFunctions"
+        :pagination="tablePagination"
+        :table-columns="tableColumns"
+        :table-data="tableData"
+        :table-total="tableTotal"
+        class="result-list"
+        no-actions
+    >
+      <template #extra>
+      </template>
+    </ListLayout>
+  </div>
 </template>
-
 <script lang="ts">
-import {computed, defineComponent, watch} from 'vue';
+import {computed, defineComponent} from 'vue';
 import ListLayout from '@/layouts/ListLayout.vue';
 import {useStore} from 'vuex';
+import useTaskDetail from '@/views/task/detail/taskDetail';
 
 export default defineComponent({
-  name: 'ResultList',
+  name: 'TaskDetailTabOverview',
   components: {
     ListLayout,
   },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    noActions: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props: ResultListProps) {
+  setup() {
     // store
-    const ns = 'dataCollection';
+    const ns = 'task';
     const store = useStore();
     const {
-      dataCollection: state,
+      task: state,
     } = store.state as RootStoreState;
+
+    // id
+    const {
+      activeId,
+    } = useTaskDetail();
 
     // data
     const tableData = computed<TableData<Result>>(() => state.resultTableData);
@@ -66,12 +63,7 @@ export default defineComponent({
     const actionFunctions = {
       setPagination: (pagination) => store.commit(`${ns}/setResultTablePagination`, pagination),
       getList: async () => {
-        const {id} = props;
-        if (!id) return;
-        return store.dispatch(`${ns}/getResultData`, {
-          id,
-          params: tablePagination.value,
-        });
+        return store.dispatch(`${ns}/getResultData`, activeId.value);
       },
       getAll: async () => {
         console.warn('getAll is not implemented');
@@ -84,14 +76,6 @@ export default defineComponent({
       },
     } as ListLayoutActionFunctions;
 
-    const {
-      getList,
-    } = actionFunctions;
-
-    watch(() => props.id, getList);
-
-    watch(() => tablePagination.value, getList);
-
     return {
       actionFunctions,
       tableData,
@@ -102,7 +86,8 @@ export default defineComponent({
   },
 });
 </script>
-
 <style lang="scss" scoped>
-
+.task-detail-tab-overview {
+  margin: 20px;
+}
 </style>

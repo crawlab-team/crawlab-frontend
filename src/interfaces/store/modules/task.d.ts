@@ -9,9 +9,14 @@ declare global {
     logTotal: number;
     logAutoUpdate: boolean;
     logCodeMirrorEditor?: Editor;
+    resultTableData: TableData<Result>;
+    resultTablePagination: TablePagination;
+    resultTableTotal: number;
   }
 
-  type TaskStoreGetters = BaseStoreGetters<TaskStoreState>;
+  interface TaskStoreGetters extends BaseStoreGetters<TaskStoreState> {
+    resultFields: StoreGetter<TaskStoreState, ResultField[]>;
+  }
 
   interface TaskStoreMutations extends BaseStoreMutations<Task> {
     setLogContent: StoreMutation<TaskStoreState, string>;
@@ -23,9 +28,16 @@ declare global {
     enableLogAutoUpdate: StoreMutation<TaskStoreState>;
     disableLogAutoUpdate: StoreMutation<TaskStoreState>;
     setLogCodeMirrorEditor: StoreMutation<TaskStoreState, Editor>;
+    setResultTableData: StoreMutation<TaskStoreState, TableData<Result>>;
+    resetResultTableData: StoreMutation<TaskStoreState>;
+    setResultTablePagination: StoreMutation<TaskStoreState, TablePagination>;
+    resetResultTablePagination: StoreMutation<TaskStoreState>;
+    setResultTableTotal: StoreMutation<TaskStoreState, number>;
+    resetResultTableTotal: StoreMutation<TaskStoreState>;
   }
 
   interface TaskStoreActions extends BaseStoreActions<Task> {
-    getLogs: StoreAction<BaseStoreState, string>;
+    getLogs: StoreAction<TaskStoreState, string>;
+    getResultData: StoreAction<TaskStoreState, string>;
   }
 }

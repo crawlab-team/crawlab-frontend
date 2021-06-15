@@ -29,6 +29,7 @@
       <!-- Table -->
       <Table
           ref="tableRef"
+          :key="tableColumnsHash"
           :columns="tableColumns"
           :data="tableData"
           :total="tableTotal"
@@ -84,6 +85,7 @@ import Table from '@/components/table/Table.vue';
 import NavActionButton from '@/components/nav/NavActionButton.vue';
 import NavActions from '@/components/nav/NavActions.vue';
 import {emptyObjectFunc} from '@/utils/func';
+import {getMd5} from '@/utils/hash';
 
 export default defineComponent({
   name: 'ListLayout',
@@ -200,8 +202,14 @@ export default defineComponent({
       }
     };
 
+    const tableColumnsHash = computed<string>(() => {
+      const {tableColumns} = props;
+      return getMd5(JSON.stringify(tableColumns));
+    });
+
     return {
       tableRef,
+      tableColumnsHash,
       onSelect,
       onPaginationChange,
       onEdit,

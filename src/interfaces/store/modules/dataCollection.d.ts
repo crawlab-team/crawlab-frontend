@@ -4,6 +4,7 @@ interface DataCollectionStoreState extends BaseStoreState<DataCollection> {
   resultTableData: TableData<Result>;
   resultTableTotal: number;
   resultTablePagination: TablePagination;
+  resultTableFilter: FilterConditionData[];
 }
 
 interface DataCollectionStoreGetters extends BaseStoreGetters<DataCollectionStoreState> {
@@ -15,8 +16,10 @@ interface DataCollectionStoreMutations extends BaseStoreMutations<DataCollection
   resetResultTableData: StoreMutation<DataCollectionStoreState>;
   setResultTablePagination: StoreMutation<DataCollectionStoreState, TablePagination>;
   resetResultTablePagination: StoreMutation<DataCollectionStoreState>;
+  setResultTableFilter: StoreMutation<DataCollectionStoreState, FilterConditionData[]>;
+  resetResultTableFilter: StoreMutation<DataCollectionStoreState>;
 }
 
 interface DataCollectionStoreActions extends BaseStoreActions<DataCollection> {
-  getResultList: StoreAction<DataCollectionStoreState, { string; ListRequestParams }>;
+  getResultData: StoreAction<DataCollectionStoreState, { string; ListRequestParams }>;
 }

@@ -6,6 +6,7 @@ import {
 } from '@/utils/store';
 import {getDefaultPagination} from '@/utils/pagination';
 import useRequest from '@/services/request';
+import {getFieldsFromData} from '@/utils/result';
 
 const {
   getList,
@@ -16,21 +17,13 @@ const state = {
   resultTableData: [],
   resultTableTotal: 0,
   resultTablePagination: getDefaultPagination(),
+  resultTableFilter: [],
 } as DataCollectionStoreState;
 
 const getters = {
   ...getDefaultStoreGetters<DataCollection>(),
   resultFields: (state: DataCollectionStoreState) => {
-    if (state.resultTableData.length === 0) {
-      return [];
-    }
-    const item = state.resultTableData[0];
-    if (typeof item !== 'object') return [];
-    return Object.keys(item).map(key => {
-      return {
-        key,
-      };
-    });
+    return getFieldsFromData(state.resultTableData);
   },
 } as DataCollectionStoreGetters;
 
@@ -51,11 +44,17 @@ const mutations = {
   resetResultTablePagination: (state: DataCollectionStoreState) => {
     state.resultTablePagination = getDefaultPagination();
   },
+  setResultTableFilter: (state: DataCollectionStoreState, filter: FilterConditionData[]) => {
+    state.resultTableFilter = filter;
+  },
+  resetResultTableFilter: (state: DataCollectionStoreState) => {
+    state.resultTableFilter = [];
+  },
 } as DataCollectionStoreMutations;
 
 const actions = {
   ...getDefaultStoreActions<DataCollection>('/data/collections'),
-  getResultList: async ({commit}: StoreActionContext<DataCollectionStoreState>, payload: { id: string; params: ListRequestParams }) => {
+  getResultData: async ({commit}: StoreActionContext<DataCollectionStoreState>, payload: { id: string; params: ListRequestParams }) => {
     const {id, params} = payload;
     const res = await getList(`/results/${id}`, params);
     commit('setResultTableData', {data: res.data || [], total: res.total});

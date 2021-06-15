@@ -26,12 +26,12 @@ export default [
         component: () => import('@/views/spider/detail/tabs/SpiderDetailTabTasks.vue'),
       },
       {
-        path: TAB_NAME_SETTINGS,
-        component: () => import('@/views/spider/detail/tabs/SpiderDetailTabSettings.vue'),
-      },
-      {
         path: TAB_NAME_DATA,
         component: () => import('@/views/spider/detail/tabs/SpiderDetailTabData.vue'),
+      },
+      {
+        path: TAB_NAME_SETTINGS,
+        component: () => import('@/views/spider/detail/tabs/SpiderDetailTabSettings.vue'),
       },
     ]
   },
