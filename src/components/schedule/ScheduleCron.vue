@@ -1,5 +1,6 @@
 <template>
   <Tag
+      v-if="!iconOnly"
       :key="data"
       :icon="data.icon"
       :label="data.label"
@@ -13,12 +14,34 @@
       <div v-html="data.tooltip"/>
     </template>
   </Tag>
+  <div v-else :class="[isValid ? 'valid' : 'invalid']" class="schedule-cron">
+    <div class="row">
+      <span class="title">
+        <el-tooltip content="Cron Description">
+          <font-awesome-icon :icon="['fa', 'info-circle']" class="description"/>
+        </el-tooltip>
+      </span>
+      <span class="value description">
+        {{ isValid ? description : 'Invalid' }}
+      </span>
+    </div>
+    <div class="row">
+      <span class="title">
+        <el-tooltip content="Next Run">
+          <font-awesome-icon :icon="['fa', 'arrow-right']" class="next"/>
+        </el-tooltip>
+      </span>
+      <span class="value next">
+        {{ isValid ? next : 'Invalid' }}
+      </span>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import {computed, defineComponent, PropType} from 'vue';
 import Tag from '@/components/tag/Tag.vue';
-import {parseExpression} from 'cron-parser';
+import {CronExpression, parseExpression} from 'cron-parser';
 // import cronstrue from 'cronstrue/i18n';
 import cronstrue from 'cronstrue';
 import dayjs from 'dayjs';
@@ -52,8 +75,36 @@ export default defineComponent({
     },
   },
   setup(props: ScheduleCronProps, {emit}) {
+    const interval = computed<CronExpression | undefined>(() => {
+      const {cron} = props;
+      if (!cron) return;
+      try {
+        return parseExpression(cron);
+      } catch (e) {
+        // do nothing
+      }
+    });
+
+    const next = computed<string | undefined>(() => {
+      if (!interval.value) return;
+      return dayjs(interval.value.next().toDate()).format('llll');
+    });
+
+    const description = computed<string | undefined>(() => {
+      const {cron} = props;
+      if (!cron) return;
+      // TODO: internalization
+      return cronstrue.toString(cron);
+    });
+
+    const tooltip = computed<string>(() => `<span class="title">Cron Expression: </span><span style="color: ${colors.blue}">${props.cron}</span><br>
+<span class="title">Description: </span><span style="color: ${colors.orange}">${description.value}</span><br>
+<span class="title">Next: </span><span style="color: ${colors.green}">${next.value}</span>`);
+
+    const isValid = computed<boolean>(() => !!interval.value);
+
     const data = computed<TagData>(() => {
-      const {cron, iconOnly} = props;
+      const {cron} = props;
       if (!cron) {
         return {
           label: 'Unknown',
@@ -62,40 +113,56 @@ export default defineComponent({
         };
       }
 
-      const interval = parseExpression(cron);
-      // const next = dayjs(interval.next().toDate()).format();
-      const next = dayjs(interval.next().toDate()).format('llll');
-      // TODO: internalization
-      // const description = cronstrue.toString(cron, {locale: 'zh_CN'});
-      const description = cronstrue.toString(cron);
-
-      const tooltip = `<span class="title">Cron Expression: </span><span style="color: ${colors.blue}">${cron}</span><br>
-<span class="title">Description: </span><span style="color: ${colors.orange}">${description}</span><br>
-<span class="title">Next: </span><span style="color: ${colors.green}">${next}</span>`;
-
-      if (iconOnly) {
-        return {
-          label: 'Detail',
-          icon: ['fa', 'clock'],
-          tooltip,
-          type: 'primary',
-        };
-      }
-
       return {
         label: cron,
-        tooltip,
+        tooltip: tooltip.value,
         type: 'primary',
       };
     });
 
     return {
       data,
+      next,
+      description,
+      isValid,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@import "../../styles/variables.scss";
 
+.schedule-cron {
+  .row {
+    min-height: 20px;
+
+    .title {
+      display: inline-block;
+      width: 18px;
+      text-align: right;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    .value {
+      font-size: 14px;
+    }
+
+    .description {
+      color: $warningColor;
+    }
+
+    .next {
+      color: $successColor;
+    }
+  }
+
+  &.invalid {
+    .description,
+    .next {
+      color: $infoMediumColor;
+    }
+  }
+}
 </style>

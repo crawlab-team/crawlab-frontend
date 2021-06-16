@@ -30,7 +30,7 @@
     <FormItem :span="2" label="Cron Expression" prop="cron" required>
       <el-input v-model="form.cron" :disabled="isFormItemDisabled('cron')" placeholder="Cron Expression"/>
     </FormItem>
-    <FormItem :span="2" label="Cron Info">
+    <FormItem :not-editable="isSelectiveForm" :span="2" label="Cron Info">
       <div class="nav-btn">
         <ScheduleCron :cron="form.cron" icon-only size="small"/>
       </div>

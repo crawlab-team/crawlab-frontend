@@ -6,6 +6,7 @@
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
+      :no-actions="noActions"
       class="schedule-list"
   >
     <template #extra>
@@ -27,6 +28,12 @@ export default defineComponent({
   components: {
     ListLayout,
     CreateEditScheduleDialog,
+  },
+  props: {
+    noActions: {
+      type: Boolean,
+      default: false,
+    }
   },
   setup() {
     const {
