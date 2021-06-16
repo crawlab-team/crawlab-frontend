@@ -6,17 +6,17 @@
       :selective="isSelectiveForm"
   >
     <!--Row-->
+    <FormItem v-if="readonly" :offset="2" :span="2" label="Key" not-editable prop="key">
+      <el-input :value="form.key" disabled/>
+    </FormItem>
+    <!--./Row-->
+
+    <!--Row-->
     <FormItem :span="2" label="Name" not-editable prop="name" required>
       <el-input v-model="form.name" :disabled="isFormItemDisabled('name')" placeholder="Name"/>
     </FormItem>
     <FormItem :span="2" label="Tags" prop="tags">
       <TagInput v-model="form.tags" :disabled="isFormItemDisabled('tags')"/>
-    </FormItem>
-    <!--./Row-->
-
-    <!--Row-->
-    <FormItem v-if="readonly" :offset="2" :span="2" label="Key" not-editable prop="key">
-      <el-input :value="form.key" disabled/>
     </FormItem>
     <!--./Row-->
 

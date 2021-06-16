@@ -144,15 +144,6 @@ const useScheduleList = () => {
           },
         },
         {
-          type: 'warning',
-          icon: ['fa', 'edit'],
-          tooltip: 'Edit',
-          onClick: (row) => {
-            store.commit(`${ns}/setForm`, row);
-            store.commit(`${ns}/showDialog`, 'edit');
-          },
-        },
-        {
           type: 'info',
           size: 'mini',
           icon: ['fa', 'clone'],
