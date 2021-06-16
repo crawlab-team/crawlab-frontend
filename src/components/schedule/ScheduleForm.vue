@@ -5,6 +5,7 @@
       :model="form"
       :rules="formRules"
       :selective="isSelectiveForm"
+      class="schedule-form"
   >
     <!-- Row -->
     <FormItem :span="2" label="Name" prop="name" required>
@@ -26,8 +27,13 @@
     <!-- ./Row -->
 
     <!-- Row -->
-    <FormItem :offset="2" :span="2" label="Cron Expression" prop="cron" required>
+    <FormItem :span="2" label="Cron Expression" prop="cron" required>
       <el-input v-model="form.cron" :disabled="isFormItemDisabled('cron')" placeholder="Cron Expression"/>
+    </FormItem>
+    <FormItem :span="2" label="Cron Info">
+      <div class="nav-btn">
+        <ScheduleCron :cron="form.cron" icon-only size="small"/>
+      </div>
     </FormItem>
     <!-- ./Row -->
 
@@ -124,10 +130,12 @@ import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
 import InputWithButton from '@/components/input/InputWithButton.vue';
 import Switch from '@/components/switch/Switch.vue';
 import {ElMessage} from 'element-plus';
+import ScheduleCron from '@/components/schedule/ScheduleCron.vue';
 
 export default defineComponent({
   name: 'ScheduleForm',
   components: {
+    ScheduleCron,
     Switch,
     FormItem,
     Form,
@@ -181,6 +189,5 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
 </style>

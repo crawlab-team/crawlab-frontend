@@ -297,15 +297,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-//.task-form {
-//  .spider-nav-btn {
-//    right: 0;
-//    position: absolute;
-//  }
-//}
-</style>
-
 <style scoped>
 .task-form >>> .nav-btn {
   position: absolute;
