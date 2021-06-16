@@ -8,6 +8,7 @@ import task from '@/store/modules/task';
 import file from '@/store/modules/file';
 import tag from '@/store/modules/tag';
 import dataCollection from '@/store/modules/dataCollection';
+import schedule from '@/store/modules/schedule';
 
 export default createStore<RootStoreState>({
   modules: {
@@ -20,5 +21,6 @@ export default createStore<RootStoreState>({
     file,
     tag,
     dataCollection,
+    schedule,
   },
 }) as Store<RootStoreState>;

@@ -11,6 +11,7 @@ declare global {
     file: FileStoreState;
     tag: TagStoreState;
     dataCollection: DataCollectionStoreState;
+    schedule: ScheduleStoreState;
   }
 
   type StoreGetter<S, T> = (state: S, getters: StoreGetter<S, T>, rootState: RootStoreState, rootGetters: any) => T;
@@ -122,7 +123,7 @@ declare global {
     | 'file'
     | 'tag'
     | 'dataCollection';
-  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task' | 'tag' | 'dataCollection';
+  type ListStoreNamespace = 'node' | 'project' | 'spider' | 'task' | 'tag' | 'dataCollection' | 'schedule';
 
   interface StoreContext<T> {
     namespace: StoreNamespace;

@@ -1,11 +1,6 @@
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
-import {
-  TASK_MODE_ALL,
-  TASK_MODE_RANDOM,
-  TASK_MODE_SELECTED_NODE_TAGS,
-  TASK_MODE_SELECTED_NODES
-} from '@/constants/task';
+import {TASK_MODE_RANDOM} from '@/constants/task';
 import {Store} from 'vuex';
 import useForm from '@/components/form/form';
 import useSpiderService from '@/services/spider/spiderService';
@@ -19,6 +14,7 @@ import {
 import useProject from '@/components/project/project';
 import useRequest from '@/services/request';
 import {FILTER_OP_CONTAINS} from '@/constants/filter';
+import {getModeOptions} from '@/utils/task';
 
 const {
   getList,
@@ -36,12 +32,7 @@ const formComponentData = getDefaultFormComponentData<Spider>(getNewSpider);
 
 const useSpider = (store: Store<RootStoreState>) => {
   // options for default mode
-  const modeOptions: SelectOption[] = [
-    {value: TASK_MODE_RANDOM, label: 'Random Node'},
-    {value: TASK_MODE_ALL, label: 'All Nodes'},
-    {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
-    {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
-  ];
+  const modeOptions = getModeOptions();
 
   // use project
   const {

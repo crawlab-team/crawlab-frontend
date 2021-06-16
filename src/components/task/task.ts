@@ -1,18 +1,13 @@
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
-import {
-  TASK_MODE_ALL,
-  TASK_MODE_RANDOM,
-  TASK_MODE_SELECTED_NODE_TAGS,
-  TASK_MODE_SELECTED_NODES
-} from '@/constants/task';
+import {TASK_MODE_RANDOM} from '@/constants/task';
 import {Store} from 'vuex';
 import useForm from '@/components/form/form';
 import useTaskService from '@/services/task/taskService';
 import {getDefaultFormComponentData} from '@/utils/form';
 import {FORM_FIELD_TYPE_INPUT_WITH_BUTTON, FORM_FIELD_TYPE_SELECT} from '@/constants/form';
 import useSpider from '@/components/spider/spider';
-import {getPriorityLabel} from '@/utils/task';
+import {getModeOptions, getModeOptionsDict, getPriorityLabel} from '@/utils/task';
 
 // get new task
 export const getNewTask = (): Task => {
@@ -32,17 +27,8 @@ const useTask = (store: Store<RootStoreState>) => {
   } = store.state as RootStoreState;
 
   // options for default mode
-  const modeOptions: SelectOption[] = [
-    {value: TASK_MODE_RANDOM, label: 'Random Node'},
-    {value: TASK_MODE_ALL, label: 'All Nodes'},
-    {value: TASK_MODE_SELECTED_NODES, label: 'Selected Nodes'},
-    {value: TASK_MODE_SELECTED_NODE_TAGS, label: 'Selected Tags'},
-  ];
-  const modeOptionsDict = computed(() => {
-    const dict = new Map<string, SelectOption>();
-    modeOptions.forEach(op => dict.set(op.value, op));
-    return dict;
-  });
+  const modeOptions = getModeOptions();
+  const modeOptionsDict = computed(() => getModeOptionsDict());
 
   // priority options
   const priorityOptions = (() => {

@@ -4,7 +4,6 @@
         :prop="prop"
         :label="label"
         :required="isRequired"
-        :show-message="internalEditable"
         :rules="rules"
         :size="size || formContext?.size"
     >
