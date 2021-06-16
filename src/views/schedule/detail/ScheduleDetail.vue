@@ -1,15 +1,20 @@
 <template>
-  <div class="project-detail">
-  </div>
+  <DetailLayout store-namespace="schedule">
+  </DetailLayout>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import useScheduleDetail from '@/views/schedule/detail/scheduleDetail';
 
 export default defineComponent({
-  name: 'NodeDetail',
-  setup(props, {emit}) {
-    return {};
+  name: 'ScheduleDetail',
+  components: {DetailLayout},
+  setup() {
+    return {
+      ...useScheduleDetail(),
+    };
   },
 });
 </script>

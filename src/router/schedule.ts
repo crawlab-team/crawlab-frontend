@@ -1,26 +1,26 @@
 import {RouteRecordRaw} from 'vue-router';
-import {TAB_NAME_OVERVIEW} from '@/constants/tab';
-
-const endpoint = 'schedules';
+import {TAB_NAME_OVERVIEW, TAB_NAME_TASKS} from '@/constants/tab';
 
 export default [
   {
-    path: endpoint,
-    component: import('@/views/schedule/list/ScheduleList.vue'),
+    path: 'schedules',
+    component: () => import('@/views/schedule/list/ScheduleList.vue'),
+  },
+  {
+    path: 'schedules/:id',
+    redirect: to => {
+      return {path: to.path + '/' + TAB_NAME_OVERVIEW};
+    },
+    component: () => import('@/views/schedule/detail/ScheduleDetail.vue'),
     children: [
       {
-        path: `${endpoint}/:id`,
-        redirect: to => {
-          return {path: to.path + '/' + TAB_NAME_OVERVIEW};
-        },
-        component: () => import('@/views/schedule/detail/ScheduleDetail.vue'),
-        children: [
-          {
-            path: TAB_NAME_OVERVIEW,
-            component: () => import('@/views/schedule/detail/tabs/ScheduleDetailTabOverview.vue'),
-          }
-        ]
-      }
+        path: TAB_NAME_OVERVIEW,
+        component: () => import('@/views/schedule/detail/tabs/ScheduleDetailTabOverview.vue'),
+      },
+      {
+        path: TAB_NAME_TASKS,
+        component: () => import('@/views/schedule/detail/tabs/ScheduleDetailTabTasks.vue'),
+      },
     ]
   },
 ] as Array<RouteRecordRaw>;

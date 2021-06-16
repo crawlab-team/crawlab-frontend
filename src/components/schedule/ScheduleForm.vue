@@ -26,11 +26,8 @@
     <!-- ./Row -->
 
     <!-- Row -->
-    <FormItem :span="2" label="Cron Expression" prop="cron" required>
+    <FormItem :offset="2" :span="2" label="Cron Expression" prop="cron" required>
       <el-input v-model="form.cron" :disabled="isFormItemDisabled('cron')" placeholder="Cron Expression"/>
-    </FormItem>
-    <FormItem :span="2" label="Enabled" prop="enabled" required>
-      <Switch v-model="form.enabled"/>
     </FormItem>
     <!-- ./Row -->
 
@@ -56,7 +53,7 @@
     <!-- ./Row -->
 
     <!-- Row -->
-    <FormItem :offset="2" :span="2" label="Default Mode" prop="mode">
+    <FormItem :span="2" label="Default Mode" prop="mode">
       <el-select
           v-model="form.mode"
           :disabled="isFormItemDisabled('mode')"
@@ -68,6 +65,9 @@
             :value="op.value"
         />
       </el-select>
+    </FormItem>
+    <FormItem :span="2" label="Enabled" prop="enabled" required>
+      <Switch v-model="form.enabled" @change="onEnabledChange"/>
     </FormItem>
     <!-- ./Row -->
 
@@ -123,6 +123,7 @@ import useNode from '@/components/node/node';
 import CheckTagGroup from '@/components/tag/CheckTagGroup.vue';
 import InputWithButton from '@/components/input/InputWithButton.vue';
 import Switch from '@/components/switch/Switch.vue';
+import {ElMessage} from 'element-plus';
 
 export default defineComponent({
   name: 'ScheduleForm',
@@ -135,6 +136,7 @@ export default defineComponent({
   },
   setup() {
     // store
+    const ns = 'schedule';
     const store = useStore();
 
     // use node
@@ -148,6 +150,23 @@ export default defineComponent({
       allListSelectOptions: allSpiderSelectOptions,
     } = useSpider(store);
 
+    // use schedule
+    const {
+      form,
+    } = useSchedule(store);
+
+    // on enabled change
+    const onEnabledChange = async (value: boolean) => {
+      if (value) {
+        await store.dispatch(`${ns}/enable`, form.value._id);
+        ElMessage.success('Enabled successfully');
+      } else {
+        await store.dispatch(`${ns}/disable`, form.value._id);
+        ElMessage.success('Disabled successfully');
+      }
+      await store.dispatch(`${ns}/getList`);
+    };
+
     return {
       ...useSchedule(store),
 
@@ -156,6 +175,7 @@ export default defineComponent({
       allNodeTags,
       TASK_MODE_SELECTED_NODES,
       TASK_MODE_SELECTED_NODE_TAGS,
+      onEnabledChange,
     };
   },
 });
