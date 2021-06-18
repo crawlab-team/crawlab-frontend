@@ -3,6 +3,7 @@ import {Ref} from 'vue';
 declare global {
   interface FormTableFieldProps {
     form: any;
+    formRules?: FormRuleItem[];
     prop: string;
     fieldType: FormFieldType;
     options?: SelectOption[];

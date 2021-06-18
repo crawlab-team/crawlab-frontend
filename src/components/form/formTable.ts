@@ -1,13 +1,18 @@
 import {Store} from 'vuex';
 import {plainClone} from '@/utils/object';
-import {Ref} from 'vue';
+import {computed, Ref} from 'vue';
 
 const useFormTable = (ns: ListStoreNamespace, store: Store<RootStoreState>, services: Services<BaseModel>, data: FormComponentData<BaseModel>) => {
   const {
     form,
-    formList,
     formTableFieldRefsMap,
   } = data;
+
+  // state
+  const state = store.state[ns];
+
+  // form list
+  const formList = computed(() => state.formList);
 
   const getNewForm = () => {
     return {...form.value};
@@ -24,12 +29,18 @@ const useFormTable = (ns: ListStoreNamespace, store: Store<RootStoreState>, serv
 
   const onDelete = (index: number) => {
     formList.value.splice(index, 1);
+    for (const key of formTableFieldRefsMap.value.keys()) {
+      const rowIndex = key[0];
+      if (rowIndex === index) {
+        formTableFieldRefsMap.value.delete(key);
+      }
+    }
   };
 
   const onFieldChange = (rowIndex: number, prop: string, value: any) => {
     if (rowIndex !== -1) {
       // one row change
-      const item = formList.value[rowIndex];
+      const item = formList.value[rowIndex] as BaseModel;
       item[prop] = value;
     } else {
       // all rows change

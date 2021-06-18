@@ -1,12 +1,21 @@
 <template>
-  <el-form ref="formRef" :model="form">
-    <el-form-item :prop="prop" :required="isRequired">
+  <el-form ref="formRef" :model="form" :rules="computedFormRules" inline-message>
+    <el-form-item ref="formItemRef" :prop="prop" :required="isRequired">
       <el-input
           v-if="fieldType === FORM_FIELD_TYPE_INPUT"
           v-model="internalValue"
           :placeholder="placeholder"
           size="mini"
           :disabled="disabled"
+          @input="onInputChange"
+      />
+      <el-input
+          v-else-if="fieldType === FORM_FIELD_TYPE_INPUT_PASSWORD"
+          v-model="internalValue"
+          :disabled="disabled"
+          :placeholder="placeholder"
+          size="mini"
+          type="password"
           @input="onInputChange"
       />
       <el-input
@@ -75,6 +84,7 @@ import {
 import {
   FORM_FIELD_TYPE_CHECK_TAG_GROUP,
   FORM_FIELD_TYPE_INPUT,
+  FORM_FIELD_TYPE_INPUT_PASSWORD,
   FORM_FIELD_TYPE_INPUT_TEXTAREA,
   FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
   FORM_FIELD_TYPE_SELECT,
@@ -84,7 +94,7 @@ import {
 } from '@/constants/form';
 import TagInput from '@/components/input/TagInput.vue';
 import {emptyArrayFunc, voidFunc} from '@/utils/func';
-import {ElForm} from 'element-plus';
+import {ElForm, ElFormItem} from 'element-plus';
 import InputWithButton from '@/components/input/InputWithButton.vue';
 import Switch from '@/components/switch/Switch.vue';
 
@@ -99,6 +109,10 @@ export default defineComponent({
     form: {
       type: Object as PropType<any>,
       required: true,
+    },
+    formRules: {
+      type: Object as PropType<FormRuleItem[]>,
+      required: false,
     },
     prop: {
       type: String,
@@ -137,6 +151,9 @@ export default defineComponent({
     // form ref
     const formRef = ref<typeof ElForm>();
 
+    // form item ref
+    const formItemRef = ref<typeof ElFormItem>();
+
     // internal value
     const internalValue = ref<any>();
 
@@ -154,7 +171,6 @@ export default defineComponent({
     const onInputChange = (value: any) => {
       const {onChange} = props;
       onChange?.(value);
-      formRef.value?.validate?.();
     };
 
     const isEmptyForm = inject('fn:isEmptyForm') as (d: any) => boolean;
@@ -163,6 +179,17 @@ export default defineComponent({
       const {form, required} = props;
       if (isEmptyForm(form)) return false;
       return required || false;
+    });
+
+    const isErrorMessageVisible = computed<boolean>(() => !!formItemRef.value?.validateMessage);
+
+    const computedFormRules = computed<FormRuleItem[]>(() => {
+      const {form, formRules} = props;
+      if (isEmptyForm(form)) {
+        return [];
+      } else {
+        return formRules || [];
+      }
     });
 
     onBeforeMount(() => {
@@ -181,6 +208,7 @@ export default defineComponent({
 
     return {
       FORM_FIELD_TYPE_INPUT,
+      FORM_FIELD_TYPE_INPUT_PASSWORD,
       FORM_FIELD_TYPE_INPUT_TEXTAREA,
       FORM_FIELD_TYPE_INPUT_WITH_BUTTON,
       FORM_FIELD_TYPE_SELECT,
@@ -189,9 +217,12 @@ export default defineComponent({
       FORM_FIELD_TYPE_CHECK_TAG_GROUP,
       FORM_FIELD_TYPE_SWITCH,
       formRef,
+      formItemRef,
       internalValue,
       onInputChange,
       isRequired,
+      isErrorMessageVisible,
+      computedFormRules,
     };
   },
 });

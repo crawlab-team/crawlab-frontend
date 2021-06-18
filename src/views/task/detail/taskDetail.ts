@@ -26,6 +26,9 @@ const useTaskDetail = () => {
   const logCodeMirrorEditor = computed<Editor | undefined>(() => state.logCodeMirrorEditor);
 
   const updateLogs = async () => {
+    // skip if active id is empty
+    if (!activeId.value) return;
+
     // update logs
     await store.dispatch(`${ns}/getLogs`, activeId.value);
 

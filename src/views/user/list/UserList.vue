@@ -1,85 +1,57 @@
 <template>
-  <div class="user-list">
-    <div class="content">
-      <Table
-          :columns="tableColumns"
-          :data="tableData"
-          :total="tableTotal"
-          selectable
-      />
-    </div>
-  </div>
+  <ListLayout
+      :action-functions="actionFunctions"
+      :nav-actions="navActions"
+      :no-actions="noActions"
+      :pagination="tablePagination"
+      :table-columns="tableColumns"
+      :table-data="tableData"
+      :table-total="tableTotal"
+      class="user-list"
+  >
+    <template #extra>
+      <!-- Dialogs (handled by store) -->
+      <CreateEditUserDialog/>
+      <!-- ./Dialogs -->
+    </template>
+  </ListLayout>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent} from 'vue';
-import Table from '@/components/table/Table.vue';
-import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
+import {defineComponent} from 'vue';
+import ListLayout from '@/layouts/ListLayout.vue';
+import useUserList from './userList';
+import CreateEditUserDialog from '@/components/user/CreateEditUserDialog.vue';
 
 export default defineComponent({
   name: 'UserList',
   components: {
-    Table,
+    ListLayout,
+    CreateEditUserDialog,
   },
-  setup(props, {emit}) {
-    // table data
-    const tableData: TableData<User> = [
-      {
-        username: 'admin',
-        role: 'admin',
-        email: 'admin@crawlab.cn'
-      },
-      {
-        username: 'Bob',
-        role: 'cto',
-        email: 'bob@crawlab.cn',
-      }
-    ];
-
-    // TODO: implement with real data
-    const tableTotal = computed(() => tableData.length);
-
-    // table columns
-    const tableColumns: TableColumns<User> = [
-      {
-        key: 'username',
-        label: 'Username',
-        icon: ['fa', 'font'],
-        width: '200',
-      },
-      {
-        key: 'role',
-        label: 'Role',
-        icon: ['fa', 'user-tag'],
-        width: '200',
-      },
-      {
-        key: 'email',
-        label: 'email',
-        icon: ['fa', 'at'],
-        width: '200',
-      },
-      {
-        key: TABLE_COLUMN_NAME_ACTIONS,
-        label: 'Actions',
-        icon: ['fa', 'tools'],
-        fixed: 'right',
-        width: '200',
-        buttons: [
-          {
-            type: 'primary',
-            icon: ['fa', 'search'],
-            tooltip: 'View',
-          },
-        ],
-        disableTransfer: true,
-      }
-    ];
-
-    return {
+  props: {
+    noActions: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  setup() {
+    const {
+      navActions,
+      tableColumns,
       tableData,
       tableTotal,
+      tablePagination,
+      actionFunctions,
+    } = useUserList();
+
+    return {
+      navActions,
       tableColumns,
+      tableData,
+      tableTotal,
+      tablePagination,
+      actionFunctions,
     };
   },
 });

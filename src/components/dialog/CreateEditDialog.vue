@@ -84,7 +84,11 @@ export default defineComponent({
     noBatch: {
       type: Boolean,
       default: false,
-    }
+    },
+    formRules: {
+      type: Array as PropType<FormRuleItem[]>,
+      default: emptyArrayFunc,
+    },
   },
   setup(props: CreateEditDialogProps, ctx: SetupContext) {
     const computedTitle = computed<string>(() => {
@@ -122,6 +126,7 @@ export default defineComponent({
     });
 
     provide<CreateEditDialogActionFunctions | undefined>('action-functions', props.actionFunctions);
+    provide<FormRuleItem[] | undefined>('form-rules', props.formRules);
 
     return {
       computedTitle,

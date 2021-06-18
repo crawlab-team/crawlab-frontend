@@ -1,16 +1,16 @@
 <template>
-  <div class="node-detail-tab-overview">
-    <NodeForm/>
+  <div class="user-detail-tab-overview">
+    <UserForm/>
   </div>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue';
-import NodeForm from '@/components/node/NodeForm.vue';
+import UserForm from '@/components/user/UserForm.vue';
 
 export default defineComponent({
   name: 'ProjectDetailTabOverview',
   components: {
-    NodeForm,
+    UserForm,
   },
   setup() {
     return {};
@@ -18,7 +18,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-.node-detail-tab-overview {
+.user-detail-tab-overview {
   margin: 20px;
 }
 </style>

@@ -7,10 +7,10 @@
       :size="size"
       :tooltip="tooltip"
       :type="type"
-      class="fa-icon-button"
+      class="label-button"
       @click="() => $emit('click')"
   >
-    <font-awesome-icon v-if="icon" :icon="icon"/>
+    <font-awesome-icon v-if="icon" :icon="icon" class="icon"/>
     {{ label }}
   </Button>
 </template>
@@ -42,5 +42,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+.label-button {
+  .icon {
+    margin-right: 3px;
+  }
+}
 </style>

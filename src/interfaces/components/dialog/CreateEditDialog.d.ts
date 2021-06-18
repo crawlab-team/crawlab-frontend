@@ -13,6 +13,7 @@ declare global {
     tabName?: CreateEditTabName;
     title?: string;
     noBatch?: boolean;
+    formRules?: FormRuleItem[];
   }
 
   type CreateEditDialogType = 'create' | 'edit';

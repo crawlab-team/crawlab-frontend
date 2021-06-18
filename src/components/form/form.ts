@@ -153,7 +153,7 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
       return;
     }
     if (!form.value) {
-      console.error(new Error('project form is undefined'));
+      console.error(new Error('form is undefined'));
       return;
     }
 

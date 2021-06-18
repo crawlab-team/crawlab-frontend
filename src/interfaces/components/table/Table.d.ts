@@ -34,6 +34,7 @@ declare global {
     hasFilter?: boolean;
     filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
     required?: boolean;
+    className?: string;
   }
 
   type TableColumns<T = any> = TableColumn<T>[];
@@ -61,7 +62,7 @@ declare global {
     type?: string;
     size?: string;
     icon?: Icon | TableValueFunction;
-    tooltip?: string;
+    tooltip?: string | TableButtonTooltipFunction;
     isHtml?: boolean;
     disabled?: TableButtonDisabledFunction;
     onClick?: TableButtonOnClickFunction;
@@ -71,6 +72,7 @@ declare global {
 
   type TableValueFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => VNode;
   type TableButtonOnClickFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => void;
+  type TableButtonTooltipFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => string;
   type TableButtonDisabledFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => boolean;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
 

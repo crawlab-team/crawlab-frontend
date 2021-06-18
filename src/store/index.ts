@@ -9,6 +9,7 @@ import file from '@/store/modules/file';
 import tag from '@/store/modules/tag';
 import dataCollection from '@/store/modules/dataCollection';
 import schedule from '@/store/modules/schedule';
+import user from '@/store/modules/user';
 
 export default createStore<RootStoreState>({
   modules: {
@@ -22,5 +23,6 @@ export default createStore<RootStoreState>({
     tag,
     dataCollection,
     schedule,
+    user,
   },
 }) as Store<RootStoreState>;

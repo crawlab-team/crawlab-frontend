@@ -5,13 +5,13 @@
       :batch-form-fields="batchFormFields"
       :confirm-disabled="confirmDisabled"
       :confirm-loading="confirmLoading"
+      :form-rules="formRules"
       :tab-name="createEditDialogTabName"
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
-      :form-rules="formRules"
   >
     <template #default>
-      <ScheduleForm/>
+      <UserForm/>
     </template>
   </CreateEditDialog>
 </template>
@@ -20,21 +20,21 @@
 import {defineComponent} from 'vue';
 import {useStore} from 'vuex';
 import CreateEditDialog from '@/components/dialog/CreateEditDialog.vue';
-import ScheduleForm from '@/components/schedule/ScheduleForm.vue';
-import useSchedule from '@/components/schedule/schedule';
+import UserForm from '@/components/user/UserForm.vue';
+import useUser from '@/components/user/user';
 
 export default defineComponent({
-  name: 'CreateEditScheduleDialog',
+  name: 'CreateEditUserDialog',
   components: {
     CreateEditDialog,
-    ScheduleForm,
+    UserForm,
   },
   setup() {
     // store
     const store = useStore();
 
     return {
-      ...useSchedule(store),
+      ...useUser(store),
     };
   },
 });

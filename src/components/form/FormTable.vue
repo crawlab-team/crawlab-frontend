@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, h, PropType, Ref} from 'vue';
+import {computed, defineComponent, h, inject, PropType, Ref} from 'vue';
 import {emptyArrayFunc} from '@/utils/func';
 import Table from '@/components/table/Table.vue';
 import FormTableField from '@/components/form/FormTableField.vue';
@@ -42,6 +42,7 @@ export default defineComponent({
   setup(props: FormTableProps, {emit}) {
     const columns = computed<TableColumns>(() => {
       const {fields} = props;
+      const formRules = inject<FormRuleItem[]>('form-rules');
       const columns = fields.map(f => {
         const {
           prop,
@@ -60,6 +61,7 @@ export default defineComponent({
           required,
           value: (row: BaseModel, rowIndex: number) => h(FormTableField, {
             form: row,
+            formRules,
             prop,
             fieldType,
             options,
@@ -70,6 +72,7 @@ export default defineComponent({
               emit('field-change', rowIndex, prop, value);
             },
             onRegister: (formRef: Ref) => {
+              if (rowIndex < 0) return;
               emit('field-register', rowIndex, prop, formRef);
             },
           } as FormTableFieldProps, emptyArrayFunc),
@@ -79,7 +82,7 @@ export default defineComponent({
         key: TABLE_COLUMN_NAME_ACTIONS,
         label: 'Actions',
         width: '150',
-        fixed: 'right',
+        // fixed: 'right',
         buttons: [
           {
             type: 'primary',

@@ -45,13 +45,14 @@ export default defineComponent({
         }
 
         return _buttons.map(btn => {
-          const {tooltip, type, size, icon, onClick} = btn;
+          const {tooltip, type, size, icon, disabled, onClick} = btn;
           const props = {
             key: JSON.stringify({tooltip, type, size, icon}),
-            tooltip,
+            tooltip: typeof tooltip === 'function' ? tooltip(row) : tooltip,
             type,
             size,
             icon,
+            disabled: disabled?.(row),
             onClick: () => {
               onClick?.(row, rowIndex, column);
             },

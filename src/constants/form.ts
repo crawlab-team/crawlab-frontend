@@ -1,4 +1,5 @@
 export const FORM_FIELD_TYPE_INPUT = 'input';
+export const FORM_FIELD_TYPE_INPUT_PASSWORD = 'input-password';
 export const FORM_FIELD_TYPE_INPUT_TEXTAREA = 'input-text-area';
 export const FORM_FIELD_TYPE_INPUT_WITH_BUTTON = 'input-with-button';
 export const FORM_FIELD_TYPE_SELECT = 'select';

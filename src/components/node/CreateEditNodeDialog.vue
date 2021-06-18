@@ -8,6 +8,7 @@
       :tab-name="createEditDialogTabName"
       :type="activeDialogKey"
       :visible="createEditDialogVisible"
+      :form-rules="formRules"
   >
     <template #default>
       <NodeForm/>

@@ -107,7 +107,6 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
       state.readonlyFormFields = [];
     },
     setFormList: (state: BaseStoreState<T>, value: T[]) => {
-      console.log('setFormList', value);
       state.formList = value;
     },
     resetFormList: (state: BaseStoreState<T>) => {
