@@ -18,6 +18,7 @@
           type="selection"
           width="40"
           fixed="left"
+          :selectable="selectableFunction"
       />
       <el-table-column
           v-for="c in selectedColumns"
@@ -157,6 +158,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    selectableFunction: {
+      type: Function as PropType<TableSelectableFunction>,
+      default: () => true,
+    }
   },
   emits: [
     'edit',

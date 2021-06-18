@@ -11,6 +11,7 @@ declare global {
     tableActionsSuffix: ListActionButton[];
     actionFunctions: ListLayoutActionFunctions;
     noActions: boolean;
+    selectableFunction: TableSelectableFunction;
   }
 
   interface ListLayoutComponentData<T = any> {

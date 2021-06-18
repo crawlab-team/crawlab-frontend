@@ -7,6 +7,7 @@
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
+      :selectable-function="selectableFunction"
       class="user-list"
   >
     <template #extra>
@@ -43,6 +44,7 @@ export default defineComponent({
       tableTotal,
       tablePagination,
       actionFunctions,
+      selectableFunction,
     } = useUserList();
 
     return {
@@ -52,6 +54,7 @@ export default defineComponent({
       tableTotal,
       tablePagination,
       actionFunctions,
+      selectableFunction,
     };
   },
 });

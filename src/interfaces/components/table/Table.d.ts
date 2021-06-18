@@ -14,6 +14,7 @@ declare global {
     selectable: boolean;
     visibleButtons: BuiltInTableActionButtonName[];
     hideFooter: boolean;
+    selectableFunction: TableSelectableFunction;
   }
 
   interface TableColumn<T = any> {
@@ -75,6 +76,7 @@ declare global {
   type TableButtonTooltipFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => string;
   type TableButtonDisabledFunction<T = any> = (row: T, rowIndex?: number, column?: TableColumn<T>) => boolean;
   type TableFilterItemsFunction<T = any> = (filter?: TableHeaderDialogFilterData, column?: TableColumn<T>) => SelectOption[];
+  type TableSelectableFunction<T = any> = (row: T, rowIndex?: number) => boolean;
 
   interface TableStore extends Store {
     mutations: TableStoreMutations;

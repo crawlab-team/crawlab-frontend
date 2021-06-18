@@ -36,6 +36,7 @@
           :page="tablePagination.page"
           :page-size="tablePagination.size"
           selectable
+          :selectable-function="selectableFunction"
           @selection-change="onSelect"
           @delete="onDelete"
           @edit="onEdit"
@@ -147,7 +148,11 @@ export default defineComponent({
     noActions: {
       type: Boolean,
       default: false,
-    }
+    },
+    selectableFunction: {
+      type: Function as PropType<TableSelectableFunction>,
+      default: () => true,
+    },
   },
   emits: [
     'select',

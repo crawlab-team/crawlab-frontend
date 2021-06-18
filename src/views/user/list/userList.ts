@@ -101,6 +101,10 @@ const useUserList = () => {
     }
   ]);
 
+  const selectableFunction = (row: User) => {
+    return row.username !== USERNAME_ADMIN;
+  };
+
   // options
   const opts = {
     navActions,
@@ -109,6 +113,7 @@ const useUserList = () => {
 
   return {
     ...useList<User>(ns, store, opts),
+    selectableFunction,
   };
 };
 
