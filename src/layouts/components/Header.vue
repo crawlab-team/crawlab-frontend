@@ -4,6 +4,9 @@
       <div class="left">
       </div>
       <div class="right">
+        <el-link :underline="false" href="javascript:;" @click="onLogout">
+          Logout
+        </el-link>
       </div>
     </el-header>
   </div>
@@ -13,10 +16,15 @@
 import {computed, defineComponent} from 'vue';
 import {useStore} from 'vuex';
 import variables from '../../styles/variables.scss';
+import {useRouter} from 'vue-router';
 
 export default defineComponent({
   name: 'Header',
   setup() {
+    // router
+    const router = useRouter();
+
+    // store
     const store = useStore();
     const {layout} = store.state as RootStoreState;
 
@@ -24,8 +32,14 @@ export default defineComponent({
       return layout.sidebarCollapsed;
     });
 
+    const onLogout = () => {
+      localStorage.removeItem('token');
+      router.push('/login');
+    };
+
     return {
       sidebarCollapsed,
+      onLogout,
       ...variables,
     };
   },

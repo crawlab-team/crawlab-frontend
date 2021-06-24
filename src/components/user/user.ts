@@ -69,8 +69,8 @@ const useUser = (store: Store<RootStoreState>) => {
     password: {
       trigger: 'blur',
       validator: ((_, value: string, callback) => {
-        const invalidMessage = 'Invalid password. Length must be no less than 6.';
-        if (0 < value.length && value.length < 6) return callback(invalidMessage);
+        const invalidMessage = 'Invalid password. Length must be no less than 5.';
+        if (0 < value.length && value.length < 5) return callback(invalidMessage);
         return callback();
       }),
     },

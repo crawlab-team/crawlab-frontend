@@ -75,7 +75,7 @@ export default defineComponent({
         inputType: 'password',
         inputPlaceholder: 'New password',
         inputValidator: (value: string) => {
-          return value?.length < 6 ? 'Invalid password. Length must be no less than 6.' : true;
+          return value?.length < 5 ? 'Invalid password. Length must be no less than 5.' : true;
         }
       });
       return await store.dispatch(`${ns}/changePassword`, {id: activeId.value, password: value});

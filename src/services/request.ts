@@ -9,12 +9,23 @@ const useRequest = () => {
   const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8000';
 
   const request = async <R = any>(opts: AxiosRequestConfig): Promise<R> => {
+    // base url
     const baseURL = baseUrl;
+
+    // headers
+    const headers = {} as any;
+
+    // add token to headers
+    const token = localStorage.getItem('token');
+    if (token) {
+      headers['Authorization'] = token;
+    }
 
     // axios response
     const res = await axios.request({
       ...opts,
       baseURL,
+      headers,
     });
 
     // response data

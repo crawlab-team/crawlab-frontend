@@ -35,6 +35,7 @@
     "node-sass": "^5.0.0",
     "normalize.css": "^8.0.1",
     "pinyin": "^2.10.2",
+    "point-cluster": "^3.1.8",
     "vue": "^3.0.4",
     "vue-i18n": "^9.0.0-beta.11",
     "vue-router": "^4.0.0-0",

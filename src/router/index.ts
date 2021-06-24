@@ -8,6 +8,7 @@ import task from '@/router/task';
 import schedule from '@/router/schedule';
 import user from '@/router/user';
 import tag from '@/router/tag';
+import {initRouterAuth} from '@/router/auth';
 
 export const routes: Array<RouteRecordRaw> = [
   ...login,
@@ -41,7 +42,9 @@ export const menuItems: MenuItem[] = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 });
+
+initRouterAuth(router);
 
 export default router;
