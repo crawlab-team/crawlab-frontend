@@ -253,10 +253,10 @@ function initCanvas() {
 
   init()
 
-  return reset
+  window.resetCanvas = reset
 }
 
 (function () {
   window.initCanvas = initCanvas
-  window.resetCanvas = initCanvas()
+  window.initCanvas()
 }())

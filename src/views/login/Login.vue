@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onMounted, onUnmounted, ref} from 'vue';
 import {isValidUsername} from '@/utils/validate';
 import {useI18n} from 'vue-i18n';
 import {useRoute, useRouter} from 'vue-router';
@@ -214,7 +214,6 @@ export default defineComponent({
       } finally {
         loading.value = false;
       }
-
     };
 
     onMounted(() => {
@@ -226,6 +225,11 @@ export default defineComponent({
         }
       } else {
         isShowMobileWarning.value = true;
+      }
+    });
+    onUnmounted(() => {
+      if (window.resetCanvas) {
+        window.resetCanvas();
       }
     });
 
