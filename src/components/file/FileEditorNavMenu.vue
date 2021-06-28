@@ -42,7 +42,6 @@
             @rename="onNodeContextMenuRename(data)"
             @new-file="onNodeContextMenuNewFile(data)"
             @new-directory="onNodeContextMenuNewDirectory(data)"
-
         >
           <div
               v-bind="getBindDir(data)"
@@ -315,13 +314,11 @@ export default defineComponent({
 
     const getBindDir = (item: FileNavItem) => getRootProps({
       onDragEnter: (ev: DragEvent) => {
-        console.log('onDragEnter', item, ev);
         ev.stopPropagation();
         if (!item.is_dir || !item.path) return;
         dragCache[item.path] = true;
       },
       onDragLeave: (ev: DragEvent) => {
-        console.log('onDragLeave', item, ev);
         ev.stopPropagation();
         if (!item.is_dir || !item.path) return;
         dragCache[item.path] = false;
@@ -332,7 +329,6 @@ export default defineComponent({
         }
       },
     });
-
 
     onMounted(() => {
       // listen to keyboard events
@@ -406,6 +402,10 @@ export default defineComponent({
     .el-tree-node {
       .nav-item-wrapper {
         z-index: 2;
+
+        & * {
+          pointer-events: none;
+        }
 
         &.selected {
           .background {
