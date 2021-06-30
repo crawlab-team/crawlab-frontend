@@ -12,7 +12,12 @@ import {useRouter} from 'vue-router';
 import NodeRunners from '@/components/node/NodeRunners.vue';
 import Switch from '@/components/switch/Switch.vue';
 import NodeStatus from '@/components/node/NodeStatus.vue';
-import {NODE_STATUS_OFFLINE, NODE_STATUS_ONLINE} from '@/constants/node';
+import {
+  NODE_STATUS_OFFLINE,
+  NODE_STATUS_ONLINE,
+  NODE_STATUS_REGISTERED,
+  NODE_STATUS_UNREGISTERED
+} from '@/constants/node';
 
 type Node = CNode;
 
@@ -53,7 +58,7 @@ const useNodeList = () => {
   // table columns
   const tableColumns = computed<TableColumns<Node>>(() => [
     {
-      key: 'name',
+      key: 'n', // name
       label: 'Name',
       icon: ['fa', 'font'],
       width: '150',
@@ -61,24 +66,40 @@ const useNodeList = () => {
         path: `/nodes/${row._id}`,
         label: row.name,
       }),
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
-      key: 'type',
+      key: 'im', // is_master
       label: 'Node Type',
       icon: ['fa', 'list'],
       width: '150',
       value: (row: Node) => {
         return h(NodeType, {isMaster: row.is_master} as NodeTypeProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Master', value: true},
+        {label: 'Worker', value: false},
+      ],
     },
     {
-      key: 'status',
+      key: 's', // status
       label: 'Status',
       icon: ['fa', 'heartbeat'],
       width: '150',
       value: (row: Node) => {
         return h(NodeStatus, {status: row.status} as NodeStatusProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Unregistered', value: NODE_STATUS_UNREGISTERED},
+        {label: 'Registered', value: NODE_STATUS_REGISTERED},
+        {label: 'Online', value: NODE_STATUS_ONLINE},
+        {label: 'Offline', value: NODE_STATUS_OFFLINE},
+      ],
     },
     {
       key: 'ip',
@@ -115,7 +136,7 @@ const useNodeList = () => {
       },
     },
     {
-      key: 'enabled',
+      key: 'en', // enabled
       label: 'Enabled',
       icon: ['fa', 'toggle-on'],
       width: '120',
@@ -128,6 +149,12 @@ const useNodeList = () => {
           },
         } as SwitchProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Enabled', value: true},
+        {label: 'Disabled', value: false},
+      ]
     },
     {
       key: 'tags',

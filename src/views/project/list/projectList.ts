@@ -54,6 +54,8 @@ const useProjectList = () => {
         path: `/projects/${row._id}`,
         label: row.name,
       }),
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
       key: 'spiders',

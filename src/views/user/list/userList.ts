@@ -7,7 +7,7 @@ import useUserService from '@/services/user/userService';
 import NavLink from '@/components/nav/NavLink.vue';
 import {useRouter} from 'vue-router';
 import UserRole from '@/components/user/UserRole.vue';
-import {USERNAME_ADMIN} from '@/constants/user';
+import {ROLE_ADMIN, ROLE_NORMAL, USERNAME_ADMIN} from '@/constants/user';
 
 const useUserList = () => {
   // router
@@ -54,12 +54,16 @@ const useUserList = () => {
         path: `/users/${row._id}`,
         label: row.username,
       }),
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
       key: 'email',
       label: 'Email',
       icon: ['fa', 'at'],
       width: '180',
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
       key: 'role',
@@ -67,6 +71,12 @@ const useUserList = () => {
       icon: ['fa', 'font'],
       width: '150',
       value: (row: User) => h(UserRole, {role: row.role} as UserRoleProps),
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Admin', value: ROLE_ADMIN},
+        {label: 'Normal', value: ROLE_NORMAL},
+      ],
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,

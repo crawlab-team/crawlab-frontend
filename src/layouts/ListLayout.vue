@@ -41,6 +41,7 @@
           @delete="onDelete"
           @edit="onEdit"
           @pagination-change="onPaginationChange"
+          @header-change="onHeaderChange"
       >
         <template #actions-prefix>
           <NavActionButton
@@ -167,6 +168,7 @@ export default defineComponent({
     const {
       setPagination,
       getList,
+      onHeaderChange,
     } = actionFunctions.value;
 
     const tableRef = ref();
@@ -217,6 +219,7 @@ export default defineComponent({
       tableColumnsHash,
       onSelect,
       onPaginationChange,
+      onHeaderChange,
       onEdit,
       onDelete,
       getNavActionButtonDisabled,

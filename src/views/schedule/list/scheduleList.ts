@@ -10,6 +10,8 @@ import {setupListComponent} from '@/utils/list';
 import TaskMode from '@/components/task/TaskMode.vue';
 import ScheduleCron from '@/components/schedule/ScheduleCron.vue';
 import Switch from '@/components/switch/Switch.vue';
+import useSpider from '@/components/spider/spider';
+import useTask from '@/components/task/task';
 
 const useScheduleList = () => {
   // router
@@ -31,6 +33,14 @@ const useScheduleList = () => {
 
   // all spider dict
   const allSpiderDict = computed<Map<string, Spider>>(() => store.getters['spider/allDict']);
+
+  const {
+    allListSelectOptions: allSpiderListSelectOptions,
+  } = useSpider(store);
+
+  const {
+    modeOptions,
+  } = useTask(store);
 
   // nav actions
   const navActions = computed<ListActionGroup[]>(() => [
@@ -62,9 +72,11 @@ const useScheduleList = () => {
         path: `/schedules/${row._id}`,
         label: row.name,
       }),
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
-      key: 'spider',
+      key: 'spider_id',
       label: 'Spider',
       icon: ['fa', 'spider'],
       width: '160',
@@ -76,6 +88,10 @@ const useScheduleList = () => {
           path: `/spiders/${spider?._id}`,
         });
       },
+      hasFilter: true,
+      allowFilterSearch: true,
+      allowFilterItems: true,
+      filterItems: allSpiderListSelectOptions.value,
     },
     {
       key: 'mode',
@@ -85,6 +101,9 @@ const useScheduleList = () => {
       value: (row: Schedule) => {
         return h(TaskMode, {mode: row.mode} as TaskModeProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: modeOptions,
     },
     {
       key: 'cron',
@@ -115,6 +134,12 @@ const useScheduleList = () => {
           },
         } as SwitchProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Enabled', value: true},
+        {label: 'Disabled', value: false},
+      ],
     },
     {
       key: 'entry_id',

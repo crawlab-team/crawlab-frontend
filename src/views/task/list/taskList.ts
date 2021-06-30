@@ -14,6 +14,16 @@ import Duration from '@/components/time/Duration.vue';
 import {setupListComponent} from '@/utils/list';
 import {isCancellable} from '@/utils/task';
 import TaskResults from '@/components/task/TaskResults.vue';
+import useNode from '@/components/node/node';
+import useSpider from '@/components/spider/spider';
+import {
+  TASK_STATUS_CANCELLED,
+  TASK_STATUS_ERROR,
+  TASK_STATUS_FINISHED,
+  TASK_STATUS_PENDING,
+  TASK_STATUS_RUNNING
+} from '@/constants/task';
+import useTask from '@/components/task/task';
 
 const {
   post,
@@ -62,10 +72,22 @@ const useTaskList = () => {
     }
   ]);
 
+  const {
+    allListSelectOptions: allNodeListSelectOptions,
+  } = useNode(store);
+
+  const {
+    allListSelectOptions: allSpiderListSelectOptions,
+  } = useSpider(store);
+
+  const {
+    priorityOptions,
+  } = useTask(store);
+
   // table columns
   const tableColumns = computed<TableColumns<Task>>(() => [
     {
-      key: 'node',
+      key: 'node_id',
       label: 'Node',
       icon: ['fa', 'server'],
       width: '160',
@@ -81,9 +103,13 @@ const useTaskList = () => {
           }
         } as NodeTypeProps);
       },
+      hasFilter: true,
+      allowFilterSearch: true,
+      allowFilterItems: true,
+      filterItems: allNodeListSelectOptions.value,
     },
     {
-      key: 'spider',
+      key: 'spider_id',
       label: 'Spider',
       icon: ['fa', 'spider'],
       width: '160',
@@ -95,6 +121,10 @@ const useTaskList = () => {
           path: `/spiders/${spider?._id}`,
         });
       },
+      hasFilter: true,
+      allowFilterSearch: true,
+      allowFilterItems: true,
+      filterItems: allSpiderListSelectOptions.value,
     },
     {
       key: 'priority',
@@ -104,6 +134,9 @@ const useTaskList = () => {
       value: (row: Task) => {
         return h(TaskPriority, {priority: row.priority} as TaskPriorityProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: priorityOptions,
     },
     {
       key: 'status',
@@ -113,6 +146,15 @@ const useTaskList = () => {
       value: (row: Task) => {
         return h(TaskStatus, {status: row.status, error: row.error} as TaskStatusProps);
       },
+      hasFilter: true,
+      allowFilterItems: true,
+      filterItems: [
+        {label: 'Pending', value: TASK_STATUS_PENDING},
+        {label: 'Running', value: TASK_STATUS_RUNNING},
+        {label: 'Finished', value: TASK_STATUS_FINISHED},
+        {label: 'Error', value: TASK_STATUS_ERROR},
+        {label: 'Cancelled', value: TASK_STATUS_CANCELLED},
+      ],
     },
     {
       key: 'stat.create_ts',

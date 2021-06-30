@@ -3,6 +3,7 @@
     <div class="title">
       <span>Filter</span>
       <el-input
+          v-if="column.allowFilterSearch"
           :model-value="internalSearchString"
           class="search"
           clearable
@@ -10,17 +11,18 @@
           prefix-icon="el-icon-search"
           size="mini"
           @input="onSearch"
+          @keyup.enter="onEnter"
       />
-      <el-tooltip content="Add Condition">
-        <span class="icon" @click="onAddCondition">
-          <el-icon name="circle-plus-outline"/>
-        </span>
-      </el-tooltip>
+      <!--      <el-tooltip content="Add Condition">-->
+      <!--        <span class="icon" @click="onAddCondition">-->
+      <!--          <el-icon name="circle-plus-outline"/>-->
+      <!--        </span>-->
+      <!--      </el-tooltip>-->
     </div>
-    <el-form>
-      <FilterConditionList :conditions="internalConditions" @change="onConditionsChange"/>
-    </el-form>
-    <div class="items">
+    <!--    <el-form>-->
+    <!--      <FilterConditionList :conditions="internalConditions" @change="onConditionsChange"/>-->
+    <!--    </el-form>-->
+    <div v-if="column.allowFilterItems" class="items">
       <template v-if="filteredItems.length > 0">
         <el-checkbox-group v-model="internalItems" class="item-list" @change="onItemsChange">
           <el-checkbox
@@ -41,21 +43,21 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref, watch} from 'vue';
+import {computed, defineComponent, PropType, ref, watch} from 'vue';
 import Empty from '@/components/empty/Empty.vue';
 import {getDefaultFilterCondition} from '@/components/filter/FilterCondition.vue';
-import FilterConditionList from '@/components/filter/FilterConditionList.vue';
+// import FilterConditionList from '@/components/filter/FilterConditionList.vue';
 import {debounce} from '@/utils/debounce';
 
 export default defineComponent({
   name: 'TableHeaderDialogFilter',
   components: {
-    FilterConditionList,
+    // FilterConditionList,
     Empty,
   },
   props: {
     column: {
-      type: Object,
+      type: Object as PropType<TableColumn>,
       required: false,
     },
     searchString: {
@@ -63,7 +65,7 @@ export default defineComponent({
       required: false,
     },
     conditions: {
-      type: Array,
+      type: Array as PropType<FilterConditionData[]>,
       required: false,
       default: () => {
         return [];
@@ -72,6 +74,7 @@ export default defineComponent({
   },
   emits: [
     'change',
+    'enter',
   ],
   setup(props, {emit}) {
     const internalConditions = ref<FilterConditionData[]>([getDefaultFilterCondition()]);
@@ -97,29 +100,15 @@ export default defineComponent({
         return [];
       }
 
-      // items as function
-      if (typeof items === 'function') {
-        // console.log('items as function');
-        return items(filterData.value, column) as SelectOption[];
-      }
-
       // invalid type of items or empty items
       if (!Array.isArray(items) || items.length === 0) {
         // console.log('invalid type of items or empty items');
         return [];
       }
 
-      // items as an array of string
-      if (typeof items[0] === 'string') {
-        // console.log('items as an array of string');
-        return (items as string[]).map((d: string) => {
-          return {label: d, value: d};
-        });
-      }
-
       // items as an array of SelectOption
       // console.log('items as an array of SelectOption');
-      return items as SelectOption[];
+      return items.filter(d => filterData.value.searchString ? d.label?.toLowerCase()?.includes(filterData.value.searchString) : true);
     });
 
     const onAddCondition = () => {
@@ -137,12 +126,21 @@ export default defineComponent({
     };
 
     const search = debounce(() => {
+      if (internalSearchString.value) {
+        internalItems.value = filteredItems.value.map(d => d.value);
+      } else {
+        internalItems.value = [];
+      }
       emit('change', filterData.value);
-    });
+    }, {delay: 100});
 
     const onSearch = (value?: string) => {
       internalSearchString.value = value;
       search();
+    };
+
+    const onEnter = () => {
+      emit('enter');
     };
 
     watch(() => {
@@ -173,6 +171,7 @@ export default defineComponent({
       onConditionsChange,
       onItemsChange,
       onSearch,
+      onEnter,
     };
   },
 });

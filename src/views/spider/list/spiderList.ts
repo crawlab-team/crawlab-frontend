@@ -1,7 +1,6 @@
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
 import {computed, h} from 'vue';
-import SpiderType from '@/components/spider/SpiderType.vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
@@ -10,6 +9,7 @@ import NavLink from '@/components/nav/NavLink.vue';
 import Time from '@/components/time/Time.vue';
 import SpiderStat from '@/components/spider/SpiderStat.vue';
 import {setupListComponent} from '@/utils/list';
+import useProject from '@/components/project/project';
 
 const useSpiderList = () => {
   // router
@@ -19,7 +19,6 @@ const useSpiderList = () => {
   const ns = 'spider';
   const store = useStore<RootStoreState>();
   const {commit} = store;
-  const state = store.state[ns];
 
   // use list
   const {
@@ -50,8 +49,10 @@ const useSpiderList = () => {
     }
   ]);
 
-  // all project list
-  const allProjectList = computed<Project[]>(() => store.state.project.allList);
+  const {
+    allListSelectOptions: allProjectListSelectOptions,
+  } = useProject(store);
+  // const allProjectList = computed<Project[]>(() => store.state.project.allList);
 
   // all project dict
   const allProjectDict = computed<Map<string, Project>>(() => store.getters['project/allDict']);
@@ -68,33 +69,28 @@ const useSpiderList = () => {
         path: `/spiders/${row._id}`,
         label: row.name,
       }),
-    },
-    {
-      key: 'spider_type',
-      label: 'Spider Type',
-      icon: ['fa', 'list'],
-      width: '120',
-      filterItems: [
-        {label: 'Customized', value: 'customized'},
-        {label: 'Configurable', value: 'configurable'},
-      ],
       hasFilter: true,
-      value: (row: Spider) => {
-        return h(SpiderType, {type: row.spider_type});
-      }
+      allowFilterSearch: true,
     },
+    // {
+    //   key: 'spider_type',
+    //   label: 'Spider Type',
+    //   icon: ['fa', 'list'],
+    //   width: '120',
+    //   filterItems: [
+    //     {label: 'Customized', value: 'customized'},
+    //     {label: 'Configurable', value: 'configurable'},
+    //   ],
+    //   value: (row: Spider) => {
+    //     return h(SpiderType, {type: row.spider_type});
+    //   },
+    //   hasFilter: true,
+    // },
     {
       key: 'project_id',
       label: 'Project',
       icon: ['fa', 'project-diagram'],
       width: '120',
-      hasFilter: true,
-      filterItems: () => allProjectList.value.map(d => {
-        return {
-          label: d.name,
-          value: d._id,
-        };
-      }),
       value: (row: Spider) => {
         if (!row.project_id) return;
         const p = allProjectDict.value.get(row.project_id);
@@ -103,25 +99,28 @@ const useSpiderList = () => {
           path: `/projects/${row.project_id}`,
         });
       },
+      hasFilter: true,
+      allowFilterSearch: true,
+      allowFilterItems: true,
+      filterItems: allProjectListSelectOptions.value,
     },
     // {
     //   key: 'is_long_task',
     //   label: 'Is Long Task',
     //   width: '80',
     // },
-    {
-      key: 'latest_tasks',
-      label: 'Latest Tasks',
-      icon: ['fa', 'project-diagram'],
-      width: '180',
-      defaultHidden: true,
-    },
+    // {
+    //   key: 'latest_tasks',
+    //   label: 'Latest Tasks',
+    //   icon: ['fa', 'project-diagram'],
+    //   width: '180',
+    //   defaultHidden: true,
+    // },
     {
       key: 'last_status',
       label: 'Last Status',
       icon: ['fa', 'heartbeat'],
       width: '120',
-      hasFilter: true,
       value: (row: Spider) => {
         const status = row.stat?.last_task?.status;
         if (!status) return;
@@ -143,7 +142,7 @@ const useSpiderList = () => {
       key: 'stats',
       label: 'Stats',
       icon: ['fa', 'chart-pie'],
-      width: '180',
+      width: '240',
       hasFilter: true,
       value: (row: Spider) => {
         const stat = row.stat;
@@ -177,7 +176,7 @@ const useSpiderList = () => {
       key: 'description',
       label: 'Description',
       icon: ['fa', 'comment-alt'],
-      width: '200',
+      width: 'auto',
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,

@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, ref} from 'vue';
+import {computed, defineComponent, PropType, reactive, ref} from 'vue';
 import TableHeaderDialog from '@/components/table/TableHeaderDialog.vue';
 import TableHeaderAction from '@/components/table/TableHeaderAction.vue';
 import {conditionTypesMap} from '@/components/filter/FilterCondition.vue';
@@ -54,7 +54,7 @@ export default defineComponent({
   },
   props: {
     column: {
-      type: Object,
+      type: Object as PropType<TableColumn>,
       required: true,
     },
     index: {
@@ -75,6 +75,18 @@ export default defineComponent({
 
     const sortData = ref<string>();
     const filterData = ref<TableHeaderDialogFilterData>();
+
+    const filterItemsMap = computed<Map<any, string | undefined>>(() => {
+      const map = new Map<any, string | undefined>();
+      const {column} = props;
+      const {filterItems} = column;
+      if (!filterItems) return map;
+      filterItems.forEach(d => {
+        const {label, value} = d;
+        map.set(value, label);
+      });
+      return map;
+    });
 
     const actions = computed<TableColumnButton[]>(() => {
       // sort icon and tooltip
@@ -110,7 +122,8 @@ export default defineComponent({
 
         // filter items
         if (items && items.length > 0) {
-          filterTooltip += `<br><span style="color: ${variables.primaryColor};margin-right: 5px">Include:</span><span style="color: ${variables.warningColor}">` + items.join(', ') + '</span>';
+          const itemsStr = items.map(value => filterItemsMap.value.get(value)).join(', ');
+          filterTooltip += `<br><span style="color: ${variables.primaryColor};margin-right: 5px">Include:</span><span style="color: ${variables.warningColor}">` + itemsStr + '</span>';
           filterIsHtml = true;
         }
       }

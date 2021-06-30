@@ -33,7 +33,9 @@ declare global {
     disableTransfer?: boolean;
     defaultHidden?: boolean;
     hasFilter?: boolean;
-    filterItems?: TableFilterItemsFunction | SelectOption[] | string[];
+    filterItems?: SelectOption[];
+    allowFilterSearch?: boolean;
+    allowFilterItems?: boolean;
     required?: boolean;
     className?: string;
   }

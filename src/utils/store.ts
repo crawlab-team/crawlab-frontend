@@ -136,6 +136,14 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     resetTableListFilter: (state: BaseStoreState<T>) => {
       state.tableListFilter = [];
     },
+    setTableListFilterByKey: (state: BaseStoreState<T>, {key, conditions}) => {
+      const filter = state.tableListFilter.filter(d => d.key !== key);
+      conditions.forEach(d => {
+        d.key = key;
+        filter.push(d);
+      });
+      state.tableListFilter = filter;
+    },
     setAllList: (state: BaseStoreState<T>, value: T[]) => {
       state.allList = value;
     },

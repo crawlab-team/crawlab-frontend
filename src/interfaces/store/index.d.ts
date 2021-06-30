@@ -89,6 +89,7 @@ declare global {
     resetTablePagination: StoreMutation<BaseStoreState<T>>;
     setTableListFilter: StoreMutation<BaseStoreState<T>, FilterConditionData[]>;
     resetTableListFilter: StoreMutation<BaseStoreState<T>>;
+    setTableListFilterByKey: StoreMutation<BaseStoreState<T>, { key: string; conditions: FilterConditionData[] }>;
     setAllList: StoreMutation<BaseStoreState<T>, T[]>;
     resetAllList: StoreMutation<BaseStoreState<T>>;
     expandSidebar: StoreMutation<BaseStoreState<T>>;

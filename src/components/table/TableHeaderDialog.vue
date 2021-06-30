@@ -7,11 +7,11 @@
       trigger="manual"
   >
     <template #reference>
-      <div v-click-outside="onClickOutside">
+      <div>
         <slot name="reference"/>
       </div>
     </template>
-    <div class="content">
+    <div v-click-outside="onClickOutside" class="content">
       <div class="header">
         <div class="title">{{ column.label }}</div>
       </div>
@@ -29,6 +29,7 @@
                 :conditions="conditions"
                 :search-string="searchString"
                 @change="onFilterChange"
+                @enter="onFilterEnter"
             />
           </div>
         </div>
@@ -52,20 +53,19 @@
 
 <script lang="ts">
 import {computed, defineComponent, ref, watch} from 'vue';
-import {ClickOutside} from 'element-plus/lib/directives';
 import Button from '@/components/button/Button.vue';
 import TableHeaderDialogFilter from '@/components/table/TableHeaderDialogFilter.vue';
 import TableHeaderDialogSort from '@/components/table/TableHeaderDialogSort.vue';
 import variables from '@/styles/variables.scss';
 import {plainClone} from '@/utils/object';
 import {FILTER_OP_NOT_SET} from '@/constants/filter';
+import {ClickOutside} from 'element-plus/lib/directives';
 
 export default defineComponent({
   name: 'TableHeaderFilter',
   components: {
     TableHeaderDialogSort,
     TableHeaderDialogFilter,
-    // IconButton,
     Button,
   },
   directives: {
@@ -128,18 +128,30 @@ export default defineComponent({
     });
 
     const cancel = () => {
-      // console.debug('cancel');
       emit('cancel');
     };
 
     const clear = () => {
       internalSort.value = undefined;
       internalFilter.value = undefined;
-      // console.debug('clear');
       emit('clear');
     };
 
+    const apply = () => {
+      if (!internalSort.value && isEmptyFilter.value) {
+        clear();
+        return;
+      }
+      const value: TableHeaderDialogValue = {
+        sort: internalSort.value,
+        filter: internalFilter.value,
+      };
+      emit('apply', value);
+    };
+
     const onClickOutside = () => {
+      const {visible} = props;
+      if (!visible) return;
       cancel();
     };
 
@@ -152,26 +164,19 @@ export default defineComponent({
     };
 
     const onApply = () => {
-      if (!internalSort.value && isEmptyFilter.value) {
-        clear();
-        return;
-      }
-      const value: TableHeaderDialogValue = {
-        sort: internalSort.value,
-        filter: internalFilter.value,
-      };
-      // console.debug('apply');
-      emit('apply', value);
+      apply();
     };
 
     const onSortChange = (value: string) => {
-      // console.debug('onSortChange');
       internalSort.value = value;
     };
 
     const onFilterChange = (value: TableHeaderDialogFilterData) => {
-      // console.debug('onFilterChange');
       internalFilter.value = value;
+    };
+
+    const onFilterEnter = () => {
+      apply();
     };
 
     watch(() => {
@@ -197,6 +202,7 @@ export default defineComponent({
       onApply,
       onSortChange,
       onFilterChange,
+      onFilterEnter,
     };
   },
 });
@@ -275,7 +281,6 @@ export default defineComponent({
 <style>
 .table-header-popper {
   min-width: 320px !important;
-  min-height: 480px !important;
   display: flex;
   flex-direction: column;
 }
