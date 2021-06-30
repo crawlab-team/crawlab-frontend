@@ -1,5 +1,5 @@
 <template>
-  <div :style="style" class="line-chart">
+  <div :style="style" class="pie-chart">
     <div ref="elRef" class="echarts-element"></div>
   </div>
 </template>
@@ -9,7 +9,7 @@ import {computed, defineComponent, onMounted, PropType, ref, watch} from 'vue';
 import {init} from 'echarts';
 
 export default defineComponent({
-  name: 'LineChart',
+  name: 'PieChart',
   props: {
     config: {
       type: Object as PropType<EChartsConfig>,
@@ -33,12 +33,8 @@ export default defineComponent({
     valueKey: {
       type: String,
     },
-    isTimeSeries: {
-      type: Boolean,
-      default: true,
-    },
   },
-  setup(props: LineChartProps, {emit}) {
+  setup(props: PieChartProps, {emit}) {
     const style = computed<Partial<CSSStyleDeclaration>>(() => {
       const {width, height} = props;
       return {
@@ -50,24 +46,17 @@ export default defineComponent({
     const elRef = ref<HTMLDivElement>();
     const chart = ref<ECharts>();
 
-    const isMultiSeries = computed<boolean>(() => {
-      const {config} = props;
-      const {dataMetas} = config;
-      return dataMetas ? dataMetas.length > 1 : false;
-    });
-
     const getSeriesData = (data: StatsResult[], key?: string) => {
-      const {valueKey, labelKey, isTimeSeries} = props;
+      const {valueKey, labelKey, config} = props;
       const _valueKey = !key ? valueKey : key;
 
       if (_valueKey) {
-        if (isTimeSeries) {
-          // time series
-          return data.map(d => [d[labelKey || 'date'], d[_valueKey] || 0]);
-        } else {
-          // not time series
-          return data.map(d => d[_valueKey] || 0);
-        }
+        return data.map(d => {
+          return {
+            name: d[labelKey || '_id'],
+            value: d[_valueKey] || 0,
+          };
+        });
       } else {
         // default
         return data;
@@ -76,50 +65,29 @@ export default defineComponent({
 
     const getSeries = (): EChartSeries[] => {
       const {config} = props;
-      const {data, dataMetas} = config;
+      const {data, itemStyleColorFunc} = config;
 
-      if (!isMultiSeries.value) {
-        // single series
-        return [{
-          type: 'line',
-          data: getSeriesData(data),
-        }];
-      } else {
-        // multiple series
-        const series = [] as EChartSeries[];
-        if (!dataMetas) return series;
-        dataMetas.forEach(({key, name, yAxisIndex}) => {
-          series.push({
-            name,
-            yAxisIndex,
-            type: 'line',
-            data: getSeriesData(data, key),
-          });
-        });
-        return series;
+      const seriesItem = {
+        type: 'pie',
+        data: getSeriesData(data),
+        radius: ['40%', '70%'],
+        alignTo: 'labelLine',
+      } as EChartSeries;
+
+      if (itemStyleColorFunc) {
+        seriesItem.itemStyle = {color: itemStyleColorFunc};
       }
+
+      return [seriesItem];
     };
 
     const render = () => {
-      const {config, theme, isTimeSeries} = props;
+      const {config, theme} = props;
       const {option} = config;
 
       // dom
       const el = elRef.value;
       if (!el) return;
-
-      // xAxis
-      if (!option.xAxis) {
-        option.xAxis = {};
-        if (isTimeSeries) {
-          option.xAxis.type = 'time';
-        }
-      }
-
-      // yAxis
-      if (!option.yAxis) {
-        option.yAxis = {};
-      }
 
       // series
       option.series = getSeries();
@@ -135,15 +103,13 @@ export default defineComponent({
         };
       }
 
-      // legend
-      option.legend = {};
-
       // render
       if (!chart.value) {
         // init
         chart.value = init(el, theme);
       }
       (chart.value as ECharts).setOption(option);
+      console.log(option);
     };
 
     watch(() => props.config.data, render);
@@ -163,7 +129,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.line-chart {
+.pie-chart {
   .echarts-element {
     width: 100%;
     height: 100%;

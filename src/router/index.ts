@@ -34,8 +34,8 @@ export const menuItems: MenuItem[] = [
   {path: '/nodes', title: 'Nodes', icon: ['fa', 'server']},
   {path: '/projects', title: 'Projects', icon: ['fa', 'project-diagram']},
   {path: '/spiders', title: 'Spiders', icon: ['fa', 'spider']},
-  {path: '/tasks', title: 'Tasks', icon: ['fa', 'tasks']},
   {path: '/schedules', title: 'Schedules', icon: ['fa', 'clock']},
+  {path: '/tasks', title: 'Tasks', icon: ['fa', 'tasks']},
   {path: '/users', title: 'Users', icon: ['fa', 'users']},
   {path: '/tags', title: 'Tags', icon: ['fa', 'tag']},
 ];

@@ -18,4 +18,5 @@ interface EChartsConfig {
   dataMetas?: EchartsDataMeta[];
   data: StatsResult[];
   option: EChartOption;
+  itemStyleColorFunc?: Function;
 }
