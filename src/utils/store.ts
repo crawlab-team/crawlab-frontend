@@ -72,7 +72,6 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
     hideDialog: (state: BaseStoreState<T>) => {
       // reset all other state variables
       state.createEditDialogTabName = 'single';
-      state.form = {} as T;
       state.isSelectiveForm = false;
       state.selectedFormFields = [];
       state.formList = [];

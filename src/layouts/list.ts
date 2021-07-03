@@ -97,6 +97,12 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
   // get list when pagination changes
   watch(() => tablePagination.value, actionFunctions.getList);
 
+  // reset form when active dialog key is changed
+  watch(() => state.activeDialogKey, () => {
+    store.commit(`${ns}/resetForm`);
+    store.commit(`${ns}/resetFormList`);
+  });
+
   // store context
   provide<ListStoreContext<T>>('store-context', {
     namespace: ns,

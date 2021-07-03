@@ -1,4 +1,4 @@
-import {computed, provide, watch} from 'vue';
+import {computed, provide} from 'vue';
 import {Store} from 'vuex';
 import useFormTable from '@/components/form/formTable';
 import {EMPTY_OBJECT_ID} from '@/utils/mongo';
@@ -82,10 +82,6 @@ const useForm = (ns: ListStoreNamespace, store: Store<RootStoreState>, services:
       formTableFieldRefsMap.value = new Map();
     }
   };
-
-  // reset form when activeDialogKey is changed
-  watch(() => state.activeDialogKey, resetForm);
-  // watch(() => isBatchForm.value, resetForm);
 
   // whether form item is disabled
   const isFormItemDisabled = (prop: string) => {
