@@ -20,10 +20,10 @@
       </span>
       <div class="body">
         <div class="list">
-          <div class="item sort">
-            <TableHeaderDialogSort :value="internalSort" @change="onSortChange"/>
+          <div v-if="column.hasSort" class="item sort">
+            <TableHeaderDialogSort :value="internalSort?.d" @change="onSortChange"/>
           </div>
-          <div class="item filter">
+          <div v-if="column.hasFilter" class="item filter">
             <TableHeaderDialogFilter
                 :column="column"
                 :conditions="conditions"
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref, watch} from 'vue';
+import {computed, defineComponent, PropType, ref, watch} from 'vue';
 import Button from '@/components/button/Button.vue';
 import TableHeaderDialogFilter from '@/components/table/TableHeaderDialogFilter.vue';
 import TableHeaderDialogSort from '@/components/table/TableHeaderDialogSort.vue';
@@ -78,7 +78,7 @@ export default defineComponent({
       default: false,
     },
     column: {
-      type: Object,
+      type: Object as PropType<TableColumn>,
       required: true,
     },
     actionStatusMap: {
@@ -86,7 +86,7 @@ export default defineComponent({
       required: true,
     },
     sort: {
-      type: String,
+      type: Object as PropType<SortData>,
       required: false,
     },
     filter: {
@@ -101,7 +101,8 @@ export default defineComponent({
     'apply',
   ],
   setup(props, {emit}) {
-    const internalSort = ref<SortDirection>();
+    const defaultInternalSort = {key: props.column.key} as SortData;
+    const internalSort = ref<SortData>();
     const internalFilter = ref<TableHeaderDialogFilterData>();
 
     const searchString = computed<string | undefined>(() => internalFilter.value?.searchString);
@@ -132,7 +133,8 @@ export default defineComponent({
     };
 
     const clear = () => {
-      internalSort.value = undefined;
+      if (!internalSort.value) internalSort.value = plainClone(defaultInternalSort);
+      internalSort.value.d = undefined;
       internalFilter.value = undefined;
       emit('clear');
     };
@@ -168,7 +170,8 @@ export default defineComponent({
     };
 
     const onSortChange = (value: string) => {
-      internalSort.value = value;
+      if (!internalSort.value) internalSort.value = plainClone(defaultInternalSort);
+      internalSort.value.d = value;
     };
 
     const onFilterChange = (value: TableHeaderDialogFilterData) => {
@@ -185,8 +188,8 @@ export default defineComponent({
     }, () => {
       const {sort, filter, visible} = props as TableHeaderDialogProps;
       if (visible) {
-        internalSort.value = plainClone(sort);
-        internalFilter.value = plainClone(filter);
+        internalSort.value = (sort ? plainClone(sort) : plainClone(defaultInternalSort)) as SortData;
+        internalFilter.value = plainClone(filter) as TableHeaderDialogFilterData;
       }
     });
 

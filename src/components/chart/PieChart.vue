@@ -109,7 +109,6 @@ export default defineComponent({
         chart.value = init(el, theme);
       }
       (chart.value as ECharts).setOption(option);
-      console.log(option);
     };
 
     watch(() => props.config.data, render);

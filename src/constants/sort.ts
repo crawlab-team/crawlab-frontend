@@ -1,3 +1,3 @@
-export const ASCENDING = 'ascending';
-export const DESCENDING = 'descending';
-export const UNSORTED = 'unsorted';
+export const ASCENDING = 'asc';
+export const DESCENDING = 'dsc';
+export const UNSORTED = 'u';

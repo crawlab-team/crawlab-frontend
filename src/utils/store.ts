@@ -1,6 +1,7 @@
 import {getDefaultPagination} from '@/utils/pagination';
 import {useService} from '@/services';
 import router from '@/router';
+import {plainClone} from '@/utils/object';
 
 export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreState<T> => {
   return {
@@ -20,6 +21,7 @@ export const getDefaultStoreState = <T = any>(ns: StoreNamespace): BaseStoreStat
     tableTotal: 0,
     tablePagination: getDefaultPagination(),
     tableListFilter: [],
+    tableListSort: [],
     allList: [],
     sidebarCollapsed: false,
     actionsCollapsed: false,
@@ -110,7 +112,6 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
       state.formList = value;
     },
     resetFormList: (state: BaseStoreState<T>) => {
-      console.log('resetFormList');
       state.formList = [];
     },
     setConfirmLoading: (state: BaseStoreState<T>, value: boolean) => {
@@ -143,6 +144,32 @@ export const getDefaultStoreMutations = <T = any>(): BaseStoreMutations<T> => {
         filter.push(d);
       });
       state.tableListFilter = filter;
+    },
+    resetTableListFilterByKey: (state: BaseStoreState<T>, key) => {
+      state.tableListFilter = state.tableListFilter.filter(d => d.key !== key);
+    },
+    setTableListSort: (state: BaseStoreState<T>, sort: SortData[]) => {
+      state.tableListSort = sort;
+    },
+    resetTableListSort: (state: BaseStoreState<T>) => {
+      state.tableListSort = [];
+    },
+    setTableListSortByKey: (state: BaseStoreState<T>, {key, sort}) => {
+      const idx = state.tableListSort.findIndex(d => d.key === key);
+      if (idx === -1) {
+        if (sort) {
+          state.tableListSort.push(sort);
+        }
+      } else {
+        if (sort) {
+          state.tableListSort[idx] = plainClone(sort);
+        } else {
+          state.tableListSort.splice(idx, 1);
+        }
+      }
+    },
+    resetTableListSortByKey: (state: BaseStoreState<T>, key) => {
+      state.tableListSort = state.tableListSort.filter(d => d.key !== key);
     },
     setAllList: (state: BaseStoreState<T>, value: T[]) => {
       state.allList = value;
@@ -205,6 +232,7 @@ export const getDefaultStoreActions = <T = any>(endpoint: string): BaseStoreActi
         page,
         size,
         conditions: JSON.stringify(state.tableListFilter),
+        sort: JSON.stringify(state.tableListSort),
       } as ListRequestParams);
       commit('setTableData', {data: res.data || [], total: res.total});
       return res;

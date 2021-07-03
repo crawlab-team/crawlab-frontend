@@ -51,6 +51,7 @@ declare global {
     tableTotal: number;
     tablePagination: TablePagination;
     tableListFilter: FilterConditionData[];
+    tableListSort: SortData[];
     allList: T[];
     sidebarCollapsed: boolean;
     actionsCollapsed: boolean;
@@ -90,6 +91,11 @@ declare global {
     setTableListFilter: StoreMutation<BaseStoreState<T>, FilterConditionData[]>;
     resetTableListFilter: StoreMutation<BaseStoreState<T>>;
     setTableListFilterByKey: StoreMutation<BaseStoreState<T>, { key: string; conditions: FilterConditionData[] }>;
+    resetTableListFilterByKey: StoreMutation<BaseStoreState<T>, string>;
+    setTableListSort: StoreMutation<BaseStoreState<T>, SortData[]>;
+    resetTableListSort: StoreMutation<BaseStoreState<T>>;
+    setTableListSortByKey: StoreMutation<BaseStoreState<T>, { key: string; sort: SortData }>;
+    resetTableListSortByKey: StoreMutation<BaseStoreState<T>, string>;
     setAllList: StoreMutation<BaseStoreState<T>, T[]>;
     resetAllList: StoreMutation<BaseStoreState<T>>;
     expandSidebar: StoreMutation<BaseStoreState<T>>;

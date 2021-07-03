@@ -32,6 +32,7 @@ declare global {
     value?: TableValueFunction<T> | any;
     disableTransfer?: boolean;
     defaultHidden?: boolean;
+    hasSort?: boolean;
     hasFilter?: boolean;
     filterItems?: SelectOption[];
     allowFilterSearch?: boolean;

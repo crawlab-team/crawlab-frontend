@@ -51,7 +51,7 @@ declare global {
     getAll: () => Promise<void>;
     deleteList: (ids: string[]) => Promise<Response>;
     deleteByIdConfirm: (row: BaseModel) => Promise<void>;
-    onHeaderChange: (column: TableColumn, sort: SortDirection, filter: TableHeaderDialogFilterData) => Promise<void>;
+    onHeaderChange: (column: TableColumn, sort: SortData, filter: TableHeaderDialogFilterData) => Promise<void>;
   }
 
   type ListActionButtonDisabledFunc = (table: typeof Table) => boolean;

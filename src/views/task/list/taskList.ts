@@ -134,6 +134,7 @@ const useTaskList = () => {
       value: (row: Task) => {
         return h(TaskPriority, {priority: row.priority} as TaskPriorityProps);
       },
+      hasSort: true,
       hasFilter: true,
       allowFilterItems: true,
       filterItems: priorityOptions,

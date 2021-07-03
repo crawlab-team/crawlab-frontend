@@ -67,6 +67,7 @@ const actions = {
     const payload = {
       ...state.tablePagination,
       conditions: JSON.stringify(state.tableListFilter),
+      sort: JSON.stringify(state.tableListSort),
       stats: true,
     };
     const res = await getList(`/spiders`, payload);

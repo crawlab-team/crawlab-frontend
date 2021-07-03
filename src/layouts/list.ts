@@ -3,6 +3,43 @@ import {Store} from 'vuex';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import {FILTER_OP_CONTAINS, FILTER_OP_IN, FILTER_OP_NOT_SET} from '@/constants/filter';
 
+const getFilterConditions = (column: TableColumn, filter: TableHeaderDialogFilterData) => {
+  // allow filter search/items
+  const {allowFilterSearch, allowFilterItems} = column;
+
+  // conditions
+  const conditions = [] as FilterConditionData[];
+
+  // filter conditions
+  if (filter.conditions) {
+    filter.conditions
+      .filter(d => d.op !== FILTER_OP_NOT_SET)
+      .forEach(d => {
+        conditions.push(d);
+      });
+  }
+
+  if (allowFilterItems) {
+    // allow filter items (only relevant to items)
+    if (filter.items && filter.items.length > 0) {
+      conditions.push({
+        op: FILTER_OP_IN,
+        value: filter.items,
+      });
+    }
+  } else if (allowFilterSearch) {
+    // not allow filter items and allow filter search (only relevant to search string)
+    if (filter.searchString) {
+      conditions.push({
+        op: FILTER_OP_CONTAINS,
+        value: filter.searchString,
+      });
+    }
+  }
+
+  return conditions;
+};
+
 const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, opts?: UseListOptions<T>): ListLayoutComponentData => {
   // store state
   const state = store.state[ns] as BaseStoreState;
@@ -28,50 +65,28 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
       await store.dispatch(`${ns}/getList`);
     },
     onHeaderChange: async (column, sort, filter) => {
-      if (!filter) {
-        store.commit(`${ns}/resetTableListFilter`);
-        await store.dispatch(`${ns}/getList`);
-        return;
-      }
-
-      // column key
       const {key} = column;
 
-      // allow filter search/items
-      const {allowFilterSearch, allowFilterItems} = column;
-
-      // conditions
-      const conditions = [] as FilterConditionData[];
-
-      // filter conditions
-      if (filter.conditions) {
-        filter.conditions
-          .filter(d => d.op !== FILTER_OP_NOT_SET)
-          .forEach(d => {
-            conditions.push(d);
-          });
+      // filter
+      if (!filter) {
+        // no filter
+        store.commit(`${ns}/resetTableListFilterByKey`, key);
+      } else {
+        // has filter
+        const conditions = getFilterConditions(column, filter);
+        store.commit(`${ns}/setTableListFilterByKey`, {key, conditions});
       }
 
-      if (allowFilterItems) {
-        // allow filter items (only relevant to items)
-        if (filter.items && filter.items.length > 0) {
-          conditions.push({
-            op: FILTER_OP_IN,
-            value: filter.items,
-          });
-        }
-      } else if (allowFilterSearch) {
-        // not allow filter items and allow filter search (only relevant to search string)
-        if (filter.searchString) {
-          conditions.push({
-            op: FILTER_OP_CONTAINS,
-            value: filter.searchString,
-          });
-        }
+      // sort
+      if (!sort) {
+        // no sort
+        store.commit(`${ns}/resetTableListSortByKey`, key);
+      } else {
+        // has sort
+        store.commit(`${ns}/setTableListSortByKey`, {key, sort});
       }
 
-      // save
-      store.commit(`${ns}/setTableListFilterByKey`, {key, conditions});
+      // get list
       await store.dispatch(`${ns}/getList`);
     },
   });

@@ -69,6 +69,7 @@ const useSpiderList = () => {
         path: `/spiders/${row._id}`,
         label: row.name,
       }),
+      hasSort: true,
       hasFilter: true,
       allowFilterSearch: true,
     },

@@ -6,11 +6,11 @@
           v-if="column.allowFilterSearch"
           :model-value="internalSearchString"
           class="search"
-          clearable
           placeholder="Search"
           prefix-icon="el-icon-search"
           size="mini"
           @input="onSearch"
+          @clear="onClear"
           @keyup.enter="onEnter"
       />
       <!--      <el-tooltip content="Add Condition">-->

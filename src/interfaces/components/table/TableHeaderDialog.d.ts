@@ -3,10 +3,10 @@ interface TableHeaderDialogProps {
   column: TableColumn;
   actionStatusMap: TableHeaderActionStatusMap;
   filter?: TableHeaderDialogFilterData;
-  sort?: string;
+  sort?: SortData;
 }
 
 interface TableHeaderDialogValue {
-  sort?: SortDirection;
+  sort?: SortData;
   filter?: TableHeaderDialogFilterData;
 }

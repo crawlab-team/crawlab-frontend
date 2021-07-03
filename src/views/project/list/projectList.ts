@@ -54,6 +54,7 @@ const useProjectList = () => {
         path: `/projects/${row._id}`,
         label: row.name,
       }),
+      hasSort: true,
       hasFilter: true,
       allowFilterSearch: true,
     },
@@ -81,6 +82,8 @@ const useProjectList = () => {
       label: 'Description',
       icon: ['fa', 'comment-alt'],
       width: 'auto',
+      hasFilter: true,
+      allowFilterSearch: true,
     },
     {
       key: TABLE_COLUMN_NAME_ACTIONS,
