@@ -4,7 +4,6 @@ import {computed, h} from 'vue';
 import TaskStatus from '@/components/task/TaskStatus.vue';
 import {TABLE_COLUMN_NAME_ACTIONS} from '@/constants/table';
 import useList from '@/layouts/list';
-import Table from '@/components/table/Table.vue';
 import NavLink from '@/components/nav/NavLink.vue';
 import Time from '@/components/time/Time.vue';
 import SpiderStat from '@/components/spider/SpiderStat.vue';
@@ -229,16 +228,16 @@ const useSpiderList = () => {
   // table actions prefix
   const tableActionsPrefix = computed<ListActionButton[]>(() => {
     return [
-      {
-        buttonType: 'fa-icon',
-        tooltip: 'Run',
-        size: 'mini',
-        icon: ['fa', 'play'],
-        type: 'success',
-        disabled: (table: typeof Table) => {
-          return !table?.internalSelection?.length;
-        },
-      }
+      // {
+      //   buttonType: 'fa-icon',
+      //   tooltip: 'Run',
+      //   size: 'mini',
+      //   icon: ['fa', 'play'],
+      //   type: 'success',
+      //   disabled: (table: typeof Table) => {
+      //     return !table?.internalSelection?.length;
+      //   },
+      // }
     ];
   });
 
