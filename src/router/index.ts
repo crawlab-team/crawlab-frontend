@@ -8,6 +8,7 @@ import task from '@/router/task';
 import schedule from '@/router/schedule';
 import user from '@/router/user';
 import tag from '@/router/tag';
+import token from '@/router/token';
 import {initRouterAuth} from '@/router/auth';
 
 export const routes: Array<RouteRecordRaw> = [
@@ -25,6 +26,7 @@ export const routes: Array<RouteRecordRaw> = [
       ...schedule,
       ...user,
       ...tag,
+      ...token,
     ],
   },
 ];
@@ -38,6 +40,7 @@ export const menuItems: MenuItem[] = [
   {path: '/tasks', title: 'Tasks', icon: ['fa', 'tasks']},
   {path: '/users', title: 'Users', icon: ['fa', 'users']},
   {path: '/tags', title: 'Tags', icon: ['fa', 'tag']},
+  {path: '/tokens', title: 'Tokens', icon: ['fa', 'key']},
 ];
 
 const router = createRouter({

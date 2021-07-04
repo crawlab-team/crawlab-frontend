@@ -10,6 +10,7 @@ import tag from '@/store/modules/tag';
 import dataCollection from '@/store/modules/dataCollection';
 import schedule from '@/store/modules/schedule';
 import user from '@/store/modules/user';
+import token from '@/store/modules/token';
 
 export default createStore<RootStoreState>({
   modules: {
@@ -24,5 +25,6 @@ export default createStore<RootStoreState>({
     dataCollection,
     schedule,
     user,
+    token,
   },
 }) as Store<RootStoreState>;

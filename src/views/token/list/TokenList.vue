@@ -2,15 +2,15 @@
   <ListLayout
       :action-functions="actionFunctions"
       :nav-actions="navActions"
+      :no-actions="noActions"
       :pagination="tablePagination"
       :table-columns="tableColumns"
       :table-data="tableData"
       :table-total="tableTotal"
-      class="node-list"
+      class="token-list"
   >
     <template #extra>
       <!-- Dialogs (handled by store) -->
-      <CreateEditNodeDialog/>
       <!-- ./Dialogs -->
     </template>
   </ListLayout>
@@ -19,20 +19,24 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import ListLayout from '@/layouts/ListLayout.vue';
-import useNodeList from '@/views/node/list/nodeList';
-import CreateEditNodeDialog from '@/components/node/CreateEditNodeDialog.vue';
+import useTokenList from '@/views/token/list/tokenList';
 
 export default defineComponent({
-  name: 'NodeList',
+  name: 'TokenList',
+  props: {
+    noActions: {
+      type: Boolean,
+      default: false,
+    }
+  },
   components: {
     ListLayout,
-    CreateEditNodeDialog,
   },
   setup() {
     return {
-      ...useNodeList(),
+      ...useTokenList(),
     };
-  }
+  },
 });
 </script>
 

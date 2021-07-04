@@ -8,7 +8,7 @@ import {computed, defineComponent, onBeforeMount, onBeforeUnmount} from 'vue';
 import {useRoute} from 'vue-router';
 import {useStore} from 'vuex';
 import {FILTER_OP_EQUAL} from '@/constants/filter';
-import ResultList from '@/views/data/ResultList.vue';
+import ResultList from '@/views/data/list/ResultList.vue';
 import useSpider from '@/components/spider/spider';
 import useSpiderDetail from '@/views/spider/detail/spiderDetail';
 
