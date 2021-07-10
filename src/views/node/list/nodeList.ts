@@ -202,7 +202,7 @@ const useNodeList = () => {
           size: 'mini',
           icon: ['fa', 'trash-alt'],
           tooltip: 'Delete',
-          disabled: (row: Node) => !row.active,
+          disabled: (row: Node) => !!row.active,
           onClick: async (row: Node) => {
             const res = await ElMessageBox.confirm('Are you sure to delete?', 'Delete');
             if (res) {
