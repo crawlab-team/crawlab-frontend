@@ -99,8 +99,10 @@ const useList = <T = any>(ns: ListStoreNamespace, store: Store<RootStoreState>, 
 
   // reset form when active dialog key is changed
   watch(() => state.activeDialogKey, () => {
-    store.commit(`${ns}/resetForm`);
-    store.commit(`${ns}/resetFormList`);
+    if (!state.activeDialogKey) {
+      store.commit(`${ns}/resetForm`);
+      store.commit(`${ns}/resetFormList`);
+    }
   });
 
   // store context

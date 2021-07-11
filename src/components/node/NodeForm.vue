@@ -46,7 +46,7 @@
       <el-input-number
           v-model="form.max_runners"
           :disabled="isFormItemDisabled('max_runners')"
-          min="0"
+          :min="0"
           placeholder="Max Runners"
       />
     </FormItem>

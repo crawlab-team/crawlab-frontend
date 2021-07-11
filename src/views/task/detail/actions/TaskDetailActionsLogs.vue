@@ -42,7 +42,9 @@ export default defineComponent({
 
     // watch log auto update
     watch(() => state.logAutoUpdate, () => {
-      internalAutoUpdate.value = state.logAutoUpdate;
+      setTimeout(() => {
+        internalAutoUpdate.value = state.logAutoUpdate;
+      }, 100);
     });
 
     // auto update change
