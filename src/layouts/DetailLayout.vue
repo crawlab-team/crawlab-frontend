@@ -1,10 +1,11 @@
 <template>
-  <div :class="sidebarCollapsed ? 'collapsed' : ''" class="detail-layout">
+  <div :class="(noSidebar || sidebarCollapsed) ? 'collapsed' : ''" class="detail-layout">
     <div class="sidebar">
       <NavSidebar
+          v-if="!noSidebar"
           ref="navSidebar"
           :active-key="activeId"
-          :collapsed="sidebarCollapsed"
+          :collapsed="noSidebar || sidebarCollapsed"
           :items="navItems"
           @select="onNavSidebarSelect"
           @toggle="onNavSidebarToggle"
@@ -57,6 +58,10 @@ export default defineComponent({
     storeNamespace: {
       type: String as PropType<ListStoreNamespace>,
       required: true,
+    },
+    noSidebar: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props: DetailLayoutProps, {emit}) {

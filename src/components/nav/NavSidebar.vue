@@ -26,7 +26,8 @@
     >
       <el-menu-item v-for="item in filteredItems" :key="item.id" :index="item.id" class="nav-menu-item">
         <span class="title">{{ item.title }}</span>
-        <span class="actions">
+        <!-- TODO: implement -->
+        <span v-if="false" class="actions">
           <font-awesome-icon class="icon" :icon="['far', 'star']" @click="onStar(item.id)"/>
           <font-awesome-icon class="icon" :icon="['far', 'clone']" @click="onDuplicate(item.id)"/>
           <font-awesome-icon class="icon" :icon="['fa', 'trash-alt']" @click="onRemove(item.id)"/>

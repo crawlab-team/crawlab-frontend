@@ -1,5 +1,5 @@
 <template>
-  <DetailLayout store-namespace="task">
+  <DetailLayout no-sidebar store-namespace="task">
     <template #actions>
       <TaskDetailActionsCommon/>
       <TaskDetailActionsLogs v-if="activeTabName === 'logs'"/>
