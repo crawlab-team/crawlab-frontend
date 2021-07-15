@@ -6,7 +6,7 @@
           ref="navSidebar"
           :active-key="activeId"
           :collapsed="noSidebar || sidebarCollapsed"
-          :items="navItems"
+          :items="computedNavItems"
           @select="onNavSidebarSelect"
           @toggle="onNavSidebarToggle"
       />
@@ -45,6 +45,7 @@ import NavSidebar from '@/components/nav/NavSidebar.vue';
 import NavTabs from '@/components/nav/NavTabs.vue';
 import NavActions from '@/components/nav/NavActions.vue';
 import NavActionGroupDetailCommon from '@/components/nav/NavActionGroupDetailCommon.vue';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'DetailLayout',
@@ -63,12 +64,27 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    navItemNameKey: {
+      type: String,
+      default: 'name',
+    }
   },
   setup(props: DetailLayoutProps, {emit}) {
     const ns = computed(() => props.storeNamespace);
+    const store = useStore();
+    const state = store.state[ns.value] as BaseStoreState;
+
+    const computedNavItems = computed<NavItem[]>(() => state.allList.map((d: BaseModel) => {
+      const {navItemNameKey} = props;
+      return {
+        id: d._id,
+        title: d[navItemNameKey],
+      } as NavItem;
+    }));
 
     return {
       ...useDetail(ns.value),
+      computedNavItems,
     };
   },
 });

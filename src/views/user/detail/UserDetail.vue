@@ -1,5 +1,5 @@
 <template>
-  <DetailLayout store-namespace="user">
+  <DetailLayout nav-item-name-key="username" store-namespace="user">
   </DetailLayout>
 </template>
 
