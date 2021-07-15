@@ -26,7 +26,7 @@ const useDetail = <T = BaseModel>(ns: ListStoreNamespace) => {
   const navItems = computed<NavItem<T>[]>(() => state.allList.map((d: BaseModel) => {
     return {
       id: d._id,
-      title: d.name,
+      title: d.username,
     } as NavItem;
   }));
 
